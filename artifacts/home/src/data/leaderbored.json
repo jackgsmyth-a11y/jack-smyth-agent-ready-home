@@ -1,0 +1,3417 @@
+[
+  {
+    "id": "automotive",
+    "name": "Automotive",
+    "latestMonth": "2026-10",
+    "source": "illustrative",
+    "sampleData": true,
+    "patterns": [
+      {
+        "theme": "Dependable everyday mobility",
+        "keywords": [
+          "reliable",
+          "confidence",
+          "everyday",
+          "family",
+          "ownership"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-01"
+          ],
+          "brands": [
+            "Toyota; Mazda"
+          ],
+          "copyPatterns": [
+            "Life changes; the vehicle remains dependable"
+          ],
+          "exampleCopy": [
+            "For all the plans that become other plans."
+          ],
+          "motivations": [
+            "Reduce regret about a costly household decision."
+          ],
+          "visualDevices": [
+            "School run; groceries; family loading; suburban driveway."
+          ],
+          "australianContext": [
+            "Weekday logistics alongside weekend escapes."
+          ],
+          "challenges": [
+            "Generic happy-family montage and vague peace of mind."
+          ],
+          "creativeDirection": [
+            "Make dependability visible through one recognisable interruption to an Australian day. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep vehicle type and actual ownership benefit explicit. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Warranty; servicing costs; reliability evidence; model eligibility."
+          ]
+        }
+      },
+      {
+        "theme": "Work-to-weekend capability",
+        "keywords": [
+          "tough",
+          "towing",
+          "payload",
+          "ute",
+          "work",
+          "weekend"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-02"
+          ],
+          "brands": [
+            "Ford; Toyota; Isuzu UTE"
+          ],
+          "copyPatterns": [
+            "One vehicle; two versions of the owner"
+          ],
+          "exampleCopy": [
+            "Clock off. Keep going."
+          ],
+          "motivations": [
+            "Feel competent at work and free after it."
+          ],
+          "visualDevices": [
+            "Worksite cut to campsite; loaded tray; dirt road."
+          ],
+          "australianContext": [
+            "Tradie identity and recreational towing."
+          ],
+          "challenges": [
+            "Muddy hero vehicle as shorthand for capability."
+          ],
+          "creativeDirection": [
+            "Express capability through the load the owner refuses to leave behind. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name the ute and the specific verified capability. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Variant-specific payload; towing limits; road conditions."
+          ]
+        }
+      },
+      {
+        "theme": "Escape without intimidation",
+        "keywords": [
+          "adventure",
+          "outdoors",
+          "explore",
+          "weekend",
+          "ready"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-03"
+          ],
+          "brands": [
+            "Toyota; Subaru; Mitsubishi"
+          ],
+          "copyPatterns": [
+            "Ordinary driver gains access to extraordinary scenery"
+          ],
+          "exampleCopy": [
+            "A different postcode for your weekend."
+          ],
+          "motivations": [
+            "Leave routine without needing to become an expert."
+          ],
+          "visualDevices": [
+            "Coastal road; bush track; panoramic campsite."
+          ],
+          "australianContext": [
+            "Distance; beach trips; regional access."
+          ],
+          "challenges": [
+            "Empty wilderness that erases the real customer."
+          ],
+          "creativeDirection": [
+            "Give a modest local escape cinematic importance without inventing off-road ability. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State SUV or vehicle category and relevant access benefit. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Drivetrain; terrain suitability; route access; safety guidance."
+          ]
+        }
+      },
+      {
+        "theme": "Features for the money",
+        "keywords": [
+          "more",
+          "included",
+          "value",
+          "tech",
+          "comfort",
+          "upgrade"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-04"
+          ],
+          "brands": [
+            "Kia; Hyundai; BYD"
+          ],
+          "copyPatterns": [
+            "Premium-seeming features at an approachable price"
+          ],
+          "exampleCopy": [
+            "The upgrade you can explain to yourself."
+          ],
+          "motivations": [
+            "Justify aspiration with practical arithmetic."
+          ],
+          "visualDevices": [
+            "Interior reveal; feature labels; price card; comparison tiles."
+          ],
+          "australianContext": [
+            "Household cost pressure and drive-away expectations."
+          ],
+          "challenges": [
+            "Feature avalanche that makes every vehicle interchangeable."
+          ],
+          "creativeDirection": [
+            "Choose one verified included feature and dramatise the everyday irritation it removes. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Retain model; feature; eligible price basis. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Inclusions by trim; drive-away jurisdiction; offer conditions."
+          ]
+        }
+      },
+      {
+        "theme": "Electric life made ordinary",
+        "keywords": [
+          "electric",
+          "charge",
+          "range",
+          "home",
+          "running costs"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-05"
+          ],
+          "brands": [
+            "BYD; Tesla; Hyundai; Kia"
+          ],
+          "copyPatterns": [
+            "Future technology becomes a manageable daily habit"
+          ],
+          "exampleCopy": [
+            "Your next drive starts at home."
+          ],
+          "motivations": [
+            "Reduce uncertainty about switching powertrains."
+          ],
+          "visualDevices": [
+            "Driveway charger; app view; commute; quiet cabin."
+          ],
+          "australianContext": [
+            "Long-distance anxieties alongside suburban commuting."
+          ],
+          "challenges": [
+            "Futuristic glow and frictionless charging fantasy."
+          ],
+          "creativeDirection": [
+            "Show a realistic charging ritual with one honest limitation built into the story. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Use electric vehicle explicitly; distinguish range from charging time. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Actual range basis; charger access; installation; tariffs; model."
+          ]
+        }
+      },
+      {
+        "theme": "Hybrid transition",
+        "keywords": [
+          "hybrid",
+          "efficient",
+          "everyday",
+          "fuel",
+          "familiar"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-06"
+          ],
+          "brands": [
+            "Toyota; Lexus"
+          ],
+          "copyPatterns": [
+            "Change how the vehicle is powered; keep the familiar routine"
+          ],
+          "exampleCopy": [
+            "A familiar drive with a different appetite."
+          ],
+          "motivations": [
+            "Improve efficiency without a daunting lifestyle change."
+          ],
+          "visualDevices": [
+            "Fuel gauge; familiar commute; power-flow illustration."
+          ],
+          "australianContext": [
+            "Mixed urban and regional driving."
+          ],
+          "challenges": [
+            "Unqualified green halos around any electrified vehicle."
+          ],
+          "creativeDirection": [
+            "Translate one verified efficiency fact into an everyday contrast without claiming zero emissions. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Say hybrid and preserve whether charging is required. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Hybrid type; fuel test basis; emissions; comparable use case."
+          ]
+        }
+      },
+      {
+        "theme": "Design and personal taste",
+        "keywords": [
+          "crafted",
+          "design",
+          "refined",
+          "detail",
+          "feel"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-07"
+          ],
+          "brands": [
+            "Mazda; Lexus; Mercedes-Benz"
+          ],
+          "copyPatterns": [
+            "Design detail signals an owner with discernment"
+          ],
+          "exampleCopy": [
+            "A small detail. A different feeling."
+          ],
+          "motivations": [
+            "Express taste without a loud status declaration."
+          ],
+          "visualDevices": [
+            "Macro stitching; paint reflection; quiet cabin; slow reveal."
+          ],
+          "australianContext": [
+            "Premium taste expressed with relative understatement."
+          ],
+          "challenges": [
+            "Luxury adjectives with no tangible object of attention."
+          ],
+          "creativeDirection": [
+            "Build the idea around one real design detail and the human behaviour it changes. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep vehicle category and concrete design feature accessible. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Materials; standard versus optional features; footage accuracy."
+          ]
+        }
+      },
+      {
+        "theme": "Family reassurance",
+        "keywords": [
+          "safety",
+          "confidence",
+          "protection",
+          "family",
+          "assist"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-08"
+          ],
+          "brands": [
+            "Subaru; Volvo; Toyota"
+          ],
+          "copyPatterns": [
+            "A feature protects the people who matter"
+          ],
+          "exampleCopy": [
+            "For the passenger you check on twice."
+          ],
+          "motivations": [
+            "Feel responsible for vulnerable passengers."
+          ],
+          "visualDevices": [
+            "Rear-seat glance; driveway departure; driver-assist overlay."
+          ],
+          "australianContext": [
+            "School runs and family travel."
+          ],
+          "challenges": [
+            "Fear cues followed by an implausible promise of total safety."
+          ],
+          "creativeDirection": [
+            "Show care through a tiny parental habit; connect it to one verified assistance feature. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name the feature and describe assistance rather than guaranteed protection. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Safety ratings; feature limits; driver responsibility; variant."
+          ]
+        }
+      },
+      {
+        "theme": "Ownership affordability",
+        "keywords": [
+          "drive-away",
+          "finance",
+          "repayments",
+          "offer",
+          "available"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-09"
+          ],
+          "brands": [
+            "Mazda; Hyundai; Toyota dealers"
+          ],
+          "copyPatterns": [
+            "A specific cost makes purchase feel possible now"
+          ],
+          "exampleCopy": [
+            "A clearer number for the next chapter."
+          ],
+          "motivations": [
+            "Turn an intimidating purchase into a manageable decision."
+          ],
+          "visualDevices": [
+            "Large price; model packshot; finance card; dealer CTA."
+          ],
+          "australianContext": [
+            "State-based on-road costs and household budgeting."
+          ],
+          "challenges": [
+            "Huge repayment number with a nearly invisible commitment."
+          ],
+          "creativeDirection": [
+            "Make the cost structure the creative device; surface the qualifier clearly. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Identify purchase price versus repayment and all material conditions. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Deposit; term; balloon; comparison rate; fees; state; eligibility."
+          ]
+        }
+      },
+      {
+        "theme": "Warranty reassurance",
+        "keywords": [
+          "warranty",
+          "years",
+          "coverage",
+          "confidence",
+          "ownership"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-10"
+          ],
+          "brands": [
+            "Kia; Hyundai; Mitsubishi"
+          ],
+          "copyPatterns": [
+            "A quantified coverage period reduces purchase anxiety"
+          ],
+          "exampleCopy": [
+            "Think beyond the first drive."
+          ],
+          "motivations": [
+            "Avoid an expensive surprise after the excitement fades."
+          ],
+          "visualDevices": [
+            "Calendar; ownership milestones; vehicle through changing seasons."
+          ],
+          "australianContext": [
+            "Keeping vehicles through multiple life stages."
+          ],
+          "challenges": [
+            "Warranty length treated as proof that nothing can go wrong."
+          ],
+          "creativeDirection": [
+            "Turn a verified coverage term into a human timeline; make exclusions legible. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State warranty duration and conditions literally beside the fresh frame. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Warranty policy; mileage; servicing conditions; commercial use."
+          ]
+        }
+      },
+      {
+        "theme": "Australian belonging",
+        "keywords": [
+          "mates",
+          "road",
+          "weekend",
+          "local",
+          "together"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-11"
+          ],
+          "brands": [
+            "Toyota; Ford; Nissan"
+          ],
+          "copyPatterns": [
+            "The vehicle belongs inside a recognisably local way of life"
+          ],
+          "exampleCopy": [
+            "Enough room for the unofficial itinerary."
+          ],
+          "motivations": [
+            "Feel part of a familiar community."
+          ],
+          "visualDevices": [
+            "Footy gear; roadside bakery; friends; local sporting ground."
+          ],
+          "australianContext": [
+            "Informal plans and sport as social glue."
+          ],
+          "challenges": [
+            "Token slang and a landscape standing in for local understanding."
+          ],
+          "creativeDirection": [
+            "Use one precise local social behaviour; avoid performing an exaggerated Australian accent. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Preserve vehicle role and passenger or storage benefit. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Seating; cargo dimensions; location permissions; talent context."
+          ]
+        }
+      },
+      {
+        "theme": "Technology as ease",
+        "keywords": [
+          "connected",
+          "intuitive",
+          "smart",
+          "assist",
+          "control"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "AUTOMOTIVE-12"
+          ],
+          "brands": [
+            "BYD; Hyundai; Kia; Tesla"
+          ],
+          "copyPatterns": [
+            "Sophisticated technology simplifies an annoying small task"
+          ],
+          "exampleCopy": [
+            "One less thing before you leave."
+          ],
+          "motivations": [
+            "Gain convenience without feeling technically outmatched."
+          ],
+          "visualDevices": [
+            "Phone-to-car transition; screen close-up; task before/after."
+          ],
+          "australianContext": [
+            "Busy households and varied digital confidence."
+          ],
+          "challenges": [
+            "Screens shown as proof of benefit without any real task."
+          ],
+          "creativeDirection": [
+            "Explain one verified function through a small before-and-after behaviour. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name the function; separate capability from marketing metaphor. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Compatibility; subscriptions; feature availability; operating limits."
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "banking",
+    "name": "Banking",
+    "latestMonth": "2026-10",
+    "source": "illustrative",
+    "sampleData": true,
+    "patterns": [
+      {
+        "theme": "Home ownership progress",
+        "keywords": [
+          "home",
+          "first",
+          "deposit",
+          "loan",
+          "next step",
+          "together"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-01"
+          ],
+          "brands": [
+            "CommBank; Westpac; NAB; ANZ"
+          ],
+          "copyPatterns": [
+            "A distant goal becomes a sequence the bank can help navigate"
+          ],
+          "exampleCopy": [
+            "Give the front door a next step."
+          ],
+          "motivations": [
+            "Feel that a large life decision is manageable."
+          ],
+          "visualDevices": [
+            "Keys; moving box; ordinary home; advisor; progress illustration."
+          ],
+          "australianContext": [
+            "High housing costs and varied buyer situations."
+          ],
+          "challenges": [
+            "Keys and happy couples compressing a difficult process into a fantasy."
+          ],
+          "creativeDirection": [
+            "Make one real home-buying uncertainty the story; express help through a concrete service. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Say home loan; distinguish education; application and approval. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Eligibility; fees; rate; approval conditions; actual services."
+          ]
+        }
+      },
+      {
+        "theme": "Savings motivation",
+        "keywords": [
+          "save",
+          "goal",
+          "interest",
+          "grow",
+          "balance",
+          "bonus"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-02"
+          ],
+          "brands": [
+            "ING; Macquarie; NAB; CommBank"
+          ],
+          "copyPatterns": [
+            "A savings habit becomes visible progress"
+          ],
+          "exampleCopy": [
+            "A little further from just thinking about it."
+          ],
+          "motivations": [
+            "Feel rewarded for patient financial behaviour."
+          ],
+          "visualDevices": [
+            "Goal label; app balance; jar metaphor; milestone reveal."
+          ],
+          "australianContext": [
+            "Competing household goals and cost pressure."
+          ],
+          "challenges": [
+            "Growing plants or coins implying effortless guaranteed gains."
+          ],
+          "creativeDirection": [
+            "Find an unexpected image for a verified saving mechanism; retain its conditions. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name savings account and distinguish base from conditional bonus rate. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Rate date; balance cap; bonus criteria; withdrawal conditions; fees."
+          ]
+        }
+      },
+      {
+        "theme": "Switching and refinance",
+        "keywords": [
+          "switch",
+          "compare",
+          "refinance",
+          "repayments",
+          "review"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-03"
+          ],
+          "brands": [
+            "Westpac; NAB; ANZ; CommBank"
+          ],
+          "copyPatterns": [
+            "A review may improve the fit of the existing loan"
+          ],
+          "exampleCopy": [
+            "Give your loan a second look."
+          ],
+          "motivations": [
+            "Avoid feeling stuck with a costly old decision."
+          ],
+          "visualDevices": [
+            "Loan document; comparison card; household discussion; advisor."
+          ],
+          "australianContext": [
+            "Mortgage repayment sensitivity."
+          ],
+          "challenges": [
+            "Universal savings promises and unexplained headline rates."
+          ],
+          "creativeDirection": [
+            "Frame review as a fresh question rather than an assumed better deal. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Say refinance; state whose circumstances determine any benefit. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Comparison basis; exit fees; application costs; eligibility; rate."
+          ]
+        }
+      },
+      {
+        "theme": "Digital control",
+        "keywords": [
+          "app",
+          "track",
+          "manage",
+          "easy",
+          "control",
+          "spending"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-04"
+          ],
+          "brands": [
+            "CommBank; ANZ; NAB; Westpac"
+          ],
+          "copyPatterns": [
+            "The app makes an invisible money pattern understandable"
+          ],
+          "exampleCopy": [
+            "See the month before it surprises you."
+          ],
+          "motivations": [
+            "Reduce everyday financial uncertainty."
+          ],
+          "visualDevices": [
+            "Phone close-up; category view; notification; spending timeline."
+          ],
+          "australianContext": [
+            "Digital banking across varied financial literacy."
+          ],
+          "challenges": [
+            "Floating app screens with no concrete user problem."
+          ],
+          "creativeDirection": [
+            "Translate one real app function into an everyday moment of clarity. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name the exact feature and its limits; do not imply financial advice. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Feature availability; account types; data timing; compatible devices."
+          ]
+        }
+      },
+      {
+        "theme": "Scam vigilance and trust",
+        "keywords": [
+          "secure",
+          "alert",
+          "scam",
+          "check",
+          "protect",
+          "suspicious"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-05"
+          ],
+          "brands": [
+            "CommBank; Westpac; NAB; ANZ"
+          ],
+          "copyPatterns": [
+            "A pause or feature helps customers identify a risk"
+          ],
+          "exampleCopy": [
+            "A useful pause before the wrong tap."
+          ],
+          "motivations": [
+            "Feel capable of handling uncertainty and deception."
+          ],
+          "visualDevices": [
+            "Message screenshot; interrupted tap; clear check steps; reassurance."
+          ],
+          "australianContext": [
+            "Convincing payment and impersonation scams."
+          ],
+          "challenges": [
+            "Security language sounding like an absolute guarantee."
+          ],
+          "creativeDirection": [
+            "Make a verification habit memorable while explaining one genuine support feature. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep scam-check action literal; distinguish help from guaranteed prevention. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Actual security feature; reimbursement conditions; support pathway."
+          ]
+        }
+      },
+      {
+        "theme": "Business as lived work",
+        "keywords": [
+          "business",
+          "cash flow",
+          "grow",
+          "owners",
+          "support",
+          "next"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-06"
+          ],
+          "brands": [
+            "NAB; Westpac; CommBank; ANZ"
+          ],
+          "copyPatterns": [
+            "Financial help connects to the real work of running a business"
+          ],
+          "exampleCopy": [
+            "Behind every opening time is an owner."
+          ],
+          "motivations": [
+            "Feel understood as a person carrying responsibility."
+          ],
+          "visualDevices": [
+            "Shop before opening; workshop; invoices; owner portrait."
+          ],
+          "australianContext": [
+            "Small businesses with uneven cash flow and long working days."
+          ],
+          "challenges": [
+            "Generic ambitious-founder portraits without a banking problem."
+          ],
+          "creativeDirection": [
+            "Make one unglamorous operational decision heroic; connect it to a real service. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name business banking product and actual use case. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Product suitability; limits; fees; lending terms; service availability."
+          ]
+        }
+      },
+      {
+        "theme": "Human help",
+        "keywords": [
+          "talk",
+          "support",
+          "help",
+          "local",
+          "together",
+          "listen"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-07"
+          ],
+          "brands": [
+            "Westpac; CommBank; NAB"
+          ],
+          "copyPatterns": [
+            "A person offers clarity at an uncertain moment"
+          ],
+          "exampleCopy": [
+            "Bring the question you have been avoiding."
+          ],
+          "motivations": [
+            "Ask for help without embarrassment."
+          ],
+          "visualDevices": [
+            "Advisor conversation; relatable question; calm setting; clear answer."
+          ],
+          "australianContext": [
+            "Varied confidence and access to financial support."
+          ],
+          "challenges": [
+            "Smiling advisor as a substitute for a defined service."
+          ],
+          "creativeDirection": [
+            "Make a real customer question the hook; show what help actually consists of. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Identify banking service and access channel literally. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Hours; booking; branch access; service scope; fees."
+          ]
+        }
+      },
+      {
+        "theme": "Everyday account simplicity",
+        "keywords": [
+          "simple",
+          "fees",
+          "everyday",
+          "spend",
+          "account",
+          "easy"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-08"
+          ],
+          "brands": [
+            "ING; Macquarie; Up"
+          ],
+          "copyPatterns": [
+            "Account mechanics remove a recurring irritation"
+          ],
+          "exampleCopy": [
+            "Less account admin. More actual life."
+          ],
+          "motivations": [
+            "Avoid friction in ordinary financial tasks."
+          ],
+          "visualDevices": [
+            "Tap payment; fees card; app task; brief everyday vignette."
+          ],
+          "australianContext": [
+            "Routine payments and practical comparison shopping."
+          ],
+          "challenges": [
+            "Easy and fee-free language swallowing exceptions."
+          ],
+          "creativeDirection": [
+            "Turn one verified fee or task benefit into a recognisable small liberation. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Say transaction account; qualify fee scope or waived conditions. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Fees; minimum activity; overseas charges; ATM policy; eligibility."
+          ]
+        }
+      },
+      {
+        "theme": "Life-stage transition",
+        "keywords": [
+          "next",
+          "change",
+          "move",
+          "start",
+          "plans",
+          "future"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-09"
+          ],
+          "brands": [
+            "ANZ; Westpac; CommBank; NAB"
+          ],
+          "copyPatterns": [
+            "A change in life creates a reason to review banking"
+          ],
+          "exampleCopy": [
+            "New chapter. Same need for clarity."
+          ],
+          "motivations": [
+            "Maintain control while routines and responsibilities change."
+          ],
+          "visualDevices": [
+            "Move; new job; family change; checklist; quiet consultation."
+          ],
+          "australianContext": [
+            "Different household forms and uneven life trajectories."
+          ],
+          "challenges": [
+            "Perfect linear life stages that exclude real complications."
+          ],
+          "creativeDirection": [
+            "Choose one overlooked transition and articulate a concrete banking job within it. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep product category and transition relevance clear. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Actual products; access; fees; eligibility; advice boundaries."
+          ]
+        }
+      },
+      {
+        "theme": "Community belonging",
+        "keywords": [
+          "local",
+          "community",
+          "together",
+          "support",
+          "people",
+          "Australia"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-10"
+          ],
+          "brands": [
+            "CommBank; Westpac; NAB; ANZ"
+          ],
+          "copyPatterns": [
+            "Institutional scale is made tangible through local participation"
+          ],
+          "exampleCopy": [
+            "A local story worth turning up for."
+          ],
+          "motivations": [
+            "Trust an institution that appears present in ordinary life."
+          ],
+          "visualDevices": [
+            "Clubhouse; local organisation; volunteers; regional portrait."
+          ],
+          "australianContext": [
+            "Sport; volunteering; regional identity."
+          ],
+          "challenges": [
+            "Community sentiment masking a vague contribution."
+          ],
+          "creativeDirection": [
+            "Centre one specific supported action and what it enables; avoid borrowed moral authority. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name bank and precisely described community activity. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Actual funding; partners; permissions; outcomes; campaign scope."
+          ]
+        }
+      },
+      {
+        "theme": "Rewards and points",
+        "keywords": [
+          "points",
+          "rewards",
+          "eligible",
+          "earn",
+          "redeem",
+          "bonus"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-11"
+          ],
+          "brands": [
+            "CommBank; Westpac; ANZ; NAB"
+          ],
+          "copyPatterns": [
+            "Spending or joining creates access to a valued reward"
+          ],
+          "exampleCopy": [
+            "A clearer route from everyday to away."
+          ],
+          "motivations": [
+            "Feel ordinary spending contributes to a desired experience."
+          ],
+          "visualDevices": [
+            "Card; reward illustration; destination; redemption step."
+          ],
+          "australianContext": [
+            "Travel aspirations and loyalty-program familiarity."
+          ],
+          "challenges": [
+            "Dream-trip imagery concealing fees; thresholds and availability."
+          ],
+          "creativeDirection": [
+            "Make the real earning mechanism legible through a fresh journey metaphor. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Say credit card when relevant; retain earning and eligibility terms. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Fees; interest; minimum spend; bonus terms; points value; redemption limits."
+          ]
+        }
+      },
+      {
+        "theme": "Money confidence without shame",
+        "keywords": [
+          "habits",
+          "budget",
+          "learn",
+          "plan",
+          "small steps",
+          "confidence"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BANKING-12"
+          ],
+          "brands": [
+            "Up; ING; major-bank education content"
+          ],
+          "copyPatterns": [
+            "A small understandable action builds a feeling of competence"
+          ],
+          "exampleCopy": [
+            "Start with the number you can face."
+          ],
+          "motivations": [
+            "Re-engage with money after avoidance or embarrassment."
+          ],
+          "visualDevices": [
+            "Plain-language explainer; budget view; candid question; small action."
+          ],
+          "australianContext": [
+            "Different incomes; financial pressures; knowledge levels."
+          ],
+          "challenges": [
+            "Motivational language implying mindset can solve structural hardship."
+          ],
+          "creativeDirection": [
+            "Make one practical action inviting without blaming the person or promising prosperity. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep educational action separate from personal financial advice. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Education accuracy; product references; support referrals; advice scope."
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "beauty",
+    "name": "Beauty",
+    "latestMonth": "2026-10",
+    "source": "illustrative",
+    "sampleData": true,
+    "patterns": [
+      {
+        "theme": "Visible skin improvement",
+        "keywords": [
+          "glow",
+          "smooth",
+          "brighter",
+          "radiant",
+          "results"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-01"
+          ],
+          "brands": [
+            "L’Oreal Paris; Olay; Garnier"
+          ],
+          "copyPatterns": [
+            "A visible concern leads to a named product benefit"
+          ],
+          "exampleCopy": [
+            "Let the light find you."
+          ],
+          "motivations": [
+            "Look rested and feel more comfortable being seen."
+          ],
+          "visualDevices": [
+            "Face close-up; directional light; skin texture; product reveal."
+          ],
+          "australianContext": [
+            "Everyday routines and varied skin tones."
+          ],
+          "challenges": [
+            "Glow as a universal benefit with no defined mechanism."
+          ],
+          "creativeDirection": [
+            "Express one substantiated cosmetic benefit using an unexpected lighting or daily-life frame. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep product type; benefit; timeframe literal when claimed. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Clinical basis; timeframe; population; retouching; product identity."
+          ]
+        }
+      },
+      {
+        "theme": "Expert-led reassurance",
+        "keywords": [
+          "barrier",
+          "tested",
+          "dermatologist",
+          "sensitive",
+          "care"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-02"
+          ],
+          "brands": [
+            "La Roche-Posay; CeraVe; Olay"
+          ],
+          "copyPatterns": [
+            "Scientific language turns uncertainty into a routine"
+          ],
+          "exampleCopy": [
+            "A quieter conversation with your skin."
+          ],
+          "motivations": [
+            "Reduce fear of choosing the wrong treatment or routine."
+          ],
+          "visualDevices": [
+            "White background; ingredient graphic; expert explanation; bathroom shelf."
+          ],
+          "australianContext": [
+            "A mix of pharmacy shopping and beauty discovery."
+          ],
+          "challenges": [
+            "Lab coat aesthetics substituted for product evidence."
+          ],
+          "creativeDirection": [
+            "Make the science understandable through a familiar system rather than extra clinical jargon. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name cosmetic function; do not imply treatment of disease. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Expert endorsement; formulation; testing; cosmetic versus therapeutic status."
+          ]
+        }
+      },
+      {
+        "theme": "Hero ingredient literacy",
+        "keywords": [
+          "vitamin C",
+          "niacinamide",
+          "hyaluronic",
+          "formula",
+          "serum"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-03"
+          ],
+          "brands": [
+            "Garnier; L’Oreal Paris; The Ordinary"
+          ],
+          "copyPatterns": [
+            "Ingredient plus concentration becomes a shorthand for efficacy"
+          ],
+          "exampleCopy": [
+            "Know what is doing the work."
+          ],
+          "motivations": [
+            "Feel informed rather than sold to."
+          ],
+          "visualDevices": [
+            "Dropper; liquid texture; ingredient name; simple routine card."
+          ],
+          "australianContext": [
+            "Ingredient-conscious comparison shopping."
+          ],
+          "challenges": [
+            "Ingredient bingo that obscures the finished product benefit."
+          ],
+          "creativeDirection": [
+            "Give the verified ingredient a surprising but accurate role in an everyday explanation. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Preserve ingredient; concentration if known; finished-product claim scope. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Exact formulation; concentration; compatibility; substantiation."
+          ]
+        }
+      },
+      {
+        "theme": "Effortless transformation",
+        "keywords": [
+          "easy",
+          "instant",
+          "lift",
+          "lashes",
+          "finish",
+          "swipe"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-04"
+          ],
+          "brands": [
+            "Maybelline; L’Oreal Paris; MCoBeauty"
+          ],
+          "copyPatterns": [
+            "One application creates a striking visible change"
+          ],
+          "exampleCopy": [
+            "A small move with main-character energy."
+          ],
+          "motivations": [
+            "Feel put together quickly."
+          ],
+          "visualDevices": [
+            "Split face; application close-up; brush movement; immediate reveal."
+          ],
+          "australianContext": [
+            "Workdays followed by social plans."
+          ],
+          "challenges": [
+            "Instant makeover with unrealistic lashes or altered footage."
+          ],
+          "creativeDirection": [
+            "Make one real application step a memorable visual event; keep the result plausible. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep makeup category and the specific visible effect explicit. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Application method; actual results; extensions; filters; wear claim."
+          ]
+        }
+      },
+      {
+        "theme": "Discovery and curation",
+        "keywords": [
+          "new",
+          "edit",
+          "favourites",
+          "find",
+          "routine",
+          "trending"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-05"
+          ],
+          "brands": [
+            "MECCA; Sephora; Adore Beauty"
+          ],
+          "copyPatterns": [
+            "The retailer helps navigate an overwhelming beauty universe"
+          ],
+          "exampleCopy": [
+            "Your next shelf favourite starts here."
+          ],
+          "motivations": [
+            "Find something worthwhile without researching everything."
+          ],
+          "visualDevices": [
+            "Curated shelf; product carousel; staff picks; unboxing."
+          ],
+          "australianContext": [
+            "Retailer trust alongside online discovery."
+          ],
+          "challenges": [
+            "A wall of launches that makes every product feel equally urgent."
+          ],
+          "creativeDirection": [
+            "Organise discovery around one human situation rather than a generic best-of list. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Identify retailer and the relevant product category or routine step. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Stock; selection; paid partnerships; actual product suitability."
+          ]
+        }
+      },
+      {
+        "theme": "Accessible indulgence",
+        "keywords": [
+          "value",
+          "everyday",
+          "beauty",
+          "treat",
+          "affordable"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-06"
+          ],
+          "brands": [
+            "MCoBeauty; Maybelline; Garnier"
+          ],
+          "copyPatterns": [
+            "A small spend delivers a premium-feeling moment"
+          ],
+          "exampleCopy": [
+            "A little luxury in the ordinary bits."
+          ],
+          "motivations": [
+            "Enjoy beauty without feeling financially irresponsible."
+          ],
+          "visualDevices": [
+            "Handbag product; bathroom ritual; price-led still; clean packshot."
+          ],
+          "australianContext": [
+            "Cost-conscious discretionary purchases."
+          ],
+          "challenges": [
+            "Luxury language or dupe comparisons unsupported by evidence."
+          ],
+          "creativeDirection": [
+            "Make affordable pleasure emotionally specific without suggesting an unproved premium equivalence. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Retain product category and verified price when used. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Current price; pack size; comparison basis; sale period."
+          ]
+        }
+      },
+      {
+        "theme": "Individual expression",
+        "keywords": [
+          "your shade",
+          "your way",
+          "colour",
+          "bold",
+          "finish"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-07"
+          ],
+          "brands": [
+            "Maybelline; Fenty Beauty; MECCA"
+          ],
+          "copyPatterns": [
+            "Choice gives the wearer control over self-expression"
+          ],
+          "exampleCopy": [
+            "A shade for the version of you today."
+          ],
+          "motivations": [
+            "Try an identity without committing to a single look."
+          ],
+          "visualDevices": [
+            "Different looks; diverse faces; colour swatches; creator transitions."
+          ],
+          "australianContext": [
+            "Varied complexions; occasions; personal aesthetics."
+          ],
+          "challenges": [
+            "Inclusion asserted through casting while product fit remains unclear."
+          ],
+          "creativeDirection": [
+            "Use a specific occasion or mood to organise choice; show actual relevant shades. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State product and shade or finish; keep fit information retrievable. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Shade range; availability; representation; accurate swatch lighting."
+          ]
+        }
+      },
+      {
+        "theme": "Sun care as daily habit",
+        "keywords": [
+          "SPF",
+          "everyday",
+          "protection",
+          "reapply",
+          "sunscreen"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-08"
+          ],
+          "brands": [
+            "La Roche-Posay; Cancer Council; Ultra Violette"
+          ],
+          "copyPatterns": [
+            "A responsible habit becomes compatible with a desirable routine"
+          ],
+          "exampleCopy": [
+            "Make room for the sun-care step."
+          ],
+          "motivations": [
+            "Enjoy life outdoors while taking sensible care."
+          ],
+          "visualDevices": [
+            "Morning routine; outdoor transition; texture demonstration; application."
+          ],
+          "australianContext": [
+            "Outdoor lifestyles and strong sun-protection awareness."
+          ],
+          "challenges": [
+            "Weightless glow messaging that sidelines correct use."
+          ],
+          "creativeDirection": [
+            "Make correct application a distinctive ritual without minimising exposure or reapplication. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Say sunscreen; preserve verified SPF and directions. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Australian product status; SPF evidence; label directions; protection limits."
+          ]
+        }
+      },
+      {
+        "theme": "Ageing and agency",
+        "keywords": [
+          "firm",
+          "smooth",
+          "renewal",
+          "confidence",
+          "visible lines"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-09"
+          ],
+          "brands": [
+            "Olay; L’Oreal Paris"
+          ],
+          "copyPatterns": [
+            "A cosmetic concern meets control and self-assurance"
+          ],
+          "exampleCopy": [
+            "Keep the stories. Choose your routine."
+          ],
+          "motivations": [
+            "Feel agency without being shamed for ageing."
+          ],
+          "visualDevices": [
+            "Mature skin; texture; mirror moment; confident portrait."
+          ],
+          "australianContext": [
+            "Age diversity and changing expectations of beauty language."
+          ],
+          "challenges": [
+            "Treating age as a defect that needs erasing."
+          ],
+          "creativeDirection": [
+            "Replace age panic with an unexpected celebration of experience plus a precise cosmetic benefit. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep benefit modest; distinguish appearance from biological reversal. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Claims evidence; timeframe; trial population; retouching."
+          ]
+        }
+      },
+      {
+        "theme": "Hair transformation",
+        "keywords": [
+          "shine",
+          "repair",
+          "smooth",
+          "colour",
+          "strength",
+          "frizz"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-10"
+          ],
+          "brands": [
+            "Garnier; L’Oreal Paris; Pantene"
+          ],
+          "copyPatterns": [
+            "A hair frustration becomes a visible movement or finish"
+          ],
+          "exampleCopy": [
+            "Let your hair finish the sentence."
+          ],
+          "motivations": [
+            "Feel attractive and ready to enter the room."
+          ],
+          "visualDevices": [
+            "Hair swish; glossy strands; wash routine; split-screen texture."
+          ],
+          "australianContext": [
+            "Humidity; beach exposure; diverse hair types."
+          ],
+          "challenges": [
+            "Perfect studio hair with no realistic use context."
+          ],
+          "creativeDirection": [
+            "Give a verified hair benefit a tactile metaphor connected to a recognisable day. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name haircare or colour category and exact benefit. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Repair claim meaning; hair type; result basis; treatment requirements."
+          ]
+        }
+      },
+      {
+        "theme": "Creator ritual and social proof",
+        "keywords": [
+          "get ready",
+          "routine",
+          "obsessed",
+          "favourite",
+          "try"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-11"
+          ],
+          "brands": [
+            "MECCA; Sephora; Maybelline"
+          ],
+          "copyPatterns": [
+            "A relatable person demonstrates a product inside their own life"
+          ],
+          "exampleCopy": [
+            "The step I make time for."
+          ],
+          "motivations": [
+            "Borrow practical confidence from another person."
+          ],
+          "visualDevices": [
+            "Bathroom talk; handheld tutorial; captions; candid application."
+          ],
+          "australianContext": [
+            "Creator discovery and peer recommendations."
+          ],
+          "challenges": [
+            "Scripted enthusiasm disguised as spontaneous testimony."
+          ],
+          "creativeDirection": [
+            "Build an honest demonstration around a question a real buyer would ask. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Pair distinctive phrasing with product name and demonstrated function. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Genuine testimony; sponsorship; usage history; typicality of results."
+          ]
+        }
+      },
+      {
+        "theme": "Responsible beauty choices",
+        "keywords": [
+          "refill",
+          "packaging",
+          "ingredients",
+          "conscious",
+          "recycle"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "BEAUTY-12"
+          ],
+          "brands": [
+            "Garnier; MECCA; Adore Beauty"
+          ],
+          "copyPatterns": [
+            "A tangible choice becomes part of feeling good about the routine"
+          ],
+          "exampleCopy": [
+            "A routine with something to think about."
+          ],
+          "motivations": [
+            "Reduce the uneasy trade-off between pleasure and responsibility."
+          ],
+          "visualDevices": [
+            "Refill action; material close-up; pack comparison; sorting step."
+          ],
+          "australianContext": [
+            "Local disposal pathways and scepticism about vague green claims."
+          ],
+          "challenges": [
+            "Leaf graphics carrying an undefined planet-friendly promise."
+          ],
+          "creativeDirection": [
+            "Make one verified packaging action concrete; avoid claiming an overall environmental win. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name product and specific material or refill fact literally. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Lifecycle scope; Australian recycling access; certifications; exclusions."
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "consumer-electronics",
+    "name": "Consumer Electronics",
+    "latestMonth": "2026-10",
+    "source": "illustrative",
+    "sampleData": true,
+    "patterns": [
+      {
+        "theme": "Camera as personal storytelling",
+        "keywords": [
+          "capture",
+          "detail",
+          "night",
+          "portrait",
+          "moments",
+          "camera"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-01"
+          ],
+          "brands": [
+            "Apple; Samsung; Google Pixel"
+          ],
+          "copyPatterns": [
+            "A feature improves a moment the owner wants to keep"
+          ],
+          "exampleCopy": [
+            "Keep the part you almost missed."
+          ],
+          "motivations": [
+            "Preserve meaningful moments and feel creatively capable."
+          ],
+          "visualDevices": [
+            "Photo reveal; phone view; low-light scene; everyday subject."
+          ],
+          "australianContext": [
+            "Family moments; gigs; travel; outdoor life."
+          ],
+          "challenges": [
+            "Beautiful output shown without the conditions that produced it."
+          ],
+          "creativeDirection": [
+            "Make one real camera capability serve an overlooked ordinary subject. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name device and exact camera capability; distinguish output from promise. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Shooting conditions; editing; model; accessories; feature availability."
+          ]
+        }
+      },
+      {
+        "theme": "AI as useful assistance",
+        "keywords": [
+          "AI",
+          "help",
+          "edit",
+          "find",
+          "translate",
+          "simplify"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-02"
+          ],
+          "brands": [
+            "Samsung; Google Pixel; Apple"
+          ],
+          "copyPatterns": [
+            "An unfamiliar technology handles a recognisable small task"
+          ],
+          "exampleCopy": [
+            "Give the fiddly bit some help."
+          ],
+          "motivations": [
+            "Save effort without needing to understand the technology."
+          ],
+          "visualDevices": [
+            "Task demonstration; before/after screen; captioned workflow."
+          ],
+          "australianContext": [
+            "Practical usefulness amid scepticism and novelty."
+          ],
+          "challenges": [
+            "AI label used as a universal magic wand."
+          ],
+          "creativeDirection": [
+            "Find a humble real task and explain the verified assistance with an unexpected human frame. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Use AI feature name and a literal task description. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Language support; connectivity; subscriptions; accuracy limits; rollout."
+          ]
+        }
+      },
+      {
+        "theme": "Premium design and touch",
+        "keywords": [
+          "thin",
+          "crafted",
+          "finish",
+          "colour",
+          "feel",
+          "design"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-03"
+          ],
+          "brands": [
+            "Samsung; Apple"
+          ],
+          "copyPatterns": [
+            "An object feels desirable before its specification is read"
+          ],
+          "exampleCopy": [
+            "The detail your hand notices first."
+          ],
+          "motivations": [
+            "Own something that expresses taste in daily use."
+          ],
+          "visualDevices": [
+            "Macro edge; material texture; colour; hand interaction."
+          ],
+          "australianContext": [
+            "Premium purchases requiring a practical justification."
+          ],
+          "challenges": [
+            "Slow product rotation interchangeable across devices."
+          ],
+          "creativeDirection": [
+            "Give a verified physical detail a human sensory consequence rather than another luxury adjective. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Retain device category and measurable or concrete detail. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Materials; dimensions; accessories; rendering accuracy."
+          ]
+        }
+      },
+      {
+        "theme": "Switching without disruption",
+        "keywords": [
+          "switch",
+          "transfer",
+          "familiar",
+          "easy",
+          "move",
+          "setup"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-04"
+          ],
+          "brands": [
+            "Apple; Samsung; Google Pixel"
+          ],
+          "copyPatterns": [
+            "Change the device while keeping the personal world inside it"
+          ],
+          "exampleCopy": [
+            "A new phone. Your life comes with it."
+          ],
+          "motivations": [
+            "Reduce anxiety about losing data or learning everything again."
+          ],
+          "visualDevices": [
+            "Transfer screen; familiar photos; contacts; old-to-new handover."
+          ],
+          "australianContext": [
+            "Phone replacement and household platform differences."
+          ],
+          "challenges": [
+            "Frictionless-switch promise ignoring unsupported data or services."
+          ],
+          "creativeDirection": [
+            "Make one genuinely transferable part of life the central metaphor. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State transfer mechanism and supported data types literally. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Supported platforms; apps; data exclusions; setup requirements."
+          ]
+        }
+      },
+      {
+        "theme": "Connected home or ecosystem",
+        "keywords": [
+          "connect",
+          "together",
+          "seamless",
+          "devices",
+          "control",
+          "sync"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-05"
+          ],
+          "brands": [
+            "Apple; Samsung; Sony; LG"
+          ],
+          "copyPatterns": [
+            "Devices cooperate so the owner repeats fewer tasks"
+          ],
+          "exampleCopy": [
+            "Let the devices finish the handover."
+          ],
+          "motivations": [
+            "Reduce small coordination frustrations."
+          ],
+          "visualDevices": [
+            "Phone-to-TV handoff; earbuds; home control; linked screen."
+          ],
+          "australianContext": [
+            "Mixed-device households and shared spaces."
+          ],
+          "challenges": [
+            "Seamless language hiding compatibility requirements."
+          ],
+          "creativeDirection": [
+            "Dramatise one verified handoff through a recognisable household interruption. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name devices; action; compatibility requirements. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Protocol support; accounts; subscriptions; network; device versions."
+          ]
+        }
+      },
+      {
+        "theme": "Bigger entertainment experience",
+        "keywords": [
+          "cinematic",
+          "picture",
+          "sound",
+          "immersive",
+          "screen",
+          "detail"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-06"
+          ],
+          "brands": [
+            "LG; Samsung; Sony"
+          ],
+          "copyPatterns": [
+            "A home screen makes an ordinary evening feel more absorbing"
+          ],
+          "exampleCopy": [
+            "Give tonight a bigger room."
+          ],
+          "motivations": [
+            "Make home entertainment feel like an occasion."
+          ],
+          "visualDevices": [
+            "Dark room; vivid screen; sofa reaction; ambient lighting."
+          ],
+          "australianContext": [
+            "Sport; streaming; family viewing."
+          ],
+          "challenges": [
+            "Glowing TV visuals standing in for an undefined upgrade."
+          ],
+          "creativeDirection": [
+            "Express one verified picture or sound benefit through a precise viewing moment. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Identify TV or audio category and actual supported feature. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Display mode; source content; resolution; audio setup; model."
+          ]
+        }
+      },
+      {
+        "theme": "Personal audio and focus",
+        "keywords": [
+          "listen",
+          "quiet",
+          "noise",
+          "focus",
+          "sound",
+          "escape"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-07"
+          ],
+          "brands": [
+            "Sony; Bose; Apple; Samsung"
+          ],
+          "copyPatterns": [
+            "Sound or isolation creates a controllable personal space"
+          ],
+          "exampleCopy": [
+            "A small room you can wear."
+          ],
+          "motivations": [
+            "Regain focus or personal time in a shared environment."
+          ],
+          "visualDevices": [
+            "Commute; open office; headphones close-up; ambient-to-music transition."
+          ],
+          "australianContext": [
+            "Shared offices; public transport; travel."
+          ],
+          "challenges": [
+            "Silence metaphor mistaken for elimination of all noise."
+          ],
+          "creativeDirection": [
+            "Make the benefit a vivid personal-space idea while preserving noise-control limits. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name headphones or earbuds; state relevant function literally. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Noise-cancellation limits; fit; battery; compatibility; test basis."
+          ]
+        }
+      },
+      {
+        "theme": "Wearables and small progress",
+        "keywords": [
+          "move",
+          "track",
+          "goals",
+          "sleep",
+          "activity",
+          "everyday"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-08"
+          ],
+          "brands": [
+            "Apple; Samsung; Garmin"
+          ],
+          "copyPatterns": [
+            "A visible measure supports a manageable habit"
+          ],
+          "exampleCopy": [
+            "A little evidence that you showed up."
+          ],
+          "motivations": [
+            "Feel encouraged by progress rather than judged by perfection."
+          ],
+          "visualDevices": [
+            "Wrist view; gentle milestone; real walk; progress animation."
+          ],
+          "australianContext": [
+            "Everyday activity alongside sport and wellness interest."
+          ],
+          "challenges": [
+            "Fitness aspiration overstating accuracy or health outcomes."
+          ],
+          "creativeDirection": [
+            "Turn one real tracking function into a humane moment of recognition. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Say wearable and specify measurement rather than diagnosis. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Sensor accuracy; model; health-function status; population; battery."
+          ]
+        }
+      },
+      {
+        "theme": "Battery and practical endurance",
+        "keywords": [
+          "battery",
+          "charge",
+          "day",
+          "power",
+          "ready",
+          "lasting"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-09"
+          ],
+          "brands": [
+            "Apple; Samsung; Google Pixel"
+          ],
+          "copyPatterns": [
+            "A practical feature reduces the need to think about the device"
+          ],
+          "exampleCopy": [
+            "One less percentage to think about."
+          ],
+          "motivations": [
+            "Avoid interruption and low-level daily worry."
+          ],
+          "visualDevices": [
+            "End-of-day scene; battery indicator; charger; task continuity."
+          ],
+          "australianContext": [
+            "Long days away from a convenient outlet."
+          ],
+          "challenges": [
+            "All-day claim presented as independent of usage."
+          ],
+          "creativeDirection": [
+            "Make a verified endurance fact an unexpected story of attention reclaimed. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Retain device and qualified battery measure beside the metaphor. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Test conditions; usage; network; age; charging hardware."
+          ]
+        }
+      },
+      {
+        "theme": "Trade-in and upgrade value",
+        "keywords": [
+          "trade-in",
+          "upgrade",
+          "save",
+          "eligible",
+          "offer",
+          "value"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-10"
+          ],
+          "brands": [
+            "Samsung; Apple; JB Hi-Fi; Harvey Norman"
+          ],
+          "copyPatterns": [
+            "The existing device helps make the next purchase possible"
+          ],
+          "exampleCopy": [
+            "Your old device has one more job."
+          ],
+          "motivations": [
+            "Justify replacement and reduce purchase friction."
+          ],
+          "visualDevices": [
+            "Old/new pairing; value card; exchange step; retailer CTA."
+          ],
+          "australianContext": [
+            "Cost-aware upgrade cycles."
+          ],
+          "challenges": [
+            "Maximum trade-in value treated as the typical result."
+          ],
+          "creativeDirection": [
+            "Give the old device a surprising final role while clearly explaining the real exchange mechanism. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State trade-in eligibility and conditional valuation literally. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Device condition; valuation; retailer; dates; promotional bonus terms."
+          ]
+        }
+      },
+      {
+        "theme": "Productivity and creation",
+        "keywords": [
+          "create",
+          "work",
+          "ideas",
+          "power",
+          "portable",
+          "together"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-11"
+          ],
+          "brands": [
+            "Apple; Samsung; Microsoft Surface"
+          ],
+          "copyPatterns": [
+            "A device helps a person move from intention to output"
+          ],
+          "exampleCopy": [
+            "For the idea that needs a first version."
+          ],
+          "motivations": [
+            "Feel able to make or finish something worthwhile."
+          ],
+          "visualDevices": [
+            "Creator workflow; document-to-design transition; portable workspace."
+          ],
+          "australianContext": [
+            "Hybrid work; study; creative side projects."
+          ],
+          "challenges": [
+            "Power jargon with no demonstrated task."
+          ],
+          "creativeDirection": [
+            "Show an ordinary unfinished project made more manageable by one verified function. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name device and specific workflow or capability. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Software; performance conditions; accessory requirements; subscription."
+          ]
+        }
+      },
+      {
+        "theme": "Longevity and responsible ownership",
+        "keywords": [
+          "repair",
+          "reuse",
+          "recycled",
+          "update",
+          "longevity",
+          "care"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "CONSUMER-ELECTRONICS-12"
+          ],
+          "brands": [
+            "Apple; Samsung; electronics retailers"
+          ],
+          "copyPatterns": [
+            "A tangible lifecycle fact makes ownership feel more considered"
+          ],
+          "exampleCopy": [
+            "Think about the next life of this one."
+          ],
+          "motivations": [
+            "Reduce unease about replacing a valuable object."
+          ],
+          "visualDevices": [
+            "Repair action; material close-up; device return; long-use vignette."
+          ],
+          "australianContext": [
+            "Repair access and e-waste concerns."
+          ],
+          "challenges": [
+            "Recycled materials implying an overall sustainable product."
+          ],
+          "creativeDirection": [
+            "Make one verified lifecycle commitment concrete and bounded. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State exact material; support or repair fact; avoid a whole-product green halo. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Lifecycle evidence; material scope; repair access; updates; Australian pathways."
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "qsr",
+    "name": "QSR",
+    "latestMonth": "2026-10",
+    "source": "illustrative",
+    "sampleData": true,
+    "patterns": [
+      {
+        "theme": "Everyday value",
+        "keywords": [
+          "value",
+          "meal",
+          "deal",
+          "combo",
+          "feed",
+          "save"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-01"
+          ],
+          "brands": [
+            "McDonald’s; Hungry Jack’s; KFC"
+          ],
+          "copyPatterns": [
+            "A concrete meal answers a concrete budget problem"
+          ],
+          "exampleCopy": [
+            "Lunch with a little less maths."
+          ],
+          "motivations": [
+            "Feel fed without feeling financially squeezed."
+          ],
+          "visualDevices": [
+            "Big price; meal packshot; offer tiles; app screen."
+          ],
+          "australianContext": [
+            "Household cost pressure and frequent small purchases."
+          ],
+          "challenges": [
+            "Price shouting with food reduced to interchangeable units."
+          ],
+          "creativeDirection": [
+            "Translate a verified bundle into a recognisable lunch problem; retain price and inclusions. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Identify restaurant; meal; price and offer eligibility. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Price; participating stores; dates; portion; channels; exclusions."
+          ]
+        }
+      },
+      {
+        "theme": "Craving and sensory reward",
+        "keywords": [
+          "crispy",
+          "juicy",
+          "hot",
+          "fresh",
+          "crunch",
+          "bite"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-02"
+          ],
+          "brands": [
+            "KFC; Hungry Jack’s; McDonald’s"
+          ],
+          "copyPatterns": [
+            "Sensory detail invites an immediate imagined bite"
+          ],
+          "exampleCopy": [
+            "The conversation can wait one bite."
+          ],
+          "motivations": [
+            "Reward yourself with a small immediate pleasure."
+          ],
+          "visualDevices": [
+            "Extreme food close-up; sauce pull; crunch audio; bite reveal."
+          ],
+          "australianContext": [
+            "Snack breaks and casual indulgence."
+          ],
+          "challenges": [
+            "Glossy food shots saying tasty without a distinctive occasion."
+          ],
+          "creativeDirection": [
+            "Make one supported sensory property interrupt a familiar social moment. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep named menu item and flavour or texture clear. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Actual ingredients; serving presentation; availability; preparation claims."
+          ]
+        }
+      },
+      {
+        "theme": "Group occasion",
+        "keywords": [
+          "share",
+          "crew",
+          "together",
+          "feast",
+          "night",
+          "mates"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-03"
+          ],
+          "brands": [
+            "McDonald’s; KFC; Domino’s"
+          ],
+          "copyPatterns": [
+            "A bundle solves feeding a group"
+          ],
+          "exampleCopy": [
+            "For the group chat that became a plan."
+          ],
+          "motivations": [
+            "Make hosting or hanging out easier."
+          ],
+          "visualDevices": [
+            "Hands around food; shared table; group order; playful captions."
+          ],
+          "australianContext": [
+            "Footy nights and informal catch-ups."
+          ],
+          "challenges": [
+            "Generic friends laughing around a perfect table."
+          ],
+          "creativeDirection": [
+            "Use one recognisable group-order disagreement as the story engine. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name bundle and actual group-serving basis without promising adequacy. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Bundle contents; serving assumptions; allergens; price; availability."
+          ]
+        }
+      },
+      {
+        "theme": "Convenience and delivery",
+        "keywords": [
+          "order",
+          "delivered",
+          "app",
+          "easy",
+          "now",
+          "pickup"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-04"
+          ],
+          "brands": [
+            "Domino’s; McDonald’s; KFC"
+          ],
+          "copyPatterns": [
+            "The food arrives while life continues"
+          ],
+          "exampleCopy": [
+            "Dinner that fits around the rest of it."
+          ],
+          "motivations": [
+            "Remove a decision when energy is low."
+          ],
+          "visualDevices": [
+            "Doorbell; couch; phone order; handover; busy household."
+          ],
+          "australianContext": [
+            "Evening routines and suburban travel friction."
+          ],
+          "challenges": [
+            "Seamless arrival without fees; waiting or delivery limits."
+          ],
+          "creativeDirection": [
+            "Make ordering ease visible through one real task saved; retain the honest ordering condition. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State delivery or pickup explicitly; name restaurant. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Delivery area; fees; minimum spend; timing; actual app features."
+          ]
+        }
+      },
+      {
+        "theme": "Limited-time novelty",
+        "keywords": [
+          "new",
+          "limited",
+          "back",
+          "try",
+          "flavour",
+          "drop"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-05"
+          ],
+          "brands": [
+            "McDonald’s; KFC; Hungry Jack’s"
+          ],
+          "copyPatterns": [
+            "A temporary item gives routine customers a reason to return"
+          ],
+          "exampleCopy": [
+            "Your usual order has company."
+          ],
+          "motivations": [
+            "Get a low-stakes taste of novelty."
+          ],
+          "visualDevices": [
+            "Menu reveal; product rotation; countdown card; creator taste test."
+          ],
+          "australianContext": [
+            "Familiar routines with occasional experimentation."
+          ],
+          "challenges": [
+            "Urgency pasted onto a product with little actual news."
+          ],
+          "creativeDirection": [
+            "Frame the verified novelty as a change to a familiar ritual rather than a generic launch. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep new item name; flavour; actual availability window. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Menu details; stock; dates; geographic distribution."
+          ]
+        }
+      },
+      {
+        "theme": "App loyalty",
+        "keywords": [
+          "rewards",
+          "points",
+          "member",
+          "exclusive",
+          "app",
+          "unlock"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-06"
+          ],
+          "brands": [
+            "McDonald’s; KFC; Domino’s"
+          ],
+          "copyPatterns": [
+            "Repeat purchase earns access or a tangible benefit"
+          ],
+          "exampleCopy": [
+            "Your next order remembers you."
+          ],
+          "motivations": [
+            "Feel recognised for coming back."
+          ],
+          "visualDevices": [
+            "App walkthrough; reward reveal; member price; progress animation."
+          ],
+          "australianContext": [
+            "Phone-led ordering and deal seeking."
+          ],
+          "challenges": [
+            "Gamified excitement concealing redemption conditions."
+          ],
+          "creativeDirection": [
+            "Give one verified reward a vivid role in a routine; make earning and redemption literal. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name loyalty program and real earning or redemption action. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Program rules; expiry; eligibility; redemption value; exclusions."
+          ]
+        }
+      },
+      {
+        "theme": "Breakfast and morning rescue",
+        "keywords": [
+          "breakfast",
+          "coffee",
+          "morning",
+          "quick",
+          "start"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-07"
+          ],
+          "brands": [
+            "McDonald’s; Hungry Jack’s"
+          ],
+          "copyPatterns": [
+            "A familiar purchase makes a difficult morning manageable"
+          ],
+          "exampleCopy": [
+            "A better first decision."
+          ],
+          "motivations": [
+            "Regain composure before the day accelerates."
+          ],
+          "visualDevices": [
+            "Commuter handover; coffee steam; morning light; drive-through."
+          ],
+          "australianContext": [
+            "Commutes; school drop-offs; early work starts."
+          ],
+          "challenges": [
+            "Perfect sunrise optimism ignoring actual rushed mornings."
+          ],
+          "creativeDirection": [
+            "Find one affectionate morning failure and let the verified product play a modest rescue role. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep breakfast or coffee category and availability clear. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Serving hours; menu; price; caffeination; participating locations."
+          ]
+        }
+      },
+      {
+        "theme": "Permission to indulge",
+        "keywords": [
+          "treat",
+          "craving",
+          "cheeky",
+          "deserve",
+          "comfort"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-08"
+          ],
+          "brands": [
+            "KFC; Hungry Jack’s; Domino’s"
+          ],
+          "copyPatterns": [
+            "A small rule break becomes socially acceptable"
+          ],
+          "exampleCopy": [
+            "A tiny detour from the sensible plan."
+          ],
+          "motivations": [
+            "Enjoy pleasure without turning it into a moral debate."
+          ],
+          "visualDevices": [
+            "Playful guilty glance; food reveal; couch pause; comic cut."
+          ],
+          "australianContext": [
+            "Self-deprecating humour and informal language."
+          ],
+          "challenges": [
+            "Overworked cheeky vocabulary or shame-based indulgence."
+          ],
+          "creativeDirection": [
+            "Create affectionate comic permission tied to one occasion; avoid moralising about food. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep the actual food and reason for choosing it visible. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Audience suitability; product details; avoid unsupported health framing."
+          ]
+        }
+      },
+      {
+        "theme": "Customisation and control",
+        "keywords": [
+          "your way",
+          "choose",
+          "add",
+          "swap",
+          "favourite",
+          "order"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-09"
+          ],
+          "brands": [
+            "Hungry Jack’s; Subway; McDonald’s"
+          ],
+          "copyPatterns": [
+            "A menu becomes an expression of individual preference"
+          ],
+          "exampleCopy": [
+            "A small order of independence."
+          ],
+          "motivations": [
+            "Get exactly the kind of meal you want."
+          ],
+          "visualDevices": [
+            "Build sequence; ingredient layering; option cards; personal order."
+          ],
+          "australianContext": [
+            "Diverse tastes and mixed household preferences."
+          ],
+          "challenges": [
+            "Infinite-choice implication where the menu is constrained."
+          ],
+          "creativeDirection": [
+            "Turn one real customisation into a character-revealing moment. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name item and permitted customisation literally. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Available options; surcharges; allergens; cross-contact; location."
+          ]
+        }
+      },
+      {
+        "theme": "Local humour and cultural timing",
+        "keywords": [
+          "mates",
+          "footy",
+          "weekend",
+          "reckon",
+          "snack",
+          "feed"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-10"
+          ],
+          "brands": [
+            "McDonald’s; KFC; Hungry Jack’s"
+          ],
+          "copyPatterns": [
+            "A recognisable social moment becomes a food joke"
+          ],
+          "exampleCopy": [
+            "The unofficial half-time plan."
+          ],
+          "motivations": [
+            "Feel that a brand understands the way people actually behave."
+          ],
+          "visualDevices": [
+            "Sport-adjacent moment; deadpan reaction; colloquial captions."
+          ],
+          "australianContext": [
+            "Local sporting calendars and shared rituals."
+          ],
+          "challenges": [
+            "Forced slang that could belong to any Australian advertiser."
+          ],
+          "creativeDirection": [
+            "Build the joke around behaviour rather than an accent or a pile of slang. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Preserve menu item and purchase occasion beneath the joke. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Event rights; timing; geographic relevance; menu availability."
+          ]
+        }
+      },
+      {
+        "theme": "Familiar icon and nostalgia",
+        "keywords": [
+          "classic",
+          "favourite",
+          "back",
+          "familiar",
+          "original"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-11"
+          ],
+          "brands": [
+            "McDonald’s; KFC; Domino’s"
+          ],
+          "copyPatterns": [
+            "A familiar taste reconnects the customer with a memory"
+          ],
+          "exampleCopy": [
+            "Some plans still taste familiar."
+          ],
+          "motivations": [
+            "Recover a comforting personal association."
+          ],
+          "visualDevices": [
+            "Recognisable pack; archival-style cue; repeated ritual; warm close-up."
+          ],
+          "australianContext": [
+            "Road trips; family routines; late-night stories."
+          ],
+          "challenges": [
+            "Nostalgia substituted for a reason to buy now."
+          ],
+          "creativeDirection": [
+            "Use a precise recurring ritual; let the product remain recognisable without claiming a shared memory. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep icon or item name explicit for human and agent recognition. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Product continuity; archival rights; current recipe; availability."
+          ]
+        }
+      },
+      {
+        "theme": "Ingredient confidence",
+        "keywords": [
+          "ingredients",
+          "fresh",
+          "made",
+          "choice",
+          "prepared",
+          "quality"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "QSR-12"
+          ],
+          "brands": [
+            "Subway; Grill’d; McDonald’s"
+          ],
+          "copyPatterns": [
+            "Knowing what is in the meal reduces uncertainty"
+          ],
+          "exampleCopy": [
+            "Know the bits behind the bite."
+          ],
+          "motivations": [
+            "Make a quick meal feel like a considered choice."
+          ],
+          "visualDevices": [
+            "Preparation sequence; ingredient close-up; assembly; simple labels."
+          ],
+          "australianContext": [
+            "Convenience alongside interest in food composition."
+          ],
+          "challenges": [
+            "Fresh imagery drifting into an unsupported healthy halo."
+          ],
+          "creativeDirection": [
+            "Show one verified ingredient or preparation fact in an unusually concrete way. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Keep the claim about ingredients or preparation separate from health benefit. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Ingredient sourcing; nutritional basis; preparation; allergen facts."
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "travel",
+    "name": "Travel",
+    "latestMonth": "2026-10",
+    "source": "illustrative",
+    "sampleData": true,
+    "patterns": [
+      {
+        "theme": "Reconnection and belonging",
+        "keywords": [
+          "home",
+          "together",
+          "return",
+          "people",
+          "connection",
+          "welcome"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-01"
+          ],
+          "brands": [
+            "Qantas; Virgin Australia"
+          ],
+          "copyPatterns": [
+            "Travel closes an emotional distance"
+          ],
+          "exampleCopy": [
+            "For the person at the other end of the trip."
+          ],
+          "motivations": [
+            "Reach someone important rather than merely reach a place."
+          ],
+          "visualDevices": [
+            "Arrival embrace; airport handover; ordinary family moment."
+          ],
+          "australianContext": [
+            "Large distances; dispersed families; migration ties."
+          ],
+          "challenges": [
+            "Airport reunion as an emotional shortcut with little brand role."
+          ],
+          "creativeDirection": [
+            "Find one understated reunion behaviour; connect it to a real route or service. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name airline and route or travel service beside the emotional frame. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Route; schedule; fare; service; footage and story permissions."
+          ]
+        }
+      },
+      {
+        "theme": "Affordable escape",
+        "keywords": [
+          "sale",
+          "fares",
+          "getaway",
+          "deals",
+          "save",
+          "from"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-02"
+          ],
+          "brands": [
+            "Jetstar; Webjet; Flight Centre"
+          ],
+          "copyPatterns": [
+            "A concrete fare makes escape feel possible"
+          ],
+          "exampleCopy": [
+            "A change of scene with a number attached."
+          ],
+          "motivations": [
+            "Permit a trip without feeling reckless about cost."
+          ],
+          "visualDevices": [
+            "Large fare; destination card; search interface; limited offer."
+          ],
+          "australianContext": [
+            "Cost pressure and discretionary holiday budgeting."
+          ],
+          "challenges": [
+            "Headline fare ignoring bags; dates or limited seats."
+          ],
+          "creativeDirection": [
+            "Make the real total-cost condition part of a fresh escape idea. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Specify fare basis; route; dates and material inclusions. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Availability; taxes; baggage; booking fees; travel dates; sale terms."
+          ]
+        }
+      },
+      {
+        "theme": "Reward-led travel",
+        "keywords": [
+          "points",
+          "rewards",
+          "redeem",
+          "earn",
+          "status",
+          "eligible"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-03"
+          ],
+          "brands": [
+            "Qantas; Virgin Australia; Flight Centre"
+          ],
+          "copyPatterns": [
+            "Accumulated loyalty becomes a travel possibility"
+          ],
+          "exampleCopy": [
+            "Give those points a place to go."
+          ],
+          "motivations": [
+            "Feel that past spending contributes to a future experience."
+          ],
+          "visualDevices": [
+            "Points balance; destination reveal; redemption screen; card-to-trip transition."
+          ],
+          "australianContext": [
+            "Loyalty-program familiarity and aspirational trips."
+          ],
+          "challenges": [
+            "Dream destinations suggesting effortless or universal redemption."
+          ],
+          "creativeDirection": [
+            "Frame one verified redemption pathway as a concrete next step. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name program and preserve points; cash components and availability. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Reward seats; taxes; fees; conversion; eligibility; actual redemption."
+          ]
+        }
+      },
+      {
+        "theme": "Package convenience",
+        "keywords": [
+          "included",
+          "package",
+          "stay",
+          "flights",
+          "bundle",
+          "easy"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-04"
+          ],
+          "brands": [
+            "Flight Centre; Luxury Escapes; Expedia"
+          ],
+          "copyPatterns": [
+            "Several trip decisions arrive as one manageable option"
+          ],
+          "exampleCopy": [
+            "Less itinerary admin. More looking forward."
+          ],
+          "motivations": [
+            "Reduce planning fatigue and fear of missing a detail."
+          ],
+          "visualDevices": [
+            "Included-items tiles; room; flight; itinerary; checklist."
+          ],
+          "australianContext": [
+            "Complex long-haul plans and family logistics."
+          ],
+          "challenges": [
+            "Included language blurring optional extras and exclusions."
+          ],
+          "creativeDirection": [
+            "Make a verified package inclusion the hero of an overlooked planning problem. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State package components and booking conditions literally. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Inclusions; transfers; meals; dates; child pricing; taxes; exclusions."
+          ]
+        }
+      },
+      {
+        "theme": "Premium escape",
+        "keywords": [
+          "luxury",
+          "suite",
+          "unwind",
+          "indulgent",
+          "exclusive",
+          "escape"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-05"
+          ],
+          "brands": [
+            "Luxury Escapes; Accor; premium airline travel"
+          ],
+          "copyPatterns": [
+            "A setting offers permission to step outside everyday demands"
+          ],
+          "exampleCopy": [
+            "A little more room to do less."
+          ],
+          "motivations": [
+            "Feel cared for and allowed to slow down."
+          ],
+          "visualDevices": [
+            "Infinity pool; spacious room; service detail; unhurried breakfast."
+          ],
+          "australianContext": [
+            "Long journeys making the stay feel consequential."
+          ],
+          "challenges": [
+            "Interchangeable pool-and-couple luxury imagery."
+          ],
+          "creativeDirection": [
+            "Use one verified service detail to make rest specific rather than generic. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name hotel or package category and the actual service inclusion. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Room type; amenities; inclusions; availability; photography; access."
+          ]
+        }
+      },
+      {
+        "theme": "Choice and booking confidence",
+        "keywords": [
+          "compare",
+          "options",
+          "reviews",
+          "book",
+          "flexible",
+          "find"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-06"
+          ],
+          "brands": [
+            "Booking.com; Expedia; Webjet"
+          ],
+          "copyPatterns": [
+            "A comparison tool reduces uncertainty about choosing"
+          ],
+          "exampleCopy": [
+            "Make the shortlist feel shorter."
+          ],
+          "motivations": [
+            "Choose with confidence without endless tabs."
+          ],
+          "visualDevices": [
+            "Search results; filters; review card; shortlist; price comparison."
+          ],
+          "australianContext": [
+            "Complicated international planning and varied accommodation needs."
+          ],
+          "challenges": [
+            "Unlimited choice portrayed as inherently helpful."
+          ],
+          "creativeDirection": [
+            "Build the idea around one real filter that resolves a recognisable travel dilemma. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name booking service and actual selection feature. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Inventory; review authenticity; sorting; prices; cancellation policies."
+          ]
+        }
+      },
+      {
+        "theme": "Useful flexibility",
+        "keywords": [
+          "change",
+          "flexible",
+          "options",
+          "plans",
+          "support",
+          "fare"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-07"
+          ],
+          "brands": [
+            "Qantas; Virgin Australia; Flight Centre"
+          ],
+          "copyPatterns": [
+            "A booking condition accommodates uncertainty"
+          ],
+          "exampleCopy": [
+            "Leave a little room for life to happen."
+          ],
+          "motivations": [
+            "Commit without feeling entirely trapped by change."
+          ],
+          "visualDevices": [
+            "Calendar shift; family call; clear policy card; rebooking step."
+          ],
+          "australianContext": [
+            "Long planning horizons and changing work or family needs."
+          ],
+          "challenges": [
+            "Flexible interpreted as refundable or free changes for everyone."
+          ],
+          "creativeDirection": [
+            "Express one specific flexibility condition through a human change of plan. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Separate refund; credit; change fee and fare difference explicitly. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Fare rules; deadlines; fees; availability; refunds; credits."
+          ]
+        }
+      },
+      {
+        "theme": "Close-to-home discovery",
+        "keywords": [
+          "weekend",
+          "local",
+          "discover",
+          "coast",
+          "regional",
+          "getaway"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-08"
+          ],
+          "brands": [
+            "Jetstar; Qantas; tourism booking partners"
+          ],
+          "copyPatterns": [
+            "A nearby destination earns the attention usually reserved for faraway places"
+          ],
+          "exampleCopy": [
+            "Go somewhere your week cannot follow."
+          ],
+          "motivations": [
+            "Get a meaningful reset without a huge undertaking."
+          ],
+          "visualDevices": [
+            "Regional street; coast; road or short-flight transition; local meal."
+          ],
+          "australianContext": [
+            "Domestic distance; public holidays; weekend routines."
+          ],
+          "challenges": [
+            "Empty scenery with no reason to pick this place."
+          ],
+          "creativeDirection": [
+            "Make one specific local experience the destination argument. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name location and genuine means of access or booking. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Access; opening hours; route; season; price; availability."
+          ]
+        }
+      },
+      {
+        "theme": "Experience and local contact",
+        "keywords": [
+          "discover",
+          "small group",
+          "local",
+          "explore",
+          "experience",
+          "journey"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-09"
+          ],
+          "brands": [
+            "Flight Centre; Intrepid; G Adventures"
+          ],
+          "copyPatterns": [
+            "Guidance gives access to an experience beyond the checklist"
+          ],
+          "exampleCopy": [
+            "Come home with a better story than the itinerary."
+          ],
+          "motivations": [
+            "Feel curious and personally changed by travel."
+          ],
+          "visualDevices": [
+            "Guide; shared activity; street-level detail; traveller interaction."
+          ],
+          "australianContext": [
+            "Long-haul trips treated as significant experiences."
+          ],
+          "challenges": [
+            "Authenticity claimed by using local people as scenery."
+          ],
+          "creativeDirection": [
+            "Centre one genuine participant-led experience and the practical value of the operator. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name trip type; destination and supported activity. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Operator relationships; itinerary; group size; consent; accessibility."
+          ]
+        }
+      },
+      {
+        "theme": "Journey quality",
+        "keywords": [
+          "comfort",
+          "service",
+          "lounge",
+          "cabin",
+          "arrive",
+          "relax"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-10"
+          ],
+          "brands": [
+            "Qantas; Virgin Australia"
+          ],
+          "copyPatterns": [
+            "The journey contributes to the quality of the trip"
+          ],
+          "exampleCopy": [
+            "The trip starts before the arrival photo."
+          ],
+          "motivations": [
+            "Arrive feeling better cared for."
+          ],
+          "visualDevices": [
+            "Cabin detail; airport service; meal; passenger pause."
+          ],
+          "australianContext": [
+            "Long flights and connection-heavy itineraries."
+          ],
+          "challenges": [
+            "Premium cabin shown without identifying the eligible fare or route."
+          ],
+          "creativeDirection": [
+            "Turn one verified journey detail into an unexpected human benefit. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "State airline; cabin or service and availability conditions. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Aircraft; route; cabin; fare; lounge eligibility; service variation."
+          ]
+        }
+      },
+      {
+        "theme": "Seasonal planning urgency",
+        "keywords": [
+          "summer",
+          "holidays",
+          "school break",
+          "early",
+          "book",
+          "dates"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-11"
+          ],
+          "brands": [
+            "Jetstar; Flight Centre; Webjet"
+          ],
+          "copyPatterns": [
+            "A calendar moment makes planning timely"
+          ],
+          "exampleCopy": [
+            "Give the school calendar a horizon."
+          ],
+          "motivations": [
+            "Avoid missing a valued shared break."
+          ],
+          "visualDevices": [
+            "Calendar; family planning; destination grid; date-linked offer."
+          ],
+          "australianContext": [
+            "Southern Hemisphere seasons and state-specific school holidays."
+          ],
+          "challenges": [
+            "Generic urgency that mistakes one state calendar for the whole country."
+          ],
+          "creativeDirection": [
+            "Find a real planning tension and make the relevant dates explicit. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name destination or service and booking or travel window. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "State calendars; availability; sale end; travel dates; package terms."
+          ]
+        }
+      },
+      {
+        "theme": "Considered travel choices",
+        "keywords": [
+          "local",
+          "impact",
+          "responsible",
+          "community",
+          "emissions",
+          "choices"
+        ],
+        "frequency": 1,
+        "notes": {
+          "recordIds": [
+            "TRAVEL-12"
+          ],
+          "brands": [
+            "Intrepid; Qantas; travel operators"
+          ],
+          "copyPatterns": [
+            "A concrete action helps make a trip feel more considered"
+          ],
+          "exampleCopy": [
+            "Know a little more about the journey you choose."
+          ],
+          "motivations": [
+            "Enjoy travel while taking its consequences seriously."
+          ],
+          "visualDevices": [
+            "Local partner; transport detail; practical action; clear fact card."
+          ],
+          "australianContext": [
+            "Distance and flying costs complicate environmental aspirations."
+          ],
+          "challenges": [
+            "Nature imagery implying low impact without a defined basis."
+          ],
+          "creativeDirection": [
+            "Show one bounded verified action and its trade-offs; do not promise guilt-free travel. Generate three divergent articulations of the same supplied fact. Change framing, not factual meaning."
+          ],
+          "categoryAnchors": [
+            "Name the action and scope literally beside any fresh framing. For an AI-facing variant, append a plain literal sentence and test faithful interpretation."
+          ],
+          "factsToVerify": [
+            "Impact accounting; certifications; local partner evidence; exclusions."
+          ]
+        }
+      }
+    ]
+  }
+]

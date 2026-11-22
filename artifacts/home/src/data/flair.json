@@ -1,0 +1,431 @@
+{
+  "provider": "Flint from Springboards",
+  "generatedAt": "2026-10-29T12:01:05.862Z",
+  "methodology": "Pre-generated with Springboards Flint from verified Australian retailer excerpts and product-specific editorial briefs. A separate Flint editorial review checks source fidelity, meaningful reframing, natural language, constraints and annotations; source facts and literal highlight matches are also checked programmatically. This is not the live six-gate QA certification, retailer endorsement, market-exclusivity evidence or measured AI ranking uplift. Prices and stock are not tracked.",
+  "examples": [
+    {
+      "id": "bambino-plus",
+      "category": "Coffee",
+      "retailer": "Harvey Norman",
+      "productName": "Breville The Bambino Plus Espresso Coffee Machine",
+      "sourceUrl": "https://www.harveynorman.com.au/breville-the-bambino-plus-espresso-coffee-machine.html",
+      "sourceExcerpt": "The Breville The Bambino Plus Espresso Coffee Machine has a 54mm porta-filter with a 19g dose to deliver consistently rich and balanced espresso.\n\nBuilt with an automatic steam wand, the Bambino Plus coffee machine lets you quickly set the milk temperature and texture to match what you want.\n\nEquipped with a cutting-edge ThermoJet heating system, this Breville Espresso Coffee Machine quickly reaches optimum extraction temperature within 3 seconds.",
+      "facts": [
+        {
+          "label": "Porta-filter",
+          "value": "54mm",
+          "quote": "The Breville The Bambino Plus Espresso Coffee Machine has a 54mm porta-filter with a 19g dose"
+        },
+        {
+          "label": "Coffee dose",
+          "value": "19g",
+          "quote": "a 54mm porta-filter with a 19g dose"
+        },
+        {
+          "label": "Heat-up",
+          "value": "within 3 seconds",
+          "quote": "quickly reaches optimum extraction temperature within 3 seconds"
+        },
+        {
+          "label": "Milk",
+          "value": "automatic steam wand",
+          "quote": "Built with an automatic steam wand"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "Quick heat-up. Milk your way.",
+      "description": "Let ThermoJet handle the warm-up: it reaches optimum extraction temperature within 3 seconds. For the shot, a 54mm porta-filter takes a 19g dose. For milk, automatic doesn't mean one setting: the automatic steam wand lets you set temperature and texture. Quick heat-up, a defined dose, and milk settings you can choose.",
+      "comparisonQuestion": "How do heat-up, coffee dose and milk settings work together?",
+      "meaningfulChange": "Reframes separate feature paragraphs around heat-up, dose and adjustable milk settings, without equating fast heating with a finished drink.",
+      "highlights": [
+        {
+          "phrase": "reaches optimum extraction temperature within 3 seconds",
+          "explanation": "Keeps the speed claim attached to heating, not to a finished coffee.",
+          "researchId": "shoppingcomp"
+        },
+        {
+          "phrase": "54mm porta-filter takes a 19g dose",
+          "explanation": "Pairs filter size with dose rather than leaving two disconnected specifications.",
+          "researchId": "openai-commerce"
+        },
+        {
+          "phrase": "automatic doesn't mean one setting",
+          "explanation": "Makes the useful distinction between automatic steaming and user-chosen milk settings.",
+          "researchId": "openai-shopping"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    },
+    {
+      "id": "sony-xm5",
+      "category": "Audio",
+      "retailer": "Officeworks",
+      "productName": "Sony WH-1000XM5 Wireless Noise Cancelling Headphones Black",
+      "sourceUrl": "https://www.officeworks.com.au/shop/officeworks/p/sony-wh-1000xm5-wireless-noise-cancelling-headphones-black-sonywhxm5b",
+      "sourceExcerpt": "You can pair with up to 2 devices at a time via Bluetooth or connect directly via cable.\n\nEnjoy up to 30 hours of playtime on a single charge, and quick power thanks to USB-C quick charging.\n\nThe noise cancelling feature uses 4 microphones on each earcup to keep out more high and mid frequency sounds than ever.\n\nA carrying case, 1.2m headphone cable and USB-C charging cable are also included.",
+      "facts": [
+        {
+          "label": "Playtime",
+          "value": "up to 30 hours",
+          "quote": "Enjoy up to 30 hours of playtime on a single charge"
+        },
+        {
+          "label": "Pairing",
+          "value": "up to 2 devices",
+          "quote": "You can pair with up to 2 devices at a time via Bluetooth"
+        },
+        {
+          "label": "Noise cancellation",
+          "value": "4 microphones on each earcup",
+          "quote": "The noise cancelling feature uses 4 microphones on each earcup"
+        },
+        {
+          "label": "Charging",
+          "value": "USB-C",
+          "quote": "quick power thanks to USB-C quick charging"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "Keep your headphones. Change the connection.",
+      "description": "Make the connection the thing you change, not the headphones. They pair with up to 2 devices at a time via Bluetooth. For listening between charges, there's up to 30 hours of playtime on a single charge, plus USB-C quick charging when it's time to plug in. Noise cancellation uses 4 microphones on each earcup.",
+      "comparisonQuestion": "Can one headset cover my paired-device setup and listening needs?",
+      "meaningfulChange": "Makes multi-device pairing the organising idea, while separating listening duration, charging and noise-cancelling hardware.",
+      "highlights": [
+        {
+          "phrase": "Make the connection the thing you change, not the headphones.",
+          "explanation": "Frames pairing as a device-setup decision, without promising seamless switching.",
+          "researchId": "openai-shopping"
+        },
+        {
+          "phrase": "up to 30 hours of playtime on a single charge",
+          "explanation": "Keeps qualified listening duration separate from the USB-C quick-charging feature.",
+          "researchId": "shoppingcomp"
+        },
+        {
+          "phrase": "4 microphones on each earcup",
+          "explanation": "States the hardware without treating microphone count as proof of superior noise cancellation.",
+          "researchId": "openai-commerce"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    },
+    {
+      "id": "ordinary-niacinamide",
+      "category": "Skincare",
+      "retailer": "THE ICONIC",
+      "productName": "The Ordinary Niacinamide 10% + Zinc 1% 60ml",
+      "sourceUrl": "https://www.theiconic.com.au/niacinamide-10-zinc-1-60ml-1224001.html",
+      "sourceExcerpt": "The Niacinamide 10% + Zinc 1% 60ml formula by The Ordinary incorporates a high 10% concentration of Niacinamide, as well as a 1% concentration of Zinc to balance visible aspects of sebum activity, thereby reducing the appearance of textural irregularities, enlarged pores and visible shine. Note: Niacinamide is not a treatment for Acne. For persistent Acne-related conditions, we recommend consulting a Physician.\n\nApply to entire face morning and evening before heavier creams.",
+      "facts": [
+        {
+          "label": "Niacinamide concentration",
+          "value": "10%",
+          "quote": "a high 10% concentration of Niacinamide"
+        },
+        {
+          "label": "Zinc concentration",
+          "value": "1%",
+          "quote": "a 1% concentration of Zinc"
+        },
+        {
+          "label": "Size",
+          "value": "60ml",
+          "quote": "The Niacinamide 10% + Zinc 1% 60ml formula by The Ordinary"
+        },
+        {
+          "label": "Use",
+          "value": "before heavier creams",
+          "quote": "Apply to entire face morning and evening before heavier creams"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "For visible shine—not acne treatment.",
+      "description": "A formula for visible shine—not an acne treatment. In this 60ml bottle, 10% Niacinamide and 1% Zinc work together to balance visible aspects of sebum activity and reduce the appearance of textural irregularities, enlarged pores and shine. Place it in your routine before heavier creams, morning and evening, applying to the entire face. For persistent acne-related conditions, consult a physician.",
+      "comparisonQuestion": "Does this match my cosmetic goal without implying acne treatment?",
+      "meaningfulChange": "Puts the cosmetic-versus-treatment boundary beside the benefit, then connects concentrations and application order to the routine.",
+      "highlights": [
+        {
+          "phrase": "visible shine—not an acne treatment",
+          "explanation": "Separates the cosmetic appearance goal from a medical-treatment claim at the point of choice.",
+          "researchId": "shoppingcomp"
+        },
+        {
+          "phrase": "10% Niacinamide and 1% Zinc",
+          "explanation": "Presents the concentrations together as a formula shoppers can match to ingredient preferences.",
+          "researchId": "openai-shopping"
+        },
+        {
+          "phrase": "before heavier creams, morning and evening",
+          "explanation": "Keeps application order and timing explicit as usage attributes, alongside—not instead of—structured product data.",
+          "researchId": "openai-commerce"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    },
+    {
+      "id": "oztrail-deluxe",
+      "category": "Camping",
+      "retailer": "OZtrail",
+      "productName": "Deluxe Arm Chair - Blue",
+      "sourceUrl": "https://www.oztrail.com.au/products/deluxe-arm-chair-blue",
+      "sourceExcerpt": "The OZtrail Deluxe Arm Chair Blue is an awesome chair designed for comfort, style, and convenience. Built with a strong high-tensile steel frame, it provides room and space for you to relax in total comfort while enjoying the great outdoors. Whether you're camping, fishing, or sitting by the fire, this comfortable and compact chair is the perfect companion.\n\nWeight: 3.3kg\nFrame: 17.5mm high-tensile steel\nFabric: 600D polyester\nPacked dimensions: 96cm X 14cm X 12cm\nWeight Rating: 130kg",
+      "facts": [
+        {
+          "label": "Weight rating",
+          "value": "130kg",
+          "quote": "Weight Rating: 130kg"
+        },
+        {
+          "label": "Chair weight",
+          "value": "3.3kg",
+          "quote": "Weight: 3.3kg"
+        },
+        {
+          "label": "Fabric",
+          "value": "600D polyester",
+          "quote": "Fabric: 600D polyester"
+        },
+        {
+          "label": "Packed dimensions",
+          "value": "96cm X 14cm X 12cm",
+          "quote": "Packed dimensions: 96cm X 14cm X 12cm"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "130kg rated. 3.3kg to carry.",
+      "description": "Pack for the trip; choose for the sitter. The chair is rated to 130kg and weighs 3.3kg. Packed size is a separate check: 96cm X 14cm X 12cm. Made with 600D polyester, it's intended for camping or fishing. Keep the chair's load rating separate from your carry load—and check both weight and space when packing.",
+      "comparisonQuestion": "What will the chair carry, and what will I carry?",
+      "meaningfulChange": "Contrasts the chair load rating with the weight you carry, then treats packed size as a separate portability check.",
+      "highlights": [
+        {
+          "phrase": "rated to 130kg and weighs 3.3kg",
+          "explanation": "Separates supported load from carried mass: two different requirements, not interchangeable weight claims.",
+          "researchId": "shoppingcomp"
+        },
+        {
+          "phrase": "Packed size is a separate check: 96cm X 14cm X 12cm",
+          "explanation": "Adds storage fit to the portability decision rather than treating low mass as enough.",
+          "researchId": "openai-shopping"
+        },
+        {
+          "phrase": "600D polyester",
+          "explanation": "Keeps the fabric specification available for attribute comparison without inventing a durability rating.",
+          "researchId": "openai-commerce"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    },
+    {
+      "id": "snooza-orthobed",
+      "category": "Pets",
+      "retailer": "Snooza",
+      "productName": "Calming Orthobed - Mink",
+      "sourceUrl": "https://www.snooza.com.au/products/calming-ortho-bed-mink",
+      "sourceExcerpt": "The Snooza calming Ortho Bed is an orthopaedic mat, designed for dogs who like to sprawl out or curl up.\n\nThe covers are easily removable and replaceable; the Australian foam base is replaceable; covers are fully washable; and like all Snoozas, this bed is built to last.\n\nNon-slip pads are adhered to the base for wooden or tiled floors.\n\nThe cover is removable and machine washable. It is also replaceable and repairable. Foam can be spot cleaned and is also replaceable.",
+      "facts": [
+        {
+          "label": "Base",
+          "value": "Australian foam",
+          "quote": "the Australian foam base is replaceable"
+        },
+        {
+          "label": "Cover care",
+          "value": "machine washable",
+          "quote": "The cover is removable and machine washable"
+        },
+        {
+          "label": "Base care",
+          "value": "spot cleaned",
+          "quote": "Foam can be spot cleaned and is also replaceable"
+        },
+        {
+          "label": "Floor contact",
+          "value": "Non-slip pads",
+          "quote": "Non-slip pads are adhered to the base for wooden or tiled floors"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "Treat it as parts, not one wash load.",
+      "description": "Treat it as parts, not one wash load. The removable cover is machine washable; the Australian foam base can be spot cleaned, and both cover and base are replaceable. That gives you separate routes for routine cover care and cleaning the foam, rather than one blanket washing instruction. Non-slip pads are adhered to the base for wooden or tiled floors.",
+      "comparisonQuestion": "Which parts can I wash, spot-clean or replace?",
+      "meaningfulChange": "Turns repeated care statements into distinct cover and foam maintenance routes, with component replacement kept explicit.",
+      "highlights": [
+        {
+          "phrase": "The removable cover is machine washable; the Australian foam base can be spot cleaned",
+          "explanation": "Prevents the cover care instruction being mistaken for a whole-bed washing instruction.",
+          "researchId": "shoppingcomp"
+        },
+        {
+          "phrase": "both cover and base are replaceable",
+          "explanation": "Makes component replacement an explicit maintenance consideration without claiming cost or environmental savings.",
+          "researchId": "openai-shopping"
+        },
+        {
+          "phrase": "Non-slip pads are adhered to the base for wooden or tiled floors",
+          "explanation": "Retains the stated floor context as a product attribute rather than claiming stability on every surface.",
+          "researchId": "openai-commerce"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    },
+    {
+      "id": "kathmandu-litehaul",
+      "category": "Travel",
+      "retailer": "Kathmandu",
+      "productName": "Litehaul Carry On v3 - 38L - Black Stingray",
+      "sourceUrl": "https://www.kathmandu.com.au/products/litehaul-carry-on-38l-v3-black-stingray",
+      "sourceExcerpt": "The perfect pack for minimalist trips, the Litehaul Pack holds 38 litres of essentials. The backpack features a separate padded 17\" laptop sleeve and a big, suitcase-style opening for easy packing.\n\nWeight: 1.42 kg\n\nExternal: (L) 57 cm x (W) 33 cm x (D) 25 cm\n\nDesigned to meet ‘carry-on’ size restrictions for most airlines, but check with yours before you fly.\n\nSuitcase-style D-shaped opening and sturdy interior with compression straps for easy packing.",
+      "facts": [
+        {
+          "label": "Capacity",
+          "value": "38 litres",
+          "quote": "the Litehaul Pack holds 38 litres of essentials"
+        },
+        {
+          "label": "Laptop sleeve",
+          "value": "17\"",
+          "quote": "a separate padded 17\" laptop sleeve"
+        },
+        {
+          "label": "Weight",
+          "value": "1.42 kg",
+          "quote": "Weight: 1.42 kg"
+        },
+        {
+          "label": "Dimensions",
+          "value": "(L) 57 cm x (W) 33 cm x (D) 25 cm",
+          "quote": "External: (L) 57 cm x (W) 33 cm x (D) 25 cm"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "Laptop fit isn't airline fit.",
+      "description": "Your laptop and your airline ask different fit questions. This pack has a separate padded 17\" laptop sleeve, but that isn't a cabin-size guarantee: check the airline's carry-on rules against the external (L) 57 cm x (W) 33 cm x (D) 25 cm dimensions. For packing, there are 38 litres and a suitcase-style D-shaped opening; the pack weighs 1.42 kg.",
+      "comparisonQuestion": "Does it fit my device and my airline's rules?",
+      "meaningfulChange": "Separates laptop compatibility from airline acceptance, rather than letting the carry-on name or sleeve size imply both.",
+      "highlights": [
+        {
+          "phrase": "a separate padded 17\" laptop sleeve, but that isn't a cabin-size guarantee",
+          "explanation": "Separates the device detail from airline acceptance instead of treating one fit as proof of the other.",
+          "researchId": "shoppingcomp"
+        },
+        {
+          "phrase": "(L) 57 cm x (W) 33 cm x (D) 25 cm",
+          "explanation": "Gives the actual external dimensions for an airline-rule comparison, not a universal carry-on claim.",
+          "researchId": "openai-commerce"
+        },
+        {
+          "phrase": "38 litres and a suitcase-style D-shaped opening",
+          "explanation": "Pairs capacity with the way the pack opens, supporting a packing-preference decision.",
+          "researchId": "openai-shopping"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    },
+    {
+      "id": "frankgreen-ceramic",
+      "category": "Drinkware",
+      "retailer": "frank green",
+      "productName": "Customisable Ceramic Reusable Bottle - 34oz / 1,000ml",
+      "sourceUrl": "https://frankgreen.com.au/products/customisable-ceramic-reusable-bottle-34oz-1-000ml",
+      "sourceExcerpt": "Customisable Ceramic Reusable Bottle - 34oz / 1,000ml\n\nThe reusable bottle on everyone's lips! And for good reason. Our signature 34oz/1L Ceramic Reusable Bottle is triple-wall vacuum insulated to retain temperature for hours (and we mean hours). Plus, the ceramic lining ensures your water tastes like water (no metallic flavours here). Add a monogram to make this fan favourite uniquely yours.\n\nDurable stainless steel bottle – made to last\n\nAvailable with our easy-to-use straw lid\n\nDishwasher-safe lid. Base is handwash only\n\nMicrowave safe: no",
+      "facts": [
+        {
+          "label": "Capacity",
+          "value": "34oz / 1,000ml",
+          "quote": "Customisable Ceramic Reusable Bottle - 34oz / 1,000ml"
+        },
+        {
+          "label": "Insulation",
+          "value": "triple-wall vacuum insulated",
+          "quote": "Ceramic Reusable Bottle is triple-wall vacuum insulated"
+        },
+        {
+          "label": "Lining",
+          "value": "ceramic lining",
+          "quote": "the ceramic lining ensures your water tastes like water"
+        },
+        {
+          "label": "Care",
+          "value": "Dishwasher-safe lid. Base is handwash only",
+          "quote": "Dishwasher-safe lid. Base is handwash only"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "One bottle. Two cleaning rules.",
+      "description": "Two features, different jobs: a ceramic lining keeps water tasting like water, while the bottle is triple-wall vacuum insulated to retain temperature for hours. The capacity is 34oz / 1,000ml. Cleaning has its own split—don't apply the lid's care rule to the whole bottle. Dishwasher-safe lid. Base is handwash only.",
+      "comparisonQuestion": "Which parts can go in the dishwasher?",
+      "meaningfulChange": "Promotes the lid-versus-base care distinction to the buying decision, while giving lining and insulation separate jobs.",
+      "highlights": [
+        {
+          "phrase": "a ceramic lining keeps water tasting like water",
+          "explanation": "Connects lining to the stated taste benefit, rather than confusing it with the insulation feature.",
+          "researchId": "openai-shopping"
+        },
+        {
+          "phrase": "triple-wall vacuum insulated to retain temperature for hours",
+          "explanation": "Keeps insulation linked to its stated function without inventing a numerical retention duration.",
+          "researchId": "openai-commerce"
+        },
+        {
+          "phrase": "Dishwasher-safe lid. Base is handwash only",
+          "explanation": "Makes cleaning compatibility a lid-versus-base check, not a bottle-wide dishwasher assumption.",
+          "researchId": "shoppingcomp"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    },
+    {
+      "id": "orbitkey-leather",
+      "category": "Everyday carry",
+      "retailer": "EB Games",
+      "productName": "Orbitkey - Leather Key Organiser - Blush",
+      "sourceUrl": "https://www.ebgames.com.au/product/toys-and-collectibles/319567-orbitkey-leather-key-organiser-blush",
+      "sourceExcerpt": "Transform your keys into a neat and silent stack.\n\nMade from smooth top-grain leather.\n\nCarry 2-7 standard keys with car keys and fobs on the D-ring.\n\nExtension Post is required if you have more than seven standard keys.\n\nFits keys with a keyhole greater than 4mm in diameter and a length shorter than 65mm (from the keyhole to the end of the key).",
+      "facts": [
+        {
+          "label": "Key capacity",
+          "value": "2-7 standard keys",
+          "quote": "Carry 2-7 standard keys with car keys and fobs on the D-ring"
+        },
+        {
+          "label": "Material",
+          "value": "top-grain leather",
+          "quote": "Made from smooth top-grain leather"
+        },
+        {
+          "label": "Keyhole fit",
+          "value": "greater than 4mm",
+          "quote": "a keyhole greater than 4mm in diameter"
+        },
+        {
+          "label": "Key length",
+          "value": "shorter than 65mm",
+          "quote": "a length shorter than 65mm (from the keyhole to the end of the key)"
+        }
+      ],
+      "sourceCheckedAt": "2026-10-29",
+      "headline": "Count your keys. Then measure them.",
+      "description": "Start with the keys, then choose the leather. The organiser holds 2-7 standard keys; car keys and fobs go separately on the D-ring. Capacity is only the first check: each key needs a keyhole greater than 4mm in diameter and a length shorter than 65mm, measured from the keyhole to the key's end. The finish is top-grain leather, but a fit decision comes before a finish decision.",
+      "comparisonQuestion": "Do my keys fit the count, hole and length limits?",
+      "meaningfulChange": "Reframes the feature list as three compatibility checks: key count, keyhole diameter and correctly measured length.",
+      "highlights": [
+        {
+          "phrase": "2-7 standard keys; car keys and fobs go separately on the D-ring",
+          "explanation": "Keeps standard-key capacity distinct from the attachment for car keys and fobs.",
+          "researchId": "openai-shopping"
+        },
+        {
+          "phrase": "keyhole greater than 4mm in diameter",
+          "explanation": "Preserves the strict diameter threshold instead of implying all standard keys fit.",
+          "researchId": "shoppingcomp"
+        },
+        {
+          "phrase": "length shorter than 65mm, measured from the keyhole to the key's end",
+          "explanation": "Retains both the length limit and its measurement origin as explicit fit attributes.",
+          "researchId": "openai-commerce"
+        }
+      ],
+      "editorialReview": "Flint drafted and separately reviewed this fact-led reframing against the linked retailer excerpt and editorial brief. Source facts and literal highlight matches checked; human editorial review completed."
+    }
+  ]
+}

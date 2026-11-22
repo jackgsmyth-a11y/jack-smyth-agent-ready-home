@@ -1,0 +1,10 @@
+node_modules
+.git
+.config
+.replit
+.replitignore
+artifacts/api-server
+artifacts/mockup-sandbox
+artifacts/home/dist
+*.log
+.DS_Store

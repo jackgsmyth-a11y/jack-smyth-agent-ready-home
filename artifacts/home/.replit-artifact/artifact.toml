@@ -1,0 +1,22 @@
+kind = "web"
+previewPath = "/"
+title = "Jack Smyth — Agent-Ready Home"
+version = "1.0.0"
+id = "artifacts/home"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/", "/api/tools", "/api/experiments" ]
+localPort = 24319
+
+[services.development]
+run = "pnpm --filter @workspace/home run dev"
+
+[services.production]
+build = "pnpm --filter @workspace/home run build"
+run = "node artifacts/home/dist/index.mjs"
+
+[services.env]
+PORT = "24319"
+BASE_PATH = "/"

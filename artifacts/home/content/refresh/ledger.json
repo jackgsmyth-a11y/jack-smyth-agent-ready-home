@@ -1,0 +1,176 @@
+{
+  "archives": [],
+  "baselineNote": "Inventory of existing dated app snapshots, not fresh network checks or a completed monthly run.",
+  "factsWithFlair": [
+    {
+      "baselineEvidenceHash": "b220bcae1f679a74daded599718cc9c452e25db605ab515d5f5432f4c28e9916",
+      "category": "Coffee",
+      "dataFile": "src/data/flair.json",
+      "id": "bambino-plus",
+      "lastRoutineCheck": null,
+      "productName": "Breville The Bambino Plus Espresso Coffee Machine",
+      "proposedReplacement": null,
+      "retailer": "Harvey Norman",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://www.harveynorman.com.au/breville-the-bambino-plus-espresso-coffee-machine.html",
+      "status": "accepted_original_snapshot"
+    },
+    {
+      "baselineEvidenceHash": "503b7ef65b5fd340fd2b6aa90a6fc65d8dc5c6033085eb2aff1226bd8febd6d1",
+      "category": "Audio",
+      "dataFile": "src/data/flair.json",
+      "id": "sony-xm5",
+      "lastRoutineCheck": null,
+      "productName": "Sony WH-1000XM5 Wireless Noise Cancelling Headphones Black",
+      "proposedReplacement": null,
+      "retailer": "Officeworks",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://www.officeworks.com.au/shop/officeworks/p/sony-wh-1000xm5-wireless-noise-cancelling-headphones-black-sonywhxm5b",
+      "status": "accepted_original_snapshot"
+    },
+    {
+      "baselineEvidenceHash": "ebbcdadaee3e9c00d0333ebf2fdd8e6abbaa590a0c76425031999ebcba5e9be7",
+      "category": "Skincare",
+      "dataFile": "src/data/flair.json",
+      "id": "ordinary-niacinamide",
+      "lastRoutineCheck": null,
+      "productName": "The Ordinary Niacinamide 10% + Zinc 1% 60ml",
+      "proposedReplacement": null,
+      "retailer": "THE ICONIC",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://www.theiconic.com.au/niacinamide-10-zinc-1-60ml-1224001.html",
+      "status": "accepted_original_snapshot"
+    },
+    {
+      "baselineEvidenceHash": "ff3aaab0f9a856d79bd31d21cd8cbed4055cc9ac153a26314762fe8fc8cb6714",
+      "category": "Camping",
+      "dataFile": "src/data/flair.json",
+      "id": "oztrail-deluxe",
+      "lastRoutineCheck": null,
+      "productName": "Deluxe Arm Chair - Blue",
+      "proposedReplacement": null,
+      "retailer": "OZtrail",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://www.oztrail.com.au/products/deluxe-arm-chair-blue",
+      "status": "accepted_original_snapshot"
+    },
+    {
+      "baselineEvidenceHash": "7431694ae7e09365328c76031a932826f560c13e39d06778ecd2554ac337ccbd",
+      "category": "Pets",
+      "dataFile": "src/data/flair.json",
+      "id": "snooza-orthobed",
+      "lastRoutineCheck": null,
+      "productName": "Calming Orthobed - Mink",
+      "proposedReplacement": null,
+      "retailer": "Snooza",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://www.snooza.com.au/products/calming-ortho-bed-mink",
+      "status": "accepted_original_snapshot"
+    },
+    {
+      "baselineEvidenceHash": "51d8798782319162c42b22c5cd02a2ead8167ba9488d414c0afee8c31bdd06d7",
+      "category": "Travel",
+      "dataFile": "src/data/flair.json",
+      "id": "kathmandu-litehaul",
+      "lastRoutineCheck": null,
+      "productName": "Litehaul Carry On v3 - 38L - Black Stingray",
+      "proposedReplacement": null,
+      "retailer": "Kathmandu",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://www.kathmandu.com.au/products/litehaul-carry-on-38l-v3-black-stingray",
+      "status": "accepted_original_snapshot"
+    },
+    {
+      "baselineEvidenceHash": "d1946241b25428cde93134945334adb810592abd92ac58482c89ce574cbaa4ca",
+      "category": "Drinkware",
+      "dataFile": "src/data/flair.json",
+      "id": "frankgreen-ceramic",
+      "lastRoutineCheck": null,
+      "productName": "Customisable Ceramic Reusable Bottle - 34oz / 1,000ml",
+      "proposedReplacement": null,
+      "retailer": "frank green",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://frankgreen.com.au/products/customisable-ceramic-reusable-bottle-34oz-1-000ml",
+      "status": "accepted_original_snapshot"
+    },
+    {
+      "baselineEvidenceHash": "b6596d2c78f57ff68db5f7ba7e5baf0bc1c767a0e12cfd64df42fd5cbe3d9078",
+      "category": "Everyday carry",
+      "dataFile": "src/data/flair.json",
+      "id": "orbitkey-leather",
+      "lastRoutineCheck": null,
+      "productName": "Orbitkey - Leather Key Organiser - Blush",
+      "proposedReplacement": null,
+      "retailer": "EB Games",
+      "sourceCheckedAt": "2026-10-29",
+      "sourceUrl": "https://www.ebgames.com.au/product/toys-and-collectibles/319567-orbitkey-leather-key-organiser-blush",
+      "status": "accepted_original_snapshot"
+    }
+  ],
+  "lastCompletedCollection": null,
+  "leaderbored": [
+    {
+      "baselineKind": "sample_reference_export",
+      "baselineMonth": "2026-10",
+      "categoryId": "automotive",
+      "curatedCampaignReferences": [],
+      "lastRoutineCheck": null,
+      "name": "Automotive",
+      "sampleData": true,
+      "themeRowCount": 12
+    },
+    {
+      "baselineKind": "sample_reference_export",
+      "baselineMonth": "2026-10",
+      "categoryId": "banking",
+      "curatedCampaignReferences": [],
+      "lastRoutineCheck": null,
+      "name": "Banking",
+      "sampleData": true,
+      "themeRowCount": 12
+    },
+    {
+      "baselineKind": "sample_reference_export",
+      "baselineMonth": "2026-10",
+      "categoryId": "beauty",
+      "curatedCampaignReferences": [],
+      "lastRoutineCheck": null,
+      "name": "Beauty",
+      "sampleData": true,
+      "themeRowCount": 12
+    },
+    {
+      "baselineKind": "sample_reference_export",
+      "baselineMonth": "2026-10",
+      "categoryId": "consumer-electronics",
+      "curatedCampaignReferences": [],
+      "lastRoutineCheck": null,
+      "name": "Consumer Electronics",
+      "sampleData": true,
+      "themeRowCount": 12
+    },
+    {
+      "baselineKind": "sample_reference_export",
+      "baselineMonth": "2026-10",
+      "categoryId": "qsr",
+      "curatedCampaignReferences": [],
+      "lastRoutineCheck": null,
+      "name": "QSR",
+      "sampleData": true,
+      "themeRowCount": 12
+    },
+    {
+      "baselineKind": "sample_reference_export",
+      "baselineMonth": "2026-10",
+      "categoryId": "travel",
+      "curatedCampaignReferences": [],
+      "lastRoutineCheck": null,
+      "name": "Travel",
+      "sampleData": true,
+      "themeRowCount": 12
+    }
+  ],
+  "pipelineStatus": "scheduled_collection_and_review_only",
+  "promotionAutomation": false,
+  "schemaVersion": 1
+}

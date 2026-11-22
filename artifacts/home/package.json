@@ -1,0 +1,34 @@
+{
+  "name": "@workspace/home",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm run build && node ./dist/index.mjs",
+    "build": "node ./build.mjs",
+    "start": "node ./dist/index.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:mcp": "node ./scripts/mcp-test.mjs",
+    "test:protocols": "node ./scripts/protocol-test.mjs",
+    "test:browser": "node ./scripts/browser-test.mjs",
+    "test:experiments": "node ./scripts/experiments-test.mjs",
+    "test:wet-lab": "node ./scripts/wet-lab-test.mjs",
+    "test:experiment-ui": "node ./scripts/experiments-browser-test.mjs",
+    "test:live-flair": "node ./scripts/live-flair-test.mjs",
+    "verify": "node ./scripts/verify.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "compression": "^1.8.2",
+    "express": "^5.3.0",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "catalog:",
+    "axe-core": "^4.14.1",
+    "esbuild": "0.28.2",
+    "typescript": "~5.9.3"
+  }
+}

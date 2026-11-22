@@ -1,0 +1,86 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+const base = (process.argv[2] || "http://127.0.0.1:5181").replace(/\/$/, "");
+let n = 0;
+const check = (name, value) => { assert.ok(value, name); console.log("PASS ", name); n++; };
+const get = async p => { const r = await fetch(base + p); assert.equal(r.status, 200); return r; };
+const post = (path, body) => fetch(base + path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+const home = await (await get("/")).text();
+const pathsFor = async p => JSON.parse((await readFile(new URL(p, import.meta.url), "utf8")).match(/paths\s*=\s*(\[[^\]]+\])/)[1]);
+const routeOwners = [
+  ...((await pathsFor("../.replit-artifact/artifact.toml")).map(path => ({path,owner:"home"}))),
+  ...((await pathsFor("../../api-server/.replit-artifact/artifact.toml")).map(path => ({path,owner:"legacy-api"}))),
+].sort((a,b) => b.path.length-a.path.length);
+const owns = path => routeOwners.find(r => r.path === "/" || path === r.path || path.startsWith(r.path + "/"))?.owner;
+check("Registered paths explicitly route tool calls ahead of legacy /api", owns("/api/tools/call") === "home");
+check("Registered paths explicitly route experiment APIs ahead of legacy /api", owns("/api/experiments/leaderbored/claim") === "home");
+check("Legacy API health ownership is preserved", owns("/api/healthz") === "legacy-api");
+const agentGuide = await (await get("/agents.md")).text();
+check("Central agent guide distinguishes thinking, experiments and spending boundaries", agentGuide.includes("/experiments/facts-with-flair.md") && agentGuide.includes("/experiments/leaderbored/mcp") && agentGuide.includes("explicit human permission"));
+for (const slug of ["facts-with-flair", "leaderbored"]) {
+  const path = "/experiments/" + slug;
+  const response = await get(path);
+  const html = await response.text();
+  check(`${slug}: native, not an iframe or embedded standalone site`, html.includes('data-experiment="' + slug + '"') && !html.includes("<iframe"));
+  check(`${slug}: shared home navigation and brand`, html.includes('class="bet-nav"') && html.includes('href="/#multimodality"') && html.includes(">Jack Smyth</a>"));
+  check(`${slug}: canonical URL is inside core app`, html.includes('rel="canonical" href="' + base + path + '"'));
+  check(`${slug}: shared paper-and-lemon tokens and self-hosted fonts`, html.includes("--bg:#f6f4ee") && html.includes('--lemon:#f2f64a') && html.includes('/fonts/spacegrotesk-0640890476.woff2'));
+  check(`${slug}: no third-party font request required`, !html.includes("fonts.googleapis.com") && !html.includes("fonts.gstatic.com"));
+  const md = await (await get(path + ".md")).text();
+  check(`${slug}: same experiment exposed in Markdown`, md.includes(base + path) && md.includes("Flint from Springboards"));
+  const negotiated = await fetch(base + path, { headers: { accept: "text/markdown" } });
+  check(`${slug}: Markdown content negotiation`, negotiated.headers.get("content-type").includes("text/markdown") && await negotiated.text() === md);
+  const csp = response.headers.get("content-security-policy");
+  const nonce = html.match(/<style nonce="([^"]+)"/)?.[1];
+  check(`${slug}: nonced CSP matches real markup`, !!nonce && csp.includes("'nonce-" + nonce + "'") && !csp.includes("unsafe-inline") && !csp.includes("unsafe-eval"));
+  check(`${slug}: receipt-friendly no-store and no-referrer policy`, response.headers.get("cache-control") === "no-store" && response.headers.get("referrer-policy") === "no-referrer");
+  check(`${slug}: per-request correlation ID`, /^[a-f0-9-]{36}$/.test(response.headers.get("x-request-id")));
+}
+check("Home's primary experiment links are internal", home.includes('href="/experiments/facts-with-flair"') && home.includes('href="/experiments/leaderbored"'));
+check("Home explains how the three bets connect", home.includes("Three bets. One direction.") && home.includes("Be worth choosing.") && home.includes("Be understood.") && home.includes("Be useful in action."));
+const examples = await (await get("/api/experiments/facts-with-flair/examples")).json();
+check("All eight genuine retailer snapshots retained", examples.examples.length === 8 && examples.examples.every(e => e.sourceUrl.startsWith("https://") && e.sourceCheckedAt && e.facts.length));
+check("Every source fact still has its exact quote", examples.examples.every(e => e.facts.every(f => typeof f.quote === "string" && f.quote.includes(f.value))));
+check("Highlights correspond to literal visible rewrite text", examples.examples.every(e => e.highlights.every(h => e.description.includes(h.phrase))));
+check("Every highlight traces to a real research reference", examples.examples.every(e => e.highlights.every(h => examples.research[h.researchId]?.url.startsWith("https://"))));
+const selected = await (await get("/experiments/facts-with-flair?example=" + examples.examples[1].id)).text();
+check("No-JS product selection works by URL", selected.includes('id="example-title">' + examples.examples[1].productName));
+const categoryData = await (await get("/api/experiments/leaderbored/categories")).json();
+check("Category provenance is explicit, including fallback mode", ["existing-service", "bundled-october-2026-snapshot"].includes(categoryData.delivery));
+check("Every category remains labelled as sample data", categoryData.sampleData && categoryData.categories.every(c => c.sampleData));
+const category = categoryData.categories[0];
+const categoryPage = await (await get("/experiments/leaderbored?category=" + category.id)).text();
+check("No-JS category selection works by URL", categoryPage.includes('id="category-name">' + category.name));
+let r = await post("/api/experiments/leaderbored/checkout", { categoryId: "beauty", approved: false });
+check("Checkout cannot be requested without explicit approval flag", r.status === 400);
+r = await post("/api/experiments/leaderbored/claim", { categoryId: "beauty", checkoutSessionId: "synthetic-invalid-receipt", requestId: crypto.randomUUID(), approved: true });
+check("Claims reject invalid receipts without sending them upstream", r.status === 400);
+r = await post("/api/experiments/facts-with-flair/extract", { url: "http://unsafe.example/item" });
+check("Extraction enforces HTTPS before forwarding", r.status === 400);
+r = await post("/api/experiments/facts-with-flair/fetch-anywhere", { upstream: "https://elsewhere.example" });
+check("Adapter cannot be used as an open proxy", r.status === 404);
+r = await fetch(base + "/api/experiments/facts-with-flair/extract", { method: "POST", headers: { "content-type": "application/json" }, body: "{" });
+const malformed = await r.json();
+check("Malformed JSON returns a safe error with request ID, not a stack", r.status === 400 && malformed.requestId && !JSON.stringify(malformed).includes("SyntaxError"));
+const spoofed = await fetch(base + "/.well-known/poppy.json", { headers: { "x-forwarded-host": "attacker.example" } });
+check("Caller cannot rewrite canonical discovery via X-Forwarded-Host", !(await spoofed.text()).includes("attacker.example"));
+const font = await get("/fonts/spacegrotesk-0640890476.woff2");
+check("Hashed self-hosted font is immutable-cacheable", font.headers.get("cache-control").includes("immutable") && Number(font.headers.get("content-length")) > 10000);
+const secondHome = await (await get("/")).text();
+check("HTML nonces rotate between requests", home.match(/<style nonce="([^"]+)"/)[1] !== secondHome.match(/<style nonce="([^"]+)"/)[1]);
+const compressed = await fetch(base + "/", { headers: { "accept-encoding": "gzip" } });
+check("Large HTML is compressed", compressed.headers.get("content-encoding") === "gzip");
+const sitemap = await (await get("/sitemap.xml")).text();
+check("Experiments are in the canonical sitemap", sitemap.includes("/experiments/facts-with-flair") && sitemap.includes("/experiments/leaderbored"));
+const c = new Client({ name: "jack-experiment-read-only-test", version: "1.0.0" });
+try {
+  await c.connect(new StreamableHTTPClientTransport(new URL(base + "/experiments/leaderbored/mcp")));
+  const t = await c.listTools();
+  check("Nested Leaderbored MCP initializes and lists eight real tools", t.tools.length === 8 && t.tools.some(t => t.name === "leaderbored_catalog"));
+  const catalog = await c.callTool({ name: "leaderbored_catalog", arguments: {} });
+  check("Nested MCP reaches the free live catalog", !catalog.isError && catalog.content.length > 0);
+  console.log("No checkout, claim, payment or credit use was attempted by this test.");
+} finally { await c.close(); }
+console.log(`\n${n}/${n} experiment HTTP/security checks passed.`);
