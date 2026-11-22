@@ -381,7 +381,7 @@ function glassBoxSchematic(c: LabCycle) {
 
 function wetLabBody() {
   const c = activeCycle;
-  return `<div class="experiment" data-experiment="wet-lab">
+  return `<div class="experiment" data-experiment="wet-lab" data-agent-spec="MCP: /experiments/wet-lab/mcp · API: /api/experiments/wet-lab/cycle · MODELS: gemini-4-hydrogen + gemini-decision-1 + gemini-nano-banana-2.1 · CAP: A$100 AUD">
   <div class="crumb"><a href="/">Jack Smyth</a><span>/</span><a href="/#multimodality">Multimodality</a><span>/</span><span>Agentic Marketing Wet Lab</span></div>
   <div class="eyebrow">Experiment 03 · autonomous research lab · ${e(c.month)}</div>
   <h1>The Agentic<br>Marketing Wet Lab.</h1>

@@ -28,12 +28,17 @@ function betSection(b: Bet) {
     : b === "anticipation"
     ? `<aside class="spotlight"><span class="wt">Focused build 02 · anticipation in practice</span><h3>Leaderbored.</h3><p>What does an agency look like when its next client is an agent?</p><p>A small market for divergent advertising ideas: the human approves the budget; the agent gets a concept, an execution and a reason it differs. Ten credits for A$1.00. One saved idea per credit.</p><a class="btn" href="/experiments/leaderbored">Try Leaderbored →</a><small>Powered by Flint from Springboards. Category patterns are sample data.</small></aside>`
     : "";
-  return `<section class="bet" id="${b}" data-bet="${b}">
+  const agentSpec = b === "differentiation"
+    ? 'MCP: get_positions({ bet: "differentiation" }) · BUILD: /experiments/facts-with-flair'
+    : b === "multimodality"
+    ? 'MCP: get_positions({ bet: "multimodality" }) · LAB: /experiments/wet-lab/mcp'
+    : 'MCP: get_positions({ bet: "anticipation" }) · ACTION MCP: /experiments/leaderbored/mcp';
+  return `<section class="bet" id="${b}" data-bet="${b}" data-agent-spec="${esc(agentSpec)}">
   <div class="bet-head"><span class="num">0${B.n}</span><div><h2>${B.title}</h2><p class="q">${esc(B.question)}</p></div></div>
   <p class="thesis">${esc(B.thesis)}</p>
   ${spotlight}
   <div class="cols">
-    <div><h3>The thinking</h3><ul class="claims">${CLAIMS.filter((c) => c.bet === b).slice(0, 3).map(claimLi).join("")}</ul><details><summary>More positions and evidence</summary><ul class="claims">${CLAIMS.filter((c) => c.bet === b).slice(3).map(claimLi).join("")}</ul></details></div>
+    <div><h3>The thinking</h3><ul class="claims">${CLAIMS.filter((c) => c.bet === b).slice(0, 2).map(claimLi).join("")}</ul><details><summary>All ${CLAIMS.filter((c) => c.bet === b).length} sourced positions &amp; evidence</summary><ul class="claims">${CLAIMS.filter((c) => c.bet === b).slice(2).map(claimLi).join("")}</ul></details></div>
     <div><h3>Writing, talks & research</h3><ul class="work">${work.filter(w => w.type !== "experiment")
       .map((w) => `<li class="${w.status}"><span class="wt">${esc(w.type)}</span><h4>${w.url ? `<a href="${esc(w.url)}" rel="noopener">${esc(w.title)}</a>` : esc(w.title)}</h4><p>${esc(w.summary)}</p>${w.status === "pending-details" ? `<em>Awaiting details from Jack</em>` : `<small>${srcLinks(w.sources)}</small>`}</li>`)
       .join("")}</ul>
@@ -125,6 +130,26 @@ main{max-width:1180px;margin:auto;padding:0 20px}
 .circuit-svg a:hover .node rect,.circuit-svg a:focus-visible .node rect{stroke:var(--fg);fill:#fffefa}
 .circuit-svg .n-k{font:600 9.5px var(--mono);fill:#626259;letter-spacing:.08em}.circuit-svg .n-t{font:700 12.5px var(--display);fill:#171714}.circuit-svg .n-s{font:500 10px var(--sans);fill:#626259}
 .creative-card{margin:0}.creative-card img{width:100%;height:auto;border-radius:10px;display:block;margin-bottom:14px;border:1px solid var(--line)}.creative-card figcaption{font-size:14px;line-height:1.5}
+.circuit-readout{margin-top:10px;padding:10px 12px;border-top:1px solid var(--line);font:12px/1.45 var(--mono);color:var(--mut);min-height:42px}
+.circuit-readout strong{color:var(--fg)}
+.lens-switch{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px;background:var(--card);gap:2px}
+.lens-switch button{background:transparent!important;color:var(--mut)!important;border:0!important;border-radius:99px!important;padding:5px 11px!important;font:600 11px var(--mono)!important;letter-spacing:.06em;text-transform:uppercase;margin:0!important;line-height:1}
+.lens-switch button[aria-pressed=true]{background:var(--fg)!important;color:var(--lemon)!important}
+body[data-lens=agent]{--bg:#11110f;--fg:#f4f3ec;--mut:#a6a59a;--line:#2d2d27;--acc:#f2f64a;--card:#181814;--b1:#f2f64a;--b2:#7ee0b8;--b3:#e5d96b}
+body[data-lens=agent] header.top{background:rgba(17,17,15,.94)}
+body[data-lens=agent] .btn,body[data-lens=agent] button{background:var(--lemon);color:#11110f}
+body[data-lens=agent] .btn.ghost,body[data-lens=agent] button.secondary{background:transparent;color:var(--fg);border-color:var(--line)}
+body[data-lens=agent] .hero h1 em{color:#11110f;background:var(--lemon);padding:0 6px}
+body[data-lens=agent] .circuit-wrap,body[data-lens=agent] .work-cta .surface,body[data-lens=agent] .gb-panel,body[data-lens=agent] .experiment .split>article:nth-child(2){background:#161612;border-color:var(--lemon)}
+body[data-lens=agent] .ask,body[data-lens=agent] .claims li.synthesis,body[data-lens=agent] pre,body[data-lens=agent] code,body[data-lens=agent] .experiment .split>article:first-child{background:#1b1b16}
+body[data-lens=agent] .ask input,body[data-lens=agent] .experiment input:not([type=checkbox]),body[data-lens=agent] .experiment textarea{background:#11110f;color:var(--fg);border-color:#3a3a32}
+body[data-lens=agent] .circuit-svg .node rect{fill:#181814;stroke:#3d3d35}
+body[data-lens=agent] .circuit-svg .node.lead rect{fill:#1f1f18;stroke:var(--lemon)}
+body[data-lens=agent] .circuit-svg .node.accent rect{fill:var(--lemon);stroke:var(--lemon)}
+body[data-lens=agent] .circuit-svg .n-t{fill:#f4f3ec}body[data-lens=agent] .circuit-svg .n-k,body[data-lens=agent] .circuit-svg .n-s{fill:#a6a59a}
+body[data-lens=agent] .circuit-svg .node.accent .n-t,body[data-lens=agent] .circuit-svg .node.accent .n-k,body[data-lens=agent] .circuit-svg .node.accent .n-s{fill:#11110f}
+body[data-lens=agent] .circuit-svg .wire{stroke:#3a3a32}body[data-lens=agent] .circuit-svg .wire-active{stroke:var(--lemon)}
+body[data-lens=agent] [data-agent-spec]::before{content:"[ AGENT X-RAY ]  " attr(data-agent-spec);display:block;font:600 11px/1.5 var(--mono);color:var(--lemon);border:1px dashed rgba(242,246,74,.45);background:rgba(242,246,74,.06);padding:7px 12px;border-radius:8px;margin-bottom:18px;letter-spacing:.03em;overflow-wrap:anywhere}
 .sans,.tag,.wt,nav,.btn,button,small{font-family:var(--sans)}code,pre{font-family:var(--mono)}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .tile{display:block;text-decoration:none;border:1px solid var(--line);background:var(--card);padding:24px;border-radius:13px;min-height:220px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
@@ -224,14 +249,16 @@ footer h3{font:700 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-
 <body>
 <a class="sk" href="#main">Skip to content</a>
 <header class="top"><nav aria-label="Primary"><b><a href="/">Jack Smyth</a></b>
-<div class="bet-nav"><a href="/experiments/wet-lab">Wet Lab</a><a href="/#differentiation">Differentiation</a><a href="/#multimodality">Multimodality</a><a href="/#anticipation">Anticipation</a></div><a class="nav-agent" href="/#mcp">For agents</a></nav></header>
+<div class="bet-nav"><a href="/experiments/wet-lab">Wet Lab</a><a href="/#differentiation">Differentiation</a><a href="/#multimodality">Multimodality</a><a href="/#anticipation">Anticipation</a></div>
+<div class="lens-switch" role="group" aria-label="View lens"><button type="button" data-lens-btn="human" aria-pressed="true">Human</button><button type="button" data-lens-btn="agent" aria-pressed="false">Agent</button></div>
+<a class="nav-agent" href="/#mcp">MCP</a></nav></header>
 <main id="main" tabindex="-1">
 ${view ? view.body : `
-<section class="hero">
+<section class="hero" data-agent-spec="ENTITY: schema.org/Person + Dataset · DISCOVERY: /llms.txt · /.well-known/agent-card.json · /mcp">
 <div class="hero-grid">
   <div>
     <h1>Be the answer <em>agents</em> choose.</h1>
-    <p class="lead">${esc(SITE.tagline)} One autonomous marketing wet lab, three bets on how brands win in the agent era, and open MCP interfaces so agents can inspect and act directly.</p>
+    <p class="lead">${esc(SITE.tagline)} One autonomous marketing wet lab, three bets on B2A and GEM, and open interfaces so agents can inspect and act directly.</p>
     <div class="hero-actions">
       <a class="btn" href="/experiments/wet-lab">Inspect the Wet Lab →</a>
       <a class="btn ghost" href="/#mcp">Connect an agent</a>
@@ -245,13 +272,13 @@ ${view ? view.body : `
     <svg class="circuit-svg" viewBox="0 0 480 330" role="img" aria-label="Interactive schematic of the Agentic Marketing Wet Lab: Industry Pulse branches into three competing agent teams (Differentiation, Multimodality, Anticipation), converges at the Calibrated Judge and A$100 Google Ads spend breaker, and publishes open CMO evidence.">
       <!-- Static guide rails -->
       <path class="wire" d="M240 58 V92 M82 92 H398 M82 92 V120 M240 92 V120 M398 92 V120 M82 194 V222 M240 194 V222 M398 194 V222 M82 222 H398 M240 222 V250"/>
-      <!-- Animated signal paths (winning Team Differentiation path highlighted) -->
+      <!-- Animated signal paths -->
       <path class="wire-active" d="M240 58 V92 H82 V120 M82 194 V222 H240 V250"/>
       <path class="wire-active" d="M240 92 V120 M240 194 V222"/>
       <path class="wire-active" d="M240 92 H398 V120 M398 194 V222 H240"/>
 
       <!-- Node 0: Industry Pulse -->
-      <a href="/experiments/wet-lab#under-the-hood">
+      <a href="/experiments/wet-lab#under-the-hood" data-circuit-info="01 PULSE → gemini-4-hydrogen + Google Search Grounding sets the monthly CMO brief automatically.">
         <g class="node">
           <rect x="120" y="10" width="240" height="48" rx="10"/>
           <text class="n-k" x="240" y="27" text-anchor="middle">01 · INDUSTRY PULSE</text>
@@ -260,7 +287,7 @@ ${view ? view.body : `
       </a>
 
       <!-- Node 1: Team Differentiation (Cycle 01 Winner) -->
-      <a href="/#differentiation">
+      <a href="/#differentiation" data-circuit-info="TEAM 01 (81/100 ★) → Independent Benchmark vs. Vendor Case Study on Demand Gen (A$100 AUD).">
         <g class="node lead">
           <rect x="10" y="120" width="144" height="74" rx="10"/>
           <text class="n-k" x="82" y="139" text-anchor="middle">TEAM 01 · 81/100 ★</text>
@@ -270,7 +297,7 @@ ${view ? view.body : `
       </a>
 
       <!-- Node 2: Team Multimodality -->
-      <a href="/#multimodality">
+      <a href="/#multimodality" data-circuit-info="TEAM 02 → Multimodal YouTube Shorts proof vs. standard claim ad (gemini-omni-1.2-flash).">
         <g class="node">
           <rect x="168" y="120" width="144" height="74" rx="10"/>
           <text class="n-k" x="240" y="139" text-anchor="middle">TEAM 02 · BET 02</text>
@@ -280,7 +307,7 @@ ${view ? view.body : `
       </a>
 
       <!-- Node 3: Team Anticipation -->
-      <a href="/#anticipation">
+      <a href="/#anticipation" data-circuit-info="TEAM 03 (76/100) → Call-to-Agent (CTAi / MCP) Search RSA vs. editorial copy on jacksmyth.fyi.">
         <g class="node">
           <rect x="326" y="120" width="144" height="74" rx="10"/>
           <text class="n-k" x="398" y="139" text-anchor="middle">TEAM 03 · 76/100</text>
@@ -290,7 +317,7 @@ ${view ? view.body : `
       </a>
 
       <!-- Node 4: Judge + Guardrails + Output -->
-      <a href="/experiments/wet-lab">
+      <a href="/experiments/wet-lab" data-circuit-info="JUDGE + CAP → gemini-decision-1 calibrated rubric + hard-coded A$100 Google Ads MCP breaker.">
         <g class="node accent">
           <rect x="70" y="250" width="340" height="66" rx="10"/>
           <text class="n-k" x="240" y="270" text-anchor="middle">CALIBRATED JUDGE · HARD A$100 CAP</text>
@@ -299,12 +326,13 @@ ${view ? view.body : `
         </g>
       </a>
     </svg>
+    <figcaption class="circuit-readout" id="circuit-readout"><strong>ACTIVE WINNER ·</strong> Team Differentiation (81/100): Independent Benchmark vs. Vendor Case Study on Demand Gen.</figcaption>
   </figure>
 </div>
 </section>
 
-<section class="intro"><h2>Three bets. One direction.</h2>
-<p>Good SEO is good GEO—and both now depend on unique expertise, verifiable evidence, and callable utility. When AI agents become the buyer, brands must pass three sequential machine tests: <strong>Differentiation</strong> (be worth choosing), <strong>Multimodality</strong> (show, don’t just claim), and <strong>Anticipation</strong> (let agents act). Every month, the <a href="/experiments/wet-lab">Wet Lab</a> pits one agent team per bet against each other on A$100 AUD to test these principles in public.</p>
+<section class="intro" data-agent-spec="THESIS: B2A (Brand-to-Agent) + GEM (Generative Engine Marketing) · AUTHOR: Jack Smyth, Country Lead AU, The Brandtech Group"><h2>Three bets. One direction.</h2>
+<p>Agents are an audience in their own right. They compare, watch, and act before a human ever clicks. Three bets—<strong>Differentiation</strong> (why an agent shortlists you), <strong>Multimodality</strong> (how video proves what text only claims), and <strong>Anticipation</strong> (interfaces built for call-to-agent)—tested live every month on A$100 AUD in the <a href="/experiments/wet-lab">Wet Lab</a>.</p>
 <small class="muted">Editorial framing of Jack's three-bet brief; not a quotation.</small>
 <div class="system"><a href="#differentiation"><b>Be worth choosing.</b><small>01 Differentiation → Facts with Flair</small></a><a href="#multimodality"><b>Be understood.</b><small>02 Multimodality → YouTube-in-AI &amp; Wet Lab</small></a><a href="#anticipation"><b>Be useful in action.</b><small>03 Anticipation → Leaderbored</small></a></div>
 <h2>The person behind the bets</h2>
@@ -316,7 +344,7 @@ ${view ? view.body : `
 
 ${bets.map(betSection).join("\n")}
 
-<section id="mcp">
+<section id="mcp" data-agent-spec="TRANSPORT: Streamable HTTP · AUTH: none (read-only) · PROTOCOLS: MCP, A2A 1.0, Poppy 1.0, OpenAPI, WebMCP">
 <h2>Use my thinking in your agent</h2>
 <p class="rules">A read-only MCP server over this same knowledge base. Every item says whether it is sourced or generated synthesis, and carries source links. No login, no actions, nothing is stored.</p>
 <h3 class="wt">Endpoint <button class="btn ghost copy" data-copy="MCP_URL" type="button">Copy</button></h3>
@@ -378,8 +406,13 @@ a.innerHTML=d.results.map(h=>{const i=h.item;const t=h.type==='source'?i.title:h
 return '<div class="hit"><small>'+h.type+(i.label?' · '+i.label:'')+'</small><div>'+t.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'})[c])+'</div><small>'+s+'</small></div>'}).join('');return d}catch(err){a.textContent='Search failed.';return {error:'Search failed'}}}
 if(f)f.addEventListener('submit',e=>{e.preventDefault();const result=runSearch();if(e.agentInvoked&&typeof e.respondWith==='function')e.respondWith(result)});
 document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.origin+'/mcp');b.textContent='Copied';}catch{b.textContent='Select endpoint to copy';}setTimeout(()=>b.textContent='Copy',1800)}));
-const cWrap=document.getElementById('signal-circuit'),cBtn=document.getElementById('circuit-motion-btn');
+const cWrap=document.getElementById('signal-circuit'),cBtn=document.getElementById('circuit-motion-btn'),cRead=document.getElementById('circuit-readout');
 if(cWrap&&cBtn)cBtn.addEventListener('click',()=>{const p=cWrap.classList.toggle('paused');cBtn.textContent=p?'Play motion':'Pause motion'});
+if(cRead)document.querySelectorAll('[data-circuit-info]').forEach(el=>{const show=()=>{cRead.textContent=el.getAttribute('data-circuit-info')||''};el.addEventListener('mouseenter',show);el.addEventListener('focus',show)});
+const lBtns=document.querySelectorAll('[data-lens-btn]');
+function setLens(mode){const apply=()=>{if(mode==='agent')document.body.setAttribute('data-lens','agent');else document.body.removeAttribute('data-lens');lBtns.forEach(b=>b.setAttribute('aria-pressed',b.getAttribute('data-lens-btn')===mode?'true':'false'));try{localStorage.setItem('js-lens',mode)}catch{}};if(document.startViewTransition&&window.matchMedia('(prefers-reduced-motion: no-preference)').matches)document.startViewTransition(apply);else apply()}
+try{if(localStorage.getItem('js-lens')==='agent')setLens('agent')}catch{}
+lBtns.forEach(b=>b.addEventListener('click',()=>setLens(b.getAttribute('data-lens-btn')||'human')));
 const secs=[...document.querySelectorAll('.bet,#mcp')],links=[...document.querySelectorAll('nav a')];
 if ('IntersectionObserver' in window) { const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='/#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'}); secs.forEach(s=>observer.observe(s)); }
 </script>
