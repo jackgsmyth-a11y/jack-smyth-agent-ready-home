@@ -1,0 +1,63 @@
+name: Monthly Self-Optimising Reflection
+
+on:
+  schedule:
+    # 1st of every month at 09:00 AEST (23:00 UTC on the last day / 00:00 UTC on the 1st)
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "Target month (YYYY-MM). Defaults to current UTC month."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  reflect-and-propose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run monthly reflection against live jacksmyth.fyi telemetry
+        env:
+          SITE_ORIGIN: https://jacksmyth.fyi
+          TARGET_MONTH: ${{ github.event.inputs.month }}
+          SELF_OPT_CRON_SECRET: ${{ secrets.SELF_OPT_CRON_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node artifacts/home/scripts/monthly-reflect.mjs
+
+      - name: Run full verification suite (typecheck, build, MCP, protocols, browser, a11y, self-opt)
+        run: pnpm --filter @workspace/home run verify
+
+      - name: Open Monthly Reflection Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: self-opt/monthly-reflection
+          commit-message: "chore(self-opt): monthly UX & AI visibility reflection"
+          title: "Monthly Self-Optimising Reflection & Optimisation Proposals"
+          body: |
+            Automated monthly reflection generated from live zero-PII human UX (Core Web Vitals, scroll depth, lens switches, experiment clicks) and AI crawler/MCP telemetry on `jacksmyth.fyi`.
+
+            ### Guardrails Passed
+            - `pnpm --filter @workspace/home run verify` (typecheck, build, MCP, protocol, browser, axe-core accessibility, self-opt tests)
+
+            Review the reflection report in `artifacts/home/content/reflections/` and merge to deploy via Cloud Build → Cloud Run.
+          labels: self-optimising, automated

@@ -8,11 +8,23 @@ import { registerProtocols } from "./protocols.js";
 import { webmcpScript } from "./webmcp.js";
 import { registerExperiments, EXPERIMENTS } from "./experiments.js";
 import { registerWetLab } from "./wet-lab.js";
+import { registerTelemetry } from "./telemetry.js";
+import { registerSelfOpt } from "./self-opt.js";
 import { BETS, CLAIMS, SITE, SOURCES, SOURCE_GAPS, STYLE_PRINCIPLES, VIDEO_BRIEFS, WORKS, type Bet } from "./knowledge.js";
 
 const app = express();
 app.disable("x-powered-by");
 app.disable("etag");
+// Permanent 301 redirect from HTTP to HTTPS in production behind Cloud Run proxy
+app.use((req, res, next) => {
+  const proto = (req.headers["x-forwarded-proto"] as string)?.split(",")[0]?.trim();
+  const host = String(req.headers.host || "").split(",")[0].trim();
+  if (proto === "http" && host && !host.startsWith("localhost") && !host.startsWith("127.0.0.1")) {
+    res.redirect(301, `https://${host}${req.originalUrl}`);
+    return;
+  }
+  next();
+});
 app.use(requestSecurity);
 app.use(compression({
   threshold: 1024,
@@ -46,9 +58,11 @@ const origin = (req: express.Request) => {
   if (!/^[a-zA-Z0-9.:[\]-]+$/.test(host)) return "http://localhost";
   return `${proto === "https" ? "https" : "http"}://${host}`;
 };
+registerTelemetry(app);
 registerProtocols(app, origin);
 registerWetLab(app, origin);
 registerExperiments(app, origin);
+registerSelfOpt(app, origin);
 app.get("/webmcp.js", (_req, res) => res.type("text/javascript").send(webmcpScript));
 
 // ---- MCP (stateless Streamable HTTP, read-only) ----
@@ -141,13 +155,21 @@ app.get("/agents.md", (req, res) => {
 app.get("/robots.txt", (req, res) =>
   res.type("text/plain").send(`User-agent: *\nAllow: /\n\nSitemap: ${origin(req)}/sitemap.xml\n`),
 );
+const SITEMAP_LASTMOD = new Date().toISOString().slice(0, 10);
 app.get("/sitemap.xml", (req, res) => {
   const b = origin(req);
+  const paths = ["/", "/reflections", "/llms.txt", "/knowledge.json", ...EXPERIMENTS.map(x => x.path)];
   res.type("application/xml").send(
-    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${["/", "/llms.txt", "/knowledge.json", ...EXPERIMENTS.map(x => x.path)].map((p) => `<url><loc>${b}${p}</loc></url>`).join("")}</urlset>`,
+    `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${paths.map((p) => `<url><loc>${b}${p}</loc><lastmod>${SITEMAP_LASTMOD}</lastmod></url>`).join("")}</urlset>`,
   );
 });
 app.get("/healthz", (_req, res) => res.json({ ok: true }));
+
+const OG_IMAGE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630"><rect width="1200" height="630" fill="#f6f4ee"/><rect x="64" y="64" width="1072" height="502" rx="24" fill="#fffefa" stroke="#171714" stroke-width="2"/><rect x="108" y="108" width="220" height="36" rx="18" fill="#f2f64a" stroke="#171714" stroke-width="1.5"/><text x="218" y="131" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-weight="700" font-size="14" letter-spacing="1.2" fill="#171714">JACKSMYTH.FYI · B2A</text><text x="108" y="256" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-weight="700" font-size="74" letter-spacing="-3" fill="#171714">Be the answer</text><rect x="108" y="318" width="528" height="24" fill="#f2f64a"/><text x="108" y="336" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-weight="700" font-size="74" letter-spacing="-3" fill="#171714">agents choose.</text><text x="108" y="418" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="26" fill="#626259">Three bets on Differentiation, Multimodality &amp; Anticipation —</text><text x="108" y="454" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="26" fill="#626259">tested live every month on A$100 AUD in the Agentic Marketing Wet Lab.</text><text x="108" y="524" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="16" fill="#171714">MCP: /mcp · LLMS: /llms.txt · A2A · POPPY 1.0 · SELF-OPTIMISING</text></svg>`;
+app.get("/og-image.svg", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=86400");
+  res.type("image/svg+xml").send(OG_IMAGE_SVG);
+});
 
 const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#171714"/><rect x="8" y="48" width="48" height="8" rx="3" fill="#f2f64a"/><text x="32" y="38" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="700" font-size="28" letter-spacing="-1.5" fill="#f6f4ee">JS</text></svg>`;
 app.get(["/favicon.svg", "/favicon.ico"], (_req, res) => {

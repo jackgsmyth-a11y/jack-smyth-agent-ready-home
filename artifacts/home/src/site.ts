@@ -49,6 +49,11 @@ function betSection(b: Bet) {
 }
 
 export function page(base: string, view?: PageView, nonce = "") {
+  const pageUrl = `${base}${view?.path || "/"}`;
+  const pageTitle = view?.title || "Jack Smyth — three bets on agents, video and anticipation";
+  const pageDesc = view?.description || SITE.tagline;
+  const ogImage = `${base}/og-image.svg`;
+  const lastMod = "2026-11-23";
   const ld = {
     "@context": "https://schema.org",
     "@graph": [
@@ -60,6 +65,17 @@ export function page(base: string, view?: PageView, nonce = "") {
         description: SITE.tagline,
       },
       { "@type": "WebSite", "@id": `${base}/#site`, url: base, name: "Jack Smyth", about: { "@id": `${base}/#jack` } },
+      ...(!view ? [{
+        "@type": "ProfilePage",
+        "@id": `${base}/#profile-page`,
+        url: `${base}/`,
+        name: pageTitle,
+        description: pageDesc,
+        dateCreated: "2026-11-20",
+        dateModified: lastMod,
+        mainEntity: { "@id": `${base}/#jack` },
+        isPartOf: { "@id": `${base}/#site` },
+      }] : []),
       {
         "@type": "Dataset",
         "@id": `${base}/experiments/wet-lab#dataset`,
@@ -69,7 +85,29 @@ export function page(base: string, view?: PageView, nonce = "") {
         creator: { "@id": `${base}/#jack` },
         isAccessibleForFree: true,
       },
-      ...(view ? [{ "@type": "WebPage", "@id": `${base}${view.path}`, url: `${base}${view.path}`, name: view.title, description: view.description, isPartOf: { "@id": `${base}/#site` }, about: { "@id": `${base}/#jack` } }] : []),
+      ...(view ? [
+        { "@type": "WebPage", "@id": pageUrl, url: pageUrl, name: pageTitle, description: pageDesc, isPartOf: { "@id": `${base}/#site` }, about: { "@id": `${base}/#jack` } },
+        {
+          "@type": "TechArticle",
+          "@id": `${pageUrl}#article`,
+          headline: pageTitle,
+          description: pageDesc,
+          url: pageUrl,
+          image: ogImage,
+          dateModified: lastMod,
+          author: { "@id": `${base}/#jack` },
+          publisher: { "@id": `${base}/#jack` },
+          mainEntityOfPage: { "@id": pageUrl },
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": `${pageUrl}#breadcrumb`,
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Jack Smyth", item: `${base}/` },
+            { "@type": "ListItem", position: 2, name: pageTitle, item: pageUrl },
+          ],
+        },
+      ] : []),
       ...WORKS.filter((w) => w.status === "documented" && w.url && (w.type === "writing" || w.type === "research")).map((w) => ({
         "@type": "Article", headline: w.title, url: w.url,
         ...(w.authors ? { author: w.authors.map((name) => name === "Jack Smyth" ? { "@id": `${base}/#jack` } : { "@type": "Person", name }) }
@@ -81,16 +119,18 @@ export function page(base: string, view?: PageView, nonce = "") {
   return `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(view?.title || "Jack Smyth — three bets on agents, video and anticipation")}</title>
-<meta name="description" content="${esc(view?.description || SITE.tagline)}">
-<link rel="canonical" href="${esc(base)}${view?.path || "/"}">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<title>${esc(pageTitle)}</title>
+<meta name="description" content="${esc(pageDesc)}">
+<link rel="canonical" href="${esc(pageUrl)}">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preload" href="/fonts/spacegrotesk-0640890476.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/dmsans-9fea608a94.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="alternate" type="text/markdown" href="/index.md"><link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Jack Smyth"><meta property="og:url" content="${esc(base)}${view?.path || "/"}">
-<meta property="og:title" content="${esc(view?.title || "Jack Smyth — three bets on agents, video and anticipation")}"><meta property="og:description" content="${esc(view?.description || SITE.tagline)}">
-<meta name="twitter:card" content="summary"><meta name="twitter:title" content="${esc(view?.title || "Jack Smyth — three bets on agents, video and anticipation")}"><meta name="twitter:description" content="${esc(view?.description || SITE.tagline)}">
+<meta property="og:type" content="${view ? "article" : "website"}"><meta property="og:site_name" content="Jack Smyth"><meta property="og:url" content="${esc(pageUrl)}">
+<meta property="og:title" content="${esc(pageTitle)}"><meta property="og:description" content="${esc(pageDesc)}">
+<meta property="og:image" content="${esc(ogImage)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(pageTitle)}"><meta name="twitter:description" content="${esc(pageDesc)}"><meta name="twitter:image" content="${esc(ogImage)}">
 <script nonce="${nonce}" type="application/ld+json">${JSON.stringify(ld)}</script>
 <style nonce="${nonce}">
 @font-face{font-family:"DM Sans";font-style:normal;font-weight:400 800;font-display:swap;src:url("/fonts/dmsans-9fea608a94.woff2") format("woff2")}
@@ -392,7 +432,7 @@ ${view ? `<h3>Three bets. One body of work.</h3><p><a href="/#differentiation">D
 <h3>Known gaps</h3><ul>${SOURCE_GAPS.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>
 <h3>Style principles (generated synthesis from published work)</h3>
 <ul>${STYLE_PRINCIPLES.map((p) => `<li>${esc(p.principle)}</li>`).join("")}</ul>
-<p>Jack's home for experiments, apps and thinking, built from public sources. Generated synthesis is labelled and is not Jack Smyth's own words. Structured data and agent endpoints help discoverability; they do not guarantee inclusion in AI answers.</p>
+<p>Jack's home for experiments, apps and thinking, built from public sources. Generated synthesis is labelled and is not Jack Smyth's own words. Structured data and agent endpoints help discoverability; they do not guarantee inclusion in AI answers. <a href="/reflections">Self-Optimising Reflections</a>.</p>
 </details>
 `}
 </footer>
@@ -417,6 +457,7 @@ const secs=[...document.querySelectorAll('.bet,#mcp')],links=[...document.queryS
 if ('IntersectionObserver' in window) { const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='/#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'}); secs.forEach(s=>observer.observe(s)); }
 </script>
 <script src="/webmcp.js" defer></script>
+<script src="/telemetry.js" defer></script>
 ${view?.script ? `<script src="${esc(view.script)}" defer></script>` : ""}
 </body></html>`;
 }
