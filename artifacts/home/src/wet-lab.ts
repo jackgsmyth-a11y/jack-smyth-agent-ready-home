@@ -1,9 +1,12 @@
 import type { Express, Request, Response } from "express";
+import { timingSafeEqual } from "node:crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import { page } from "./site.js";
 import { wetLabClientScript } from "./wet-lab-client.js";
+import { isFirestoreEnabled, loadWetLabSnapshot, saveWetLabSnapshot } from "./wet-lab-store.js";
+import { runAutonomousPitchSwarm } from "./wet-lab-swarm.js";
 
 export interface CreativeVariant {
   id: string;
@@ -547,6 +550,15 @@ const questionSchema = z.object({
 });
 
 export function registerWetLab(app: Express, origin: (r: Request) => string) {
+  // Hydrate latest cycle from Cloud Firestore on startup when enabled on Cloud Run
+  if (isFirestoreEnabled()) {
+    void loadWetLabSnapshot<LabCycle>("active-cycle").then((saved) => {
+      if (saved && Array.isArray(saved.pitches) && saved.pitches.length > 0) {
+        activeCycle = saved;
+      }
+    });
+  }
+
   app.get("/wet-lab.js", (_req, res) => res.type("text/javascript").send(wetLabClientScript));
 
   app.get("/api/experiments/wet-lab/cycle", (_req, res) => {
@@ -565,6 +577,7 @@ export function registerWetLab(app: Express, origin: (r: Request) => string) {
     const pitch = activeCycle.pitches.find((p) => p.id === parsed.data.pitchId);
     if (!pitch) { res.status(404).json({ error: "Unknown pitch." }); return; }
     pitch.votes += 1;
+    void saveWetLabSnapshot("active-cycle", activeCycle).catch(() => {});
     res.json({ ok: true, pitchId: pitch.id, votes: pitch.votes });
   });
 
@@ -579,7 +592,43 @@ export function registerWetLab(app: Express, origin: (r: Request) => string) {
       submittedAt: new Date().toISOString(),
     };
     submittedQuestions.push(entry);
+    void saveWetLabSnapshot("questions", submittedQuestions.slice(-50)).catch(() => {});
     res.status(201).json({ ok: true, submission: entry });
+  });
+
+  // Secured endpoint for Google Cloud Scheduler or owner CLI to trigger a live autonomous pitch swarm.
+  // Never exposed unauthenticated to prevent token-spend abuse.
+  app.post("/api/experiments/wet-lab/run-cycle", async (req, res) => {
+    res.set({ "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" });
+    const expected = process.env.WET_LAB_CRON_SECRET;
+    if (!expected || expected.length < 16) {
+      res.status(503).json({ error: "Autonomous swarm trigger is not configured on this instance." });
+      return;
+    }
+    const auth = req.get("authorization") || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    const a = Buffer.from(token);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) {
+      res.status(401).json({ error: "Unauthorized." });
+      return;
+    }
+    try {
+      const monthLabel = typeof req.body?.monthLabel === "string" ? req.body.monthLabel.slice(0, 40) : undefined;
+      const result = await runAutonomousPitchSwarm({
+        monthLabel,
+        communityQuestions: submittedQuestions,
+      });
+      activeCycle = result.cycle;
+      const persistence = await saveWetLabSnapshot("active-cycle", activeCycle).catch(() => ({
+        persisted: false,
+        backend: "in-memory-fallback",
+      }));
+      res.status(200).json({ ok: true, cycle: activeCycle, telemetry: result.telemetry, persistence });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Swarm execution failed.";
+      res.status(502).json({ error: message });
+    }
   });
 
   app.post("/experiments/wet-lab/mcp", async (req, res) => {

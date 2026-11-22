@@ -52,6 +52,13 @@ const badSuggest = await fetch(base + "/api/experiments/wet-lab/suggest", {
 });
 check("Wet Lab rejects too-short question submissions", badSuggest.status === 400);
 
+const unauthSwarm = await fetch(base + "/api/experiments/wet-lab/run-cycle", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({}),
+});
+check("Wet Lab autonomous swarm trigger refuses unauthenticated callers", unauthSwarm.status === 401 || unauthSwarm.status === 503);
+
 const client = new Client({ name: "wet-lab-mcp-test", version: "1.0.0" });
 try {
   await client.connect(new StreamableHTTPClientTransport(new URL(base + "/experiments/wet-lab/mcp")));
