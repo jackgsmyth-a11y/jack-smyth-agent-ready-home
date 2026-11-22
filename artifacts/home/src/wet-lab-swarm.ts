@@ -8,28 +8,28 @@ const JUDGE_MODEL = "gemini-decision-1";
 const HARD_CAP_MONTHLY_AUD = 100;
 
 const scoutOutputSchema = z.object({
-  researchQuestion: z.string().min(20).max(320),
-  context: z.string().min(30).max(600),
-  pulseSignals: z.array(z.string().min(10).max(240)).min(2).max(4),
+  researchQuestion: z.string().min(10).max(600),
+  context: z.string().min(15).max(1500),
+  pulseSignals: z.array(z.string().min(5).max(600)).min(2).max(5),
 });
 
 const teamPitchOutputSchema = z.object({
-  title: z.string().min(10).max(120),
-  hypothesis: z.string().min(30).max(500),
-  cmoRelevance: z.string().min(20).max(320),
-  channel: z.string().min(5).max(120),
-  targeting: z.string().min(10).max(240),
+  title: z.string().min(5).max(240),
+  hypothesis: z.string().min(15).max(1500),
+  cmoRelevance: z.string().min(10).max(1200),
+  channel: z.string().min(3).max(400),
+  targeting: z.string().min(5).max(1000),
   budgetAud: z.number().int().min(20).max(HARD_CAP_MONTHLY_AUD),
-  primaryMetric: z.string().min(5).max(140),
-  expectedSampleSize: z.string().min(10).max(180),
-  falsificationCondition: z.string().min(15).max(300),
+  primaryMetric: z.string().min(3).max(600),
+  expectedSampleSize: z.string().min(5).max(800),
+  falsificationCondition: z.string().min(10).max(1200),
   variants: z.array(
     z.object({
-      id: z.string().min(2).max(20),
-      label: z.string().min(3).max(60),
-      hook: z.string().min(10).max(180),
-      format: z.string().min(5).max(120),
-      cta: z.string().min(3).max(60),
+      id: z.string().min(1).max(60),
+      label: z.string().min(2).max(160),
+      hook: z.string().min(5).max(600),
+      format: z.string().min(3).max(600),
+      cta: z.string().min(2).max(240),
     }),
   ).length(2),
 });
