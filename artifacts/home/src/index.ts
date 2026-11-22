@@ -145,6 +145,12 @@ app.get("/sitemap.xml", (req, res) => {
 });
 app.get("/healthz", (_req, res) => res.json({ ok: true }));
 
+const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#171714"/><rect x="8" y="48" width="48" height="8" rx="3" fill="#f2f64a"/><text x="32" y="38" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="700" font-size="28" letter-spacing="-1.5" fill="#f6f4ee">JS</text></svg>`;
+app.get(["/favicon.svg", "/favicon.ico"], (_req, res) => {
+  res.set("Cache-Control", "public, max-age=86400");
+  res.type("image/svg+xml").send(FAVICON_SVG);
+});
+
 // ---- human site ----
 app.get("/", (req, res) => {
   res.vary("Accept");

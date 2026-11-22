@@ -70,10 +70,13 @@ export function page(base: string, view?: PageView, nonce = "") {
 <title>${esc(view?.title || "Jack Smyth — three bets on agents, video and anticipation")}</title>
 <meta name="description" content="${esc(view?.description || SITE.tagline)}">
 <link rel="canonical" href="${esc(base)}${view?.path || "/"}">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preload" href="/fonts/spacegrotesk-0640890476.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/dmsans-9fea608a94.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="alternate" type="text/markdown" href="/index.md"><link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Jack Smyth"><meta property="og:url" content="${esc(base)}${view?.path || "/"}">
 <meta property="og:title" content="${esc(view?.title || "Jack Smyth — three bets on agents, video and anticipation")}"><meta property="og:description" content="${esc(view?.description || SITE.tagline)}">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="${esc(view?.title || "Jack Smyth — three bets on agents, video and anticipation")}"><meta name="twitter:description" content="${esc(view?.description || SITE.tagline)}">
 <script nonce="${nonce}" type="application/ld+json">${JSON.stringify(ld)}</script>
 <style nonce="${nonce}">
 @font-face{font-family:"DM Sans";font-style:normal;font-weight:400 800;font-display:swap;src:url("/fonts/dmsans-9fea608a94.woff2") format("woff2")}
