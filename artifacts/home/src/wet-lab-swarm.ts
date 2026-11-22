@@ -90,7 +90,7 @@ Return a single JSON object with keys:
 - "researchQuestion": one sharp, falsifiable CMO research question (20-320 chars)
 - "context": 2-sentence editorial summary of why CMOs care right now (30-600 chars)
 - "pulseSignals": array of 3 concise grounded industry signals observed via Google Search`,
-    generation_config: { max_output_tokens: 700 },
+    generation_config: { max_output_tokens: 8192 },
   });
 
   const raw = interaction.output_text ?? "";
@@ -129,7 +129,7 @@ Return a single JSON object with exact keys:
     { "id": "v-b", "label": "Variant B (...)", "hook": "...", "format": "...", "cta": "..." }
   ]
 }`,
-    generation_config: { max_output_tokens: 900 },
+    generation_config: { max_output_tokens: 8192 },
   });
 
   const parsed = teamPitchOutputSchema.parse(extractJsonObject(interaction.output_text ?? ""));
