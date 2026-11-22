@@ -25,6 +25,10 @@ app.use("/fonts", express.static(new URL("../public/fonts/", import.meta.url).pa
   maxAge: "1y", immutable: true,
   setHeaders: res => res.setHeader("Cache-Control", "public, max-age=31536000, immutable"),
 }));
+app.use("/lab", express.static(new URL("../public/lab/", import.meta.url).pathname, {
+  maxAge: "7d",
+  setHeaders: res => res.setHeader("Cache-Control", "public, max-age=604800"),
+}));
 app.use((_req, res, next) => {
   res.set("Access-Control-Allow-Origin", "*");
   res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");

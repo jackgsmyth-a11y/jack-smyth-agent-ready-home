@@ -55,6 +55,15 @@ export function page(base: string, view?: PageView, nonce = "") {
         description: SITE.tagline,
       },
       { "@type": "WebSite", "@id": `${base}/#site`, url: base, name: "Jack Smyth", about: { "@id": `${base}/#jack` } },
+      {
+        "@type": "Dataset",
+        "@id": `${base}/experiments/wet-lab#dataset`,
+        name: "Agentic Marketing Wet Lab — Open CMO Ad Experiments",
+        description: "Monthly autonomous marketing experiments devised by three competing AI agent teams, scored by a calibrated Judge Agent, and executed within a hard-capped A$100 AUD Google Ads budget.",
+        url: `${base}/experiments/wet-lab`,
+        creator: { "@id": `${base}/#jack` },
+        isAccessibleForFree: true,
+      },
       ...(view ? [{ "@type": "WebPage", "@id": `${base}${view.path}`, url: `${base}${view.path}`, name: view.title, description: view.description, isPartOf: { "@id": `${base}/#site` }, about: { "@id": `${base}/#jack` } }] : []),
       ...WORKS.filter((w) => w.status === "documented" && w.url && (w.type === "writing" || w.type === "research")).map((w) => ({
         "@type": "Article", headline: w.title, url: w.url,
@@ -95,10 +104,27 @@ nav b{margin-right:auto;font:700 22px var(--display);letter-spacing:-.05em;text-
 nav a{text-decoration:none;color:var(--mut)}nav a:hover,nav a.on{color:var(--fg)}
 nav a{display:inline-flex;align-items:center;min-height:32px;padding:4px 0}nav b a{color:var(--fg)}.bet-nav{display:flex;gap:22px}.nav-agent{border-bottom:2px solid var(--lemon)}
 main{max-width:1180px;margin:auto;padding:0 20px}
-.hero{padding:88px 0 56px}
-.hero h1{font-size:clamp(44px,8vw,98px);line-height:.98;letter-spacing:-.075em;margin:0 0 28px;font-weight:600;max-width:15ch}
+.hero{padding:64px 0 44px}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:42px;align-items:center}
+.hero h1{font-size:clamp(42px,6.2vw,84px);line-height:.98;letter-spacing:-.065em;margin:0 0 22px;font-weight:600;max-width:11ch}
 .hero h1 em{font-style:normal;color:var(--fg);background:linear-gradient(transparent 64%,var(--lemon) 64%,var(--lemon) 90%,transparent 90%)}
-.hero p.lead{font-size:clamp(17px,2.1vw,22px);max-width:47ch;color:var(--mut);margin:0 0 38px}
+.hero p.lead{font-size:clamp(16px,1.7vw,19.5px);max-width:44ch;color:var(--mut);margin:0 0 26px;line-height:1.6}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.hero-actions a.btn{text-decoration:none}
+.circuit-wrap{border:1px solid var(--fg);background:#fffefa;border-radius:16px;padding:18px 18px 14px;position:relative}
+.circuit-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.circuit-head .live-pill{display:inline-flex;align-items:center;gap:6px;background:var(--lemon);color:var(--fg);padding:3px 9px;border-radius:99px}
+.circuit-toggle{background:transparent!important;color:var(--mut)!important;border:1px solid var(--line)!important;padding:4px 10px!important;font:600 11px var(--mono)!important;border-radius:99px!important;margin:0!important}
+.circuit-toggle:hover{color:var(--fg)!important;border-color:var(--fg)!important}
+.circuit-svg{width:100%;height:auto;display:block}
+.circuit-svg .wire{fill:none;stroke:#c8c5ba;stroke-width:1.5}
+.circuit-svg .wire-active{fill:none;stroke:var(--fg);stroke-width:1.75;stroke-dasharray:6 10}
+@media (prefers-reduced-motion:no-preference){.circuit-wrap:not(.paused) .wire-active{animation:circuitFlow 2.6s linear infinite}}
+@keyframes circuitFlow{from{stroke-dashoffset:32}to{stroke-dashoffset:0}}
+.circuit-svg a{text-decoration:none}.circuit-svg .node rect{fill:var(--bg);stroke:var(--line);stroke-width:1.25;transition:stroke .15s,fill .15s}
+.circuit-svg .node.lead rect{fill:#fffefa;stroke:var(--fg);stroke-width:1.75}.circuit-svg .node.accent rect{fill:var(--lemon);stroke:var(--fg);stroke-width:1.5}
+.circuit-svg a:hover .node rect,.circuit-svg a:focus-visible .node rect{stroke:var(--fg);fill:#fffefa}
+.circuit-svg .n-k{font:600 9.5px var(--mono);fill:#626259;letter-spacing:.08em}.circuit-svg .n-t{font:700 12.5px var(--display);fill:#171714}.circuit-svg .n-s{font:500 10px var(--sans);fill:#626259}
+.creative-card{margin:0}.creative-card img{width:100%;height:auto;border-radius:10px;display:block;margin-bottom:14px;border:1px solid var(--line)}.creative-card figcaption{font-size:14px;line-height:1.5}
 .sans,.tag,.wt,nav,.btn,button,small{font-family:var(--sans)}code,pre{font-family:var(--mono)}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .tile{display:block;text-decoration:none;border:1px solid var(--line);background:var(--card);padding:24px;border-radius:13px;min-height:220px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
@@ -169,7 +195,7 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .work-cta .surface{border:1px solid var(--fg);background:#fffefa;border-radius:16px;padding:32px;display:grid;grid-template-columns:1.4fr auto;gap:24px;align-items:center}
 .work-cta h2{font-size:clamp(26px,3.8vw,42px);letter-spacing:-.03em;margin:0 0 10px;line-height:1.08}
 .work-cta p{margin:0;color:var(--mut);max-width:58ch}.work-cta .actions{display:flex;gap:10px;flex-wrap:wrap}.work-cta a.btn{text-decoration:none}
-@media (max-width:820px){.gb-rail{grid-template-columns:1fr 1fr}.gb-cols,.flagship,.work-cta .surface{grid-template-columns:1fr}.rubric-row{grid-template-columns:1fr 1fr 48px}}
+@media (max-width:820px){.hero-grid{grid-template-columns:1fr;gap:28px}.gb-rail{grid-template-columns:1fr 1fr}.gb-cols,.flagship,.work-cta .surface{grid-template-columns:1fr}.rubric-row{grid-template-columns:1fr 1fr 48px}}
 .crumb{font:600 12px ui-sans-serif,system-ui;display:flex;gap:12px;color:var(--mut);margin-bottom:32px;flex-wrap:wrap}.crumb a{text-decoration:none}.eyebrow{font:700 11px ui-sans-serif,system-ui;text-transform:uppercase;letter-spacing:.14em;color:var(--tone);margin-bottom:14px}
 .experiment h1{font-size:clamp(44px,7vw,84px);line-height:1.02;letter-spacing:-.04em;max-width:15ch;margin:10px 0 24px}.experiment .deck{color:var(--mut);font-size:clamp(19px,2.4vw,25px);max-width:42ch}
 .experiment .context{max-width:65ch;border-left:2px solid var(--tone);padding:0 0 0 20px;margin:24px 0 34px;font-size:15px}.context small{display:block;color:var(--mut);font-size:12px}
@@ -202,30 +228,91 @@ footer h3{font:700 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-
 <main id="main" tabindex="-1">
 ${view ? view.body : `
 <section class="hero">
-<h1>Be the answer <em>agents</em> choose.</h1>
-<p class="lead">${esc(SITE.tagline)} One autonomous research lab, three bets on how brands win in the agent era, and an open MCP so your agent can work with my thinking directly.</p>
-<aside class="flagship" aria-label="Flagship live experiment">
+<div class="hero-grid">
   <div>
-    <span class="fl-kicker">Live Lab · Cycle 01 · A$100 AUD / month</span>
-    <h2>The Agentic Marketing Wet Lab.</h2>
-    <p>Three competing AI agent teams—mapped directly to the three bets below—take the industry’s pulse via Google Search &amp; Trends, pitch falsifiable Google Ads experiments, get audited by a calibrated Judge Agent, and publish honest Bayesian verdicts for CMOs.</p>
+    <h1>Be the answer <em>agents</em> choose.</h1>
+    <p class="lead">${esc(SITE.tagline)} One autonomous marketing wet lab, three bets on how brands win in the agent era, and open MCP interfaces so agents can inspect and act directly.</p>
+    <div class="hero-actions">
+      <a class="btn" href="/experiments/wet-lab">Inspect the Wet Lab →</a>
+      <a class="btn ghost" href="/#mcp">Connect an agent</a>
+    </div>
   </div>
-  <a class="btn" href="/experiments/wet-lab">Inspect the Wet Lab →</a>
-</aside>
-<h2 class="sk">The three big bets</h2><div class="tiles">
-${bets.map((b) => `<a class="tile" href="#${b}" data-bet="${b}"><span class="n">BET 0${BETS[b].n}</span><h3>${BETS[b].title}</h3><p>${esc(BETS[b].question)}</p><span class="home">${esc(BETS[b].home)}</span></a>`).join("")}
+  <figure class="circuit-wrap" id="signal-circuit">
+    <div class="circuit-head">
+      <span class="live-pill">Wet Lab · Cycle 01 · A$100/mo</span>
+      <button type="button" class="circuit-toggle" id="circuit-motion-btn">Pause motion</button>
+    </div>
+    <svg class="circuit-svg" viewBox="0 0 480 330" role="img" aria-label="Interactive schematic of the Agentic Marketing Wet Lab: Industry Pulse branches into three competing agent teams (Differentiation, Multimodality, Anticipation), converges at the Calibrated Judge and A$100 Google Ads spend breaker, and publishes open CMO evidence.">
+      <!-- Static guide rails -->
+      <path class="wire" d="M240 58 V92 M82 92 H398 M82 92 V120 M240 92 V120 M398 92 V120 M82 194 V222 M240 194 V222 M398 194 V222 M82 222 H398 M240 222 V250"/>
+      <!-- Animated signal paths (winning Team Differentiation path highlighted) -->
+      <path class="wire-active" d="M240 58 V92 H82 V120 M82 194 V222 H240 V250"/>
+      <path class="wire-active" d="M240 92 V120 M240 194 V222"/>
+      <path class="wire-active" d="M240 92 H398 V120 M398 194 V222 H240"/>
+
+      <!-- Node 0: Industry Pulse -->
+      <a href="/experiments/wet-lab#under-the-hood">
+        <g class="node">
+          <rect x="120" y="10" width="240" height="48" rx="10"/>
+          <text class="n-k" x="240" y="27" text-anchor="middle">01 · INDUSTRY PULSE</text>
+          <text class="n-t" x="240" y="45" text-anchor="middle">Google Search &amp; Trends Scout</text>
+        </g>
+      </a>
+
+      <!-- Node 1: Team Differentiation (Cycle 01 Winner) -->
+      <a href="/#differentiation">
+        <g class="node lead">
+          <rect x="10" y="120" width="144" height="74" rx="10"/>
+          <text class="n-k" x="82" y="139" text-anchor="middle">TEAM 01 · 81/100 ★</text>
+          <text class="n-t" x="82" y="158" text-anchor="middle">Differentiation</text>
+          <text class="n-s" x="82" y="176" text-anchor="middle">Demand Gen · Benchmark</text>
+        </g>
+      </a>
+
+      <!-- Node 2: Team Multimodality -->
+      <a href="/#multimodality">
+        <g class="node">
+          <rect x="168" y="120" width="144" height="74" rx="10"/>
+          <text class="n-k" x="240" y="139" text-anchor="middle">TEAM 02 · BET 02</text>
+          <text class="n-t" x="240" y="158" text-anchor="middle">Multimodality</text>
+          <text class="n-s" x="240" y="176" text-anchor="middle">YouTube Shorts Proof</text>
+        </g>
+      </a>
+
+      <!-- Node 3: Team Anticipation -->
+      <a href="/#anticipation">
+        <g class="node">
+          <rect x="326" y="120" width="144" height="74" rx="10"/>
+          <text class="n-k" x="398" y="139" text-anchor="middle">TEAM 03 · 76/100</text>
+          <text class="n-t" x="398" y="158" text-anchor="middle">Anticipation</text>
+          <text class="n-s" x="398" y="176" text-anchor="middle">CTAi Search Hooks</text>
+        </g>
+      </a>
+
+      <!-- Node 4: Judge + Guardrails + Output -->
+      <a href="/experiments/wet-lab">
+        <g class="node accent">
+          <rect x="70" y="250" width="340" height="66" rx="10"/>
+          <text class="n-k" x="240" y="270" text-anchor="middle">CALIBRATED JUDGE · HARD A$100 CAP</text>
+          <text class="n-t" x="240" y="289" text-anchor="middle">gemini-decision-1 → Google Ads MCP</text>
+          <text class="n-s" x="240" y="305" text-anchor="middle">Open Bayesian CMO Verdict · Firestore · YouTube</text>
+        </g>
+      </a>
+    </svg>
+  </figure>
 </div>
-<div class="ask" role="search"><h2>Ask the knowledge base</h2><p>This runs the same search your agent gets through the MCP. No AI is generating text here.</p>
-<form id="f" toolautosubmit toolname="search_knowledge_form" tooldescription="Search Jack Smyth's source-backed positions and work." action="/search" method="get"><label class="sk" for="q">Search</label><input id="q" name="q" toolparamdescription="Keywords for Jack's profile, positions, apps and writing." placeholder="e.g. how do I get agents to recommend my brand?" autocomplete="off" minlength="2" maxlength="200" required><button type="submit">Search</button></form>
-<div id="answer" aria-live="polite"></div></div>
 </section>
 
 <section class="intro"><h2>Three bets. One direction.</h2>
-<p>When AI agents become the buyer, marketing shifts from winning human clicks to passing three sequential machine tests: <strong>Differentiation</strong> (be worth choosing when an agent compares), <strong>Multimodality</strong> (prove it in video and audio, not just text claims), and <strong>Anticipation</strong> (expose callable interfaces so an agent can act). They are not three separate ideas—they are the three layers of Brand-to-Agent (B2A) marketing, tested live every month in the <a href="/experiments/wet-lab">Wet Lab</a>.</p>
+<p>Good SEO is good GEO—and both now depend on unique expertise, verifiable evidence, and callable utility. When AI agents become the buyer, brands must pass three sequential machine tests: <strong>Differentiation</strong> (be worth choosing), <strong>Multimodality</strong> (show, don’t just claim), and <strong>Anticipation</strong> (let agents act). Every month, the <a href="/experiments/wet-lab">Wet Lab</a> pits one agent team per bet against each other on A$100 AUD to test these principles in public.</p>
 <small class="muted">Editorial framing of Jack's three-bet brief; not a quotation.</small>
 <div class="system"><a href="#differentiation"><b>Be worth choosing.</b><small>01 Differentiation → Facts with Flair</small></a><a href="#multimodality"><b>Be understood.</b><small>02 Multimodality → YouTube-in-AI &amp; Wet Lab</small></a><a href="#anticipation"><b>Be useful in action.</b><small>03 Anticipation → Leaderbored</small></a></div>
 <h2>The person behind the bets</h2>
-<p>${esc(CLAIMS.find((c) => c.id === "id-1")!.text)} ${esc(CLAIMS.find((c) => c.id === "id-2")!.text)} ${srcLinks(["s-li", "s-cta"])}</p></section>
+<p>${esc(CLAIMS.find((c) => c.id === "id-1")!.text)} ${esc(CLAIMS.find((c) => c.id === "id-2")!.text)} ${srcLinks(["s-li", "s-cta"])}</p>
+<div class="ask" role="search"><h2>Ask the knowledge base</h2><p>Runs the exact same deterministic search your agent gets through <code>/mcp</code>. Zero AI-generated filler.</p>
+<form id="f" toolautosubmit toolname="search_knowledge_form" tooldescription="Search Jack Smyth's source-backed positions and work." action="/search" method="get"><label class="sk" for="q">Search</label><input id="q" name="q" toolparamdescription="Keywords for Jack's profile, positions, apps and writing." placeholder="e.g. how do I get agents to recommend my brand?" autocomplete="off" minlength="2" maxlength="200" required><button type="submit">Search</button></form>
+<div id="answer" aria-live="polite"></div></div>
+</section>
 
 ${bets.map(betSection).join("\n")}
 
@@ -291,6 +378,8 @@ a.innerHTML=d.results.map(h=>{const i=h.item;const t=h.type==='source'?i.title:h
 return '<div class="hit"><small>'+h.type+(i.label?' · '+i.label:'')+'</small><div>'+t.replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'})[c])+'</div><small>'+s+'</small></div>'}).join('');return d}catch(err){a.textContent='Search failed.';return {error:'Search failed'}}}
 if(f)f.addEventListener('submit',e=>{e.preventDefault();const result=runSearch();if(e.agentInvoked&&typeof e.respondWith==='function')e.respondWith(result)});
 document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(location.origin+'/mcp');b.textContent='Copied';}catch{b.textContent='Select endpoint to copy';}setTimeout(()=>b.textContent='Copy',1800)}));
+const cWrap=document.getElementById('signal-circuit'),cBtn=document.getElementById('circuit-motion-btn');
+if(cWrap&&cBtn)cBtn.addEventListener('click',()=>{const p=cWrap.classList.toggle('paused');cBtn.textContent=p?'Play motion':'Pause motion'});
 const secs=[...document.querySelectorAll('.bet,#mcp')],links=[...document.querySelectorAll('nav a')];
 if ('IntersectionObserver' in window) { const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='/#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'}); secs.forEach(s=>observer.observe(s)); }
 </script>
