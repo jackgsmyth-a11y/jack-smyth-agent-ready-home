@@ -224,7 +224,7 @@ export function registerSelfOpt(app: Express, origin: (req: Request) => string) 
   });
 
   app.post("/api/self-opt/reflect", async (req: Request, res: Response) => {
-    const secret = process.env.SELF_OPT_CRON_SECRET || process.env.WET_LAB_CRON_SECRET;
+    const secret = process.env.SELF_OPT_CRON_SECRET || process.env.FIELD_LAB_CRON_SECRET || process.env.WET_LAB_CRON_SECRET;
     if (!secret) {
       res.status(503).json({ error: "Monthly reflection trigger is not configured (missing SELF_OPT_CRON_SECRET)." });
       return;

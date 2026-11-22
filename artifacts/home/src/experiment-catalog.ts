@@ -17,12 +17,12 @@ export const EXPERIMENTS = [
     actionMcp: "/experiments/leaderbored/mcp",
   },
   {
-    id: "wet-lab", title: "Agentic Marketing Wet Lab", bet: "multimodality",
-    path: "/experiments/wet-lab",
-    question: "What happens when competing AI agent teams pitch for a finite A$100 AUD monthly Google Ads budget?",
-    role: "An autonomous marketing research lab: 3 competing agent teams, Judge scoring, public voting, Google Ads MCP execution, and Bayesian CMO verdicts.",
+    id: "field-lab", title: "Agentic Field Lab", bet: "multimodality",
+    path: "/experiments/field-lab",
+    question: "Frontier AI labs make researchers pitch for compute. What happens when competing AI agent teams pitch for a finite A$100 AUD monthly media grant?",
+    role: "An autonomous marketing field lab: 3 competing agent teams pitch falsifiable Google Ads tests for a A$100/mo grant, get scored by a calibrated Judge Agent, and publish honest Bayesian verdicts for CMOs.",
     service: "native-google-cloud",
-    machineContent: "/experiments/wet-lab.md",
-    actionMcp: "/experiments/wet-lab/mcp",
+    machineContent: "/experiments/field-lab.md",
+    actionMcp: "/experiments/field-lab/mcp",
   },
 ];

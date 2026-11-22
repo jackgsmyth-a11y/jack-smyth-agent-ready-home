@@ -28,14 +28,14 @@ export const wetLabClientScript = `(() => {
     });
   });
 
-  const statusEl = document.getElementById("wetlab-vote-status");
+  const statusEl = document.getElementById("fieldlab-vote-status");
   document.querySelectorAll("[data-vote-pitch]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const pitchId = btn.getAttribute("data-vote-pitch");
       if (!pitchId) return;
       btn.setAttribute("disabled", "true");
       try {
-        const res = await fetch("/api/experiments/wet-lab/vote", {
+        const res = await fetch("/api/experiments/field-lab/vote", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ pitchId }),
@@ -59,17 +59,17 @@ export const wetLabClientScript = `(() => {
     });
   });
 
-  const form = document.getElementById("wetlab-question-form");
-  const qInput = document.getElementById("wetlab-question");
-  const byInput = document.getElementById("wetlab-submitter");
-  const qStatus = document.getElementById("wetlab-question-status");
-  const submitBtn = document.getElementById("wetlab-submit-btn");
+  const form = document.getElementById("fieldlab-question-form");
+  const qInput = document.getElementById("fieldlab-question");
+  const byInput = document.getElementById("fieldlab-submitter");
+  const qStatus = document.getElementById("fieldlab-question-status");
+  const submitBtn = document.getElementById("fieldlab-submit-btn");
   if (form && qInput && submitBtn) {
     form.addEventListener("submit", async (ev) => {
       ev.preventDefault();
       submitBtn.setAttribute("disabled", "true");
       try {
-        const res = await fetch("/api/experiments/wet-lab/suggest", {
+        const res = await fetch("/api/experiments/field-lab/suggest", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({

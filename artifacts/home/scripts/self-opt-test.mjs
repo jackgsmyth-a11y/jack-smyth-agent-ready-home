@@ -43,7 +43,7 @@ const postRes = await fetch(`${base}/api/telemetry`, {
     events: [
       { type: "page_view", path: "/", detail: { refHost: "google.com" } },
       { type: "lens_switch", path: "/", detail: { mode: "agent" } },
-      { type: "experiment_click", path: "/", detail: { to: "/experiments/wet-lab" } },
+      { type: "experiment_click", path: "/", detail: { to: "/experiments/field-lab" } },
       { type: "cwv", path: "/", detail: { lcpMs: 820, cls: 0.01, inpMs: 42, ttfbMs: 110 } },
     ],
   }),

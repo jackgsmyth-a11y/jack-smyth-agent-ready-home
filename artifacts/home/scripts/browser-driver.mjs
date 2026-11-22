@@ -1,11 +1,14 @@
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+const MAC_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const CHROME_BIN = process.env.CHROME || (existsSync(MAC_CHROME) ? MAC_CHROME : "chromium");
 export const wait = ms => new Promise(r => setTimeout(r, ms));
 export async function browser() {
   const profile = await mkdtemp(join(tmpdir(), "jack-experiment-browser-"));
-  const chrome = spawn("chromium", [
+  const chrome = spawn(CHROME_BIN, [
     "--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu",
     "--enable-experimental-web-platform-features", "--enable-features=WebMCPTesting",
     "--remote-debugging-port=9228", `--user-data-dir=${profile}`, "about:blank",

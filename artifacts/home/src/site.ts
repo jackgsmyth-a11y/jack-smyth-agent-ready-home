@@ -24,14 +24,14 @@ function betSection(b: Bet) {
   const spotlight = b === "differentiation"
     ? `<aside class="spotlight"><span class="wt">Focused build 01 · differentiation in practice</span><h3>Facts with flair.</h3><p>Being legible is the starting point. Giving an agent a real reason to choose you is the work.</p><p>Compare eight source-backed product reframings, then try your own. The facts stay the constraint; the buying decision becomes clearer.</p><a class="btn" href="/experiments/facts-with-flair">Try Facts with Flair →</a><small>Powered by Flint from Springboards. No measured ranking claim.</small></aside>`
     : b === "multimodality"
-    ? `<aside class="spotlight"><span class="wt">Live in the Wet Lab · Team Multimodality</span><h3>Show the agent working vs. state the claim.</h3><p>Team Multimodality currently leads Cycle 01 of the Agentic Marketing Wet Lab (92/100 Judge score), pitting a 20-second screen-recorded YouTube Short against a standard claim ad on A$100 AUD.</p><a class="btn" href="/experiments/wet-lab">Inspect their pitch in the Wet Lab →</a><small>Built on Gemini, YouTube Shorts, and Google Ads MCP.</small></aside>`
+    ? `<aside class="spotlight"><span class="wt">Live in the Field Lab · Team Multimodality</span><h3>Show the agent working vs. state the claim.</h3><p>In the Agentic Field Lab, Team Multimodality pitches a 20-second screen-recorded YouTube Short against a standard claim ad on A$100 AUD—competing head-to-head with Differentiation and Anticipation for the monthly media grant.</p><a class="btn" href="/experiments/field-lab">Inspect their pitch in the Field Lab →</a><small>Built on Gemini, YouTube Shorts, and Google Ads MCP.</small></aside>`
     : b === "anticipation"
     ? `<aside class="spotlight"><span class="wt">Focused build 02 · anticipation in practice</span><h3>Leaderbored.</h3><p>What does an agency look like when its next client is an agent?</p><p>A small market for divergent advertising ideas: the human approves the budget; the agent gets a concept, an execution and a reason it differs. Ten credits for A$1.00. One saved idea per credit.</p><a class="btn" href="/experiments/leaderbored">Try Leaderbored →</a><small>Powered by Flint from Springboards. Category patterns are sample data.</small></aside>`
     : "";
   const agentSpec = b === "differentiation"
     ? 'MCP: get_positions({ bet: "differentiation" }) · BUILD: /experiments/facts-with-flair'
     : b === "multimodality"
-    ? 'MCP: get_positions({ bet: "multimodality" }) · LAB: /experiments/wet-lab/mcp'
+    ? 'MCP: get_positions({ bet: "multimodality" }) · LAB: /experiments/field-lab/mcp'
     : 'MCP: get_positions({ bet: "anticipation" }) · ACTION MCP: /experiments/leaderbored/mcp';
   return `<section class="bet" id="${b}" data-bet="${b}" data-agent-spec="${esc(agentSpec)}">
   <div class="bet-head"><span class="num">0${B.n}</span><div><h2>${B.title}</h2><p class="q">${esc(B.question)}</p></div></div>
@@ -78,10 +78,10 @@ export function page(base: string, view?: PageView, nonce = "") {
       }] : []),
       {
         "@type": "Dataset",
-        "@id": `${base}/experiments/wet-lab#dataset`,
-        name: "Agentic Marketing Wet Lab — Open CMO Ad Experiments",
-        description: "Monthly autonomous marketing experiments devised by three competing AI agent teams, scored by a calibrated Judge Agent, and executed within a hard-capped A$100 AUD Google Ads budget.",
-        url: `${base}/experiments/wet-lab`,
+        "@id": `${base}/experiments/field-lab#dataset`,
+        name: "Agentic Field Lab — Open CMO Ad Experiments",
+        description: "Modelled on frontier AI research teams pitching for compute: monthly autonomous marketing experiments devised by three competing AI agent teams, scored by a calibrated Judge Agent, and executed within a hard-capped A$100 AUD Google Ads media grant.",
+        url: `${base}/experiments/field-lab`,
         creator: { "@id": `${base}/#jack` },
         isAccessibleForFree: true,
       },
@@ -237,8 +237,8 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .spotlight{border:1px solid var(--line);border-left:5px solid var(--lemon);border-radius:13px;background:var(--card);padding:28px;margin:0 0 36px}.spotlight h3{font-family:var(--display);font-size:36px!important;text-transform:none!important;letter-spacing:-.05em!important;margin:8px 0!important;color:var(--fg)!important}.spotlight p{max-width:65ch}.spotlight .btn{display:inline-block;text-decoration:none;color:#fff;margin:10px 12px 0 0}
 .spotlight small{display:block;color:var(--mut);margin-top:14px;font-size:12px}summary{cursor:pointer;font:600 13px ui-sans-serif,system-ui;padding:14px 0;color:var(--mut)}
 .system{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:28px 0 40px}.system a{padding:22px 0;border-top:1px solid var(--line);text-decoration:none}.system b{display:block;font-size:25px}.system small{color:var(--mut);font-size:13px}
-.experiment{--tone:var(--b1);padding:38px 0 70px}.experiment[data-experiment=leaderbored]{--tone:var(--b3)}.experiment[data-experiment=wet-lab]{--tone:var(--b2)}
-.wetlab-grid{display:grid;grid-template-columns:1fr;gap:20px;margin:22px 0}.wetlab-pitch h3{margin:6px 0 10px}
+.experiment{--tone:var(--b1);padding:38px 0 70px}.experiment[data-experiment=leaderbored]{--tone:var(--b3)}.experiment[data-experiment=field-lab]{--tone:var(--b2)}
+.fieldlab-grid{display:grid;grid-template-columns:1fr;gap:20px;margin:22px 0}.fieldlab-pitch h3{margin:6px 0 10px}
 .glassbox{margin:28px 0 16px}.gb-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 16px}
 .gb-node{text-align:left;background:var(--card)!important;color:var(--fg)!important;border:1px solid var(--line)!important;border-radius:12px;padding:14px;margin:0!important;cursor:pointer;transition:border-color .15s,background .15s}
 .gb-node:hover{border-color:var(--fg)!important}.gb-node[aria-selected=true]{border-color:var(--fg)!important;background:#fffefa!important;box-shadow:inset 0 -3px 0 var(--lemon)}
@@ -289,7 +289,7 @@ footer h3{font:700 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-
 <body>
 <a class="sk" href="#main">Skip to content</a>
 <header class="top"><nav aria-label="Primary"><b><a href="/">Jack Smyth</a></b>
-<div class="bet-nav"><a href="/experiments/wet-lab">Wet Lab</a><a href="/#differentiation">Differentiation</a><a href="/#multimodality">Multimodality</a><a href="/#anticipation">Anticipation</a></div>
+<div class="bet-nav"><a href="/experiments/field-lab">Field Lab</a><a href="/#differentiation">Differentiation</a><a href="/#multimodality">Multimodality</a><a href="/#anticipation">Anticipation</a></div>
 <div class="lens-switch" role="group" aria-label="View lens"><button type="button" data-lens-btn="human" aria-pressed="true">Human</button><button type="button" data-lens-btn="agent" aria-pressed="false">Agent</button></div>
 <a class="nav-agent" href="/#mcp">MCP</a></nav></header>
 <main id="main" tabindex="-1">
@@ -298,18 +298,18 @@ ${view ? view.body : `
 <div class="hero-grid">
   <div>
     <h1>Be the answer <em>agents</em> choose.</h1>
-    <p class="lead">${esc(SITE.tagline)} One autonomous marketing wet lab, three bets on B2A and GEM, and open interfaces so agents can inspect and act directly.</p>
+    <p class="lead">${esc(SITE.tagline)} Frontier labs make researchers pitch for compute; here, three competing agent teams pitch for a A$100/mo media grant in the Agentic Field Lab—alongside open interfaces so agents can inspect and act directly.</p>
     <div class="hero-actions">
-      <a class="btn" href="/experiments/wet-lab">Inspect the Wet Lab →</a>
+      <a class="btn" href="/experiments/field-lab">Inspect the Field Lab →</a>
       <a class="btn ghost" href="/#mcp">Connect an agent</a>
     </div>
   </div>
   <figure class="circuit-wrap" id="signal-circuit">
     <div class="circuit-head">
-      <span class="live-pill">Wet Lab · Cycle 01 · A$100/mo</span>
+      <span class="live-pill">Field Lab · Cycle 01 · A$100/mo</span>
       <button type="button" class="circuit-toggle" id="circuit-motion-btn">Pause motion</button>
     </div>
-    <svg class="circuit-svg" viewBox="0 0 480 330" role="img" aria-label="Interactive schematic of the Agentic Marketing Wet Lab: Industry Pulse branches into three competing agent teams (Differentiation, Multimodality, Anticipation), converges at the Calibrated Judge and A$100 Google Ads spend breaker, and publishes open CMO evidence.">
+    <svg class="circuit-svg" viewBox="0 0 480 330" role="group" aria-label="Interactive schematic of the Agentic Field Lab: Industry Pulse branches into three competing agent teams (Differentiation, Multimodality, Anticipation) pitching for a A$100 monthly media grant, converges at the Calibrated Judge and Google Ads spend breaker, and publishes open CMO evidence.">
       <!-- Static guide rails -->
       <path class="wire" d="M240 58 V92 M82 92 H398 M82 92 V120 M240 92 V120 M398 92 V120 M82 194 V222 M240 194 V222 M398 194 V222 M82 222 H398 M240 222 V250"/>
       <!-- Animated signal paths -->
@@ -318,7 +318,7 @@ ${view ? view.body : `
       <path class="wire-active" d="M240 92 H398 V120 M398 194 V222 H240"/>
 
       <!-- Node 0: Industry Pulse -->
-      <a href="/experiments/wet-lab#under-the-hood" data-circuit-info="01 PULSE → gemini-4-hydrogen + Google Search Grounding sets the monthly CMO brief automatically.">
+      <a href="/experiments/field-lab#under-the-hood" data-circuit-info="01 PULSE → gemini-4-hydrogen + Google Search Grounding sets the monthly CMO brief automatically.">
         <g class="node">
           <rect x="120" y="10" width="240" height="48" rx="10"/>
           <text class="n-k" x="240" y="27" text-anchor="middle">01 · INDUSTRY PULSE</text>
@@ -337,10 +337,10 @@ ${view ? view.body : `
       </a>
 
       <!-- Node 2: Team Multimodality -->
-      <a href="/#multimodality" data-circuit-info="TEAM 02 → Multimodal YouTube Shorts proof vs. standard claim ad (gemini-omni-1.2-flash).">
+      <a href="/#multimodality" data-circuit-info="TEAM 02 (78/100) → Multimodal YouTube Shorts proof vs. standard claim ad (gemini-omni-1.2-flash).">
         <g class="node">
           <rect x="168" y="120" width="144" height="74" rx="10"/>
-          <text class="n-k" x="240" y="139" text-anchor="middle">TEAM 02 · BET 02</text>
+          <text class="n-k" x="240" y="139" text-anchor="middle">TEAM 02 · 78/100</text>
           <text class="n-t" x="240" y="158" text-anchor="middle">Multimodality</text>
           <text class="n-s" x="240" y="176" text-anchor="middle">YouTube Shorts Proof</text>
         </g>
@@ -357,7 +357,7 @@ ${view ? view.body : `
       </a>
 
       <!-- Node 4: Judge + Guardrails + Output -->
-      <a href="/experiments/wet-lab" data-circuit-info="JUDGE + CAP → gemini-decision-1 calibrated rubric + hard-coded A$100 Google Ads MCP breaker.">
+      <a href="/experiments/field-lab" data-circuit-info="JUDGE + CAP → gemini-decision-1 calibrated rubric + hard-coded A$100 Google Ads MCP breaker.">
         <g class="node accent">
           <rect x="70" y="250" width="340" height="66" rx="10"/>
           <text class="n-k" x="240" y="270" text-anchor="middle">CALIBRATED JUDGE · HARD A$100 CAP</text>
@@ -372,9 +372,9 @@ ${view ? view.body : `
 </section>
 
 <section class="intro" data-agent-spec="THESIS: B2A (Brand-to-Agent) + GEM (Generative Engine Marketing) · AUTHOR: Jack Smyth, Country Lead AU, The Brandtech Group"><h2>Three bets. One direction.</h2>
-<p>Agents are an audience in their own right. They compare, watch, and act before a human ever clicks. Three bets—<strong>Differentiation</strong> (why an agent shortlists you), <strong>Multimodality</strong> (how video proves what text only claims), and <strong>Anticipation</strong> (interfaces built for call-to-agent)—tested live every month on A$100 AUD in the <a href="/experiments/wet-lab">Wet Lab</a>.</p>
+<p>Agents are an audience in their own right. They compare, watch, and act before a human ever clicks. Three bets—<strong>Differentiation</strong> (why an agent shortlists you), <strong>Multimodality</strong> (how video proves what text only claims), and <strong>Anticipation</strong> (interfaces built for call-to-agent)—tested live every month on a A$100 AUD media grant in the <a href="/experiments/field-lab">Agentic Field Lab</a>.</p>
 <small class="muted">Editorial framing of Jack's three-bet brief; not a quotation.</small>
-<div class="system"><a href="#differentiation"><b>Be worth choosing.</b><small>01 Differentiation → Facts with Flair</small></a><a href="#multimodality"><b>Be understood.</b><small>02 Multimodality → YouTube-in-AI &amp; Wet Lab</small></a><a href="#anticipation"><b>Be useful in action.</b><small>03 Anticipation → Leaderbored</small></a></div>
+<div class="system"><a href="#differentiation"><b>Be worth choosing.</b><small>01 Differentiation → Facts with Flair</small></a><a href="#multimodality"><b>Be understood.</b><small>02 Multimodality → YouTube-in-AI &amp; Field Lab</small></a><a href="#anticipation"><b>Be useful in action.</b><small>03 Anticipation → Leaderbored</small></a></div>
 <h2>The person behind the bets</h2>
 <p>${esc(CLAIMS.find((c) => c.id === "id-1")!.text)} ${esc(CLAIMS.find((c) => c.id === "id-2")!.text)} ${srcLinks(["s-li", "s-cta"])}</p>
 <div class="ask" role="search"><h2>Ask the knowledge base</h2><p>Runs the exact same deterministic search your agent gets through <code>/mcp</code>. Zero AI-generated filler.</p>
@@ -407,7 +407,7 @@ ${bets.map(betSection).join("\n")}
 <h3>More than MCP</h3>
 <p class="rules">Personal agents can discover this service through <a href="/.well-known/poppy.json">Poppy 1.0</a>, or use the same tools through <a href="/openapi.json">OpenAPI / HTTP</a>. An <a href="/.well-known/agent-card.json">A2A 1.0 agent card</a> advertises a message-only adapter; it does not speak as Jack or store a conversation.</p>
 <p class="rules" id="webmcp-state" role="status">Checking native WebMCP availability…</p>
-<p class="rules"><a href="/protocols.json">Protocol scope and limitations</a>. This identity MCP stays read-only. Separately, the <a href="/experiments/wet-lab#guardrails">Wet Lab MCP</a> (<code>/experiments/wet-lab/mcp</code>) exposes live A$100 grant cycles and voting, and <a href="/experiments/leaderbored#for-agents">Leaderbored’s MCP</a> (<code>/experiments/leaderbored/mcp</code>) supports human-approved purchases and credit use.</p>
+<p class="rules"><a href="/protocols.json">Protocol scope and limitations</a>. This identity MCP stays read-only. Separately, the <a href="/experiments/field-lab#guardrails">Agentic Field Lab MCP</a> (<code>/experiments/field-lab/mcp</code>) exposes live A$100 media-grant cycles and voting, and <a href="/experiments/leaderbored#for-agents">Leaderbored’s MCP</a> (<code>/experiments/leaderbored/mcp</code>) supports human-approved purchases and credit use.</p>
 </section>
 
 <section id="work-with-me" class="work-cta">

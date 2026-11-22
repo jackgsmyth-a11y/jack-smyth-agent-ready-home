@@ -24,7 +24,7 @@ try {
   if (!ready) throw Error("Test server did not become healthy");
   for (const [script, origin] of [
     ["mcp-test.mjs", base + "/mcp"], ["protocol-test.mjs", base],
-    ["experiments-test.mjs", base], ["self-opt-test.mjs", base],
+    ["experiments-test.mjs", base], ["wet-lab-test.mjs", base], ["self-opt-test.mjs", base],
     ["browser-test.mjs", base], ["experiments-browser-test.mjs", base],
   ]) await run(process.execPath, ["artifacts/home/scripts/" + script, origin]);
   console.log("\nVerification passed. No real checkout or paid idea claim was performed. Provider generation is a separate opt-in test.");

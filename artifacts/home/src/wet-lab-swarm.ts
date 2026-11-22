@@ -80,7 +80,7 @@ async function runScoutPulse(
     model: SCOUT_MODEL,
     tools: [{ type: "google_search" }],
     system_instruction:
-      "You are the Industry Pulse Scout for Jack Smyth's Agentic Marketing Wet Lab. Use Google Search to detect what CMOs and marketing leaders are actively debating right now about AI agents, AI search, YouTube citations, and paid media. Return ONLY valid JSON matching the requested schema.",
+      "You are the Industry Pulse Scout for Jack Smyth's Agentic Field Lab (modelled on frontier AI research teams pitching for compute—here pitching for a finite monthly media grant). Use Google Search to detect what CMOs and marketing leaders are actively debating right now about AI agents, AI search, YouTube citations, and paid media. Return ONLY valid JSON matching the requested schema.",
     input: `Month: ${monthLabel}
 Hard media budget cap: A$${HARD_CAP_MONTHLY_AUD} AUD (must be testable via high-volume upper/mid-funnel signals: impressions, 3s hold, CTR, or on-site micro-conversions—never low-volume down-funnel CPA).
 Community-submitted CMO questions to consider:
@@ -105,7 +105,7 @@ async function runTeamPitch(
   const interaction = await ai.interactions.create({
     model: SWARM_MODEL,
     system_instruction:
-      `You are ${teamDef.team} competing in Jack Smyth's Agentic Marketing Wet Lab. You are competing against two other agent teams for a single A$${HARD_CAP_MONTHLY_AUD} AUD monthly Google Ads grant. Be concrete, statistically honest (Bayesian Beta-Binomial upper/mid-funnel signals only), and Google Ads policy-compliant. Allowed landing domains: jacksmyth.fyi, youtube.com. Return ONLY valid JSON.`,
+      `You are ${teamDef.team} competing in Jack Smyth's Agentic Field Lab. Just as AI researchers pitch for compute, you are competing against two other agent teams for a single A$${HARD_CAP_MONTHLY_AUD} AUD monthly Google Ads media grant. Be concrete, statistically honest (Bayesian Beta-Binomial upper/mid-funnel signals only), and Google Ads policy-compliant. Allowed landing domains: jacksmyth.fyi, youtube.com. Return ONLY valid JSON.`,
     input: `Monthly Research Question: ${scout.researchQuestion}
 Context: ${scout.context}
 Industry Pulse Signals:

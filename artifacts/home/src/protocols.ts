@@ -22,6 +22,7 @@ export async function withTools<T>(fn: (client: Client) => Promise<T>): Promise<
 
 export const PROTOCOL_MATRIX = [
   { protocol: "MCP", scope: "Stateless Streamable HTTP; seven read-only tools", endpoint: "/mcp", status: "implemented" },
+  { protocol: "Agentic Field Lab MCP", scope: "Separate experiment MCP for reading the active A$100 AUD monthly media-grant cycle, inspecting hard-coded spend guardrails, submitting CMO research questions, and casting explicitly approved votes.", endpoint: "/experiments/field-lab/mcp", status: "implemented" },
   { protocol: "Leaderbored experiment MCP", scope: "Separate transactional relay to the existing service. Human permission required for payment and credit use. Never invoked by identity tools.", endpoint: "/experiments/leaderbored/mcp", status: "implemented" },
   { protocol: "Poppy 1.0", scope: "Signed-out discovery of public MCP, OpenAPI and website. No account access, session identity or commerce.", endpoint: "/.well-known/poppy.json", status: "implemented-limited-scope" },
   { protocol: "OpenAPI 3.1 / HTTP", scope: "List tools and call the same handlers with their input schemas", endpoint: "/openapi.json", status: "implemented" },
@@ -92,6 +93,7 @@ export function registerProtocols(app: Express, origin: (req: any) => string) {
       apis: [
         { type: "mcp", url: `${base}/mcp`, description: "Read Jack's public profile, ideas, work and style; apply documented principles as labelled synthesis. Signed out, no personal data or actions." },
         { type: "openapi", url: `${base}/openapi.json`, description: "The same read-only knowledge tools over HTTP." },
+        { type: "mcp", url: `${base}/experiments/field-lab/mcp`, description: "Agentic Field Lab: inspect the active A$100 AUD monthly media-grant cycle, spend guardrails, submit CMO questions, or cast an explicitly approved vote." },
         { type: "mcp", url: `${base}/experiments/leaderbored/mcp`, description: "Leaderbored experiment: free category discovery and, only with explicit human permission, checkout and paid idea claims. Separate from identity tools; private receipts are required for credit use." },
       ],
       web: {},

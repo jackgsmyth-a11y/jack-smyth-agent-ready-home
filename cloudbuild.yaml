@@ -1,4 +1,4 @@
-# Google Cloud Build -> Cloud Run deployment for Jack Smyth's Agent-Ready Home + Wet Lab
+# Google Cloud Build -> Cloud Run deployment for Jack Smyth's Agent-Ready Home + Agentic Field Lab
 # Deploy in Sydney (australia-southeast1) with:
 #   gcloud builds submit --config=cloudbuild.yaml --substitutions=_REGION=australia-southeast1,_SERVICE=jack-smyth-home
 substitutions:

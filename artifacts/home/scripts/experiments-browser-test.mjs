@@ -9,7 +9,7 @@ let count = 0;
 const check = (text, value) => { assert.ok(value, text); console.log("PASS ", text); count++; };
 const b = await browser();
 try {
-  for (const width of [1280, 390]) for (const path of ["/", "/experiments/facts-with-flair", "/experiments/leaderbored"]) {
+  for (const width of [1280, 390]) for (const path of ["/", "/experiments/facts-with-flair", "/experiments/leaderbored", "/experiments/field-lab"]) {
     await b.navigate(base + path, width); await wait(300);
     check(`${path} ${width}px: no horizontal overflow`, await b.evaluate("document.documentElement.scrollWidth <= innerWidth"));
     check(`${path} ${width}px: shared paper theme and actual display font`, await b.evaluate("getComputedStyle(document.body).backgroundColor==='rgb(246, 244, 238)' && document.fonts.check('600 40px \"Space Grotesk\"')"));
@@ -20,6 +20,11 @@ try {
     await b.screenshot(`/tmp/jack-${path.split("/").filter(Boolean).at(-1) || "home"}-${width}.png`);
   }
   check("Real-page loading produced no CSP errors", b.securityErrors.length === 0);
+  await b.navigate(base + "/experiments/field-lab", 1280); await wait(300);
+  await b.evaluate("document.querySelector('[data-gb-tab=\"gb-p5\"]').click()");
+  check("Field Lab Glass-Box tabs switch cleanly", await b.evaluate("!document.getElementById('gb-p5').hidden && document.getElementById('gb-p1').hidden"));
+  await b.evaluate("document.querySelector('[data-bayes-mode=\"lower\"]').click()");
+  check("Field Lab Bayesian comparator toggles down-funnel rejection readout", await b.evaluate("document.getElementById('gb-bayes-readout').textContent.includes('Automatically Rejected')"));
   // Deterministic browser-only fixtures below. They test the real page's UI
   // state machine without calling Flint, creating checkout or spending credits.
   console.log("UI workflow tests below use intercepted fixtures; they are NOT paid/provider end-to-end verification.");
