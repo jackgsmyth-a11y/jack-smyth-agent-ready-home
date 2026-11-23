@@ -69,10 +69,21 @@ export const telemetryScript = `(() => {
     }
   }
 
-  // 1. Page view (referrer host only, zero PII)
+  // 1. Page view + zero-PII UTM campaign/variant tag (no gclid, no cookies)
+  const cleanTag = (v) => (v || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+  let variantKey = '';
+  try {
+    const params = new URLSearchParams(location.search);
+    const camp = cleanTag(params.get('utm_campaign'));
+    const content = cleanTag(params.get('utm_content'));
+    variantKey = camp && content ? camp + ':' + content : (camp || content);
+  } catch {}
   let refHost = '';
   try { if (document.referrer) refHost = new URL(document.referrer).hostname; } catch {}
-  enqueue('page_view', refHost ? { refHost } : undefined);
+  const pvDetail = {};
+  if (refHost) pvDetail.refHost = refHost;
+  if (variantKey) pvDetail.variant = variantKey;
+  enqueue('page_view', Object.keys(pvDetail).length ? pvDetail : undefined);
 
   // 2. Lens switch (Human | Agent X-Ray)
   document.querySelectorAll('[data-lens-btn]').forEach((btn) => {
@@ -114,7 +125,7 @@ export const telemetryScript = `(() => {
       for (const m of [25, 50, 75, 100]) {
         if (pct >= m && !seenDepths.has(m)) {
           seenDepths.add(m);
-          enqueue('scroll_depth', { pct: m });
+          enqueue('scroll_depth', variantKey ? { pct: m, variant: variantKey } : { pct: m });
         }
       }
     });

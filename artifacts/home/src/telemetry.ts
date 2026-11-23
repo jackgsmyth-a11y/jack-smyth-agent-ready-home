@@ -9,6 +9,13 @@ import { telemetryScript } from "./telemetry-client.js";
 const METADATA_TOKEN_URL =
   "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token";
 
+export interface CampaignVariantMetrics {
+  pageViews: number;
+  scroll50: number;
+  scroll75: number;
+  scroll100: number;
+}
+
 export interface MonthlyTelemetry {
   month: string;
   updatedAt: string;
@@ -20,6 +27,7 @@ export interface MonthlyTelemetry {
     outboundClicks: Record<string, number>;
     scrollMilestones: Record<string, number>;
     referrers: Record<string, number>;
+    campaignVariants?: Record<string, CampaignVariantMetrics>;
     cwvSamples: {
       lcpMs: number[];
       cls: number[];
@@ -53,6 +61,7 @@ function createEmptyMonth(month: string): MonthlyTelemetry {
       outboundClicks: {},
       scrollMilestones: {},
       referrers: {},
+      campaignVariants: {},
       cwvSamples: { lcpMs: [], cls: [], inpMs: [], ttfbMs: [] },
     },
     agents: {
@@ -261,6 +270,7 @@ export function buildTelemetrySummary(month = currentMonthKey()) {
       outboundClicks: m.human.outboundClicks,
       scrollMilestones: m.human.scrollMilestones,
       referrers: m.human.referrers,
+      campaignVariants: m.human.campaignVariants ?? {},
       cwvP75: {
         lcpMs: p75(m.human.cwvSamples.lcpMs),
         cls: p75(m.human.cwvSamples.cls),
@@ -277,6 +287,25 @@ export function buildTelemetrySummary(month = currentMonthKey()) {
       avgLatencyMs: m.agents.avgLatencyMs,
     },
   };
+}
+
+function recordCampaignVariant(
+  m: MonthlyTelemetry,
+  rawVariant: unknown,
+  field: keyof CampaignVariantMetrics,
+) {
+  if (typeof rawVariant !== "string") return;
+  const variant = rawVariant.toLowerCase().replace(/[^a-z0-9:_-]/g, "").slice(0, 80);
+  if (!variant) return;
+  m.human.campaignVariants ??= {};
+  if (!(variant in m.human.campaignVariants) && Object.keys(m.human.campaignVariants).length >= 50) return;
+  const bucket = (m.human.campaignVariants[variant] ??= {
+    pageViews: 0,
+    scroll50: 0,
+    scroll75: 0,
+    scroll100: 0,
+  });
+  bucket[field] += 1;
 }
 
 export function registerTelemetry(app: Express) {
@@ -302,6 +331,7 @@ export function registerTelemetry(app: Express) {
         inc(m.human.pageViews, ev.path);
         const refHost = typeof ev.detail?.refHost === "string" ? ev.detail.refHost : "";
         if (refHost) inc(m.human.referrers, refHost);
+        recordCampaignVariant(m, ev.detail?.variant, "pageViews");
       } else if (ev.type === "lens_switch") {
         if (ev.detail?.mode === "agent") m.human.lensSwitches.agent += 1;
         else m.human.lensSwitches.human += 1;
@@ -311,6 +341,9 @@ export function registerTelemetry(app: Express) {
         inc(m.human.outboundClicks, ev.detail.host);
       } else if (ev.type === "scroll_depth" && typeof ev.detail?.pct === "number") {
         inc(m.human.scrollMilestones, `${ev.detail.pct}%`);
+        if (ev.detail.pct === 50) recordCampaignVariant(m, ev.detail?.variant, "scroll50");
+        else if (ev.detail.pct === 75) recordCampaignVariant(m, ev.detail?.variant, "scroll75");
+        else if (ev.detail.pct === 100) recordCampaignVariant(m, ev.detail?.variant, "scroll100");
       } else if (ev.type === "cwv" && ev.detail) {
         if (typeof ev.detail.lcpMs === "number" && ev.detail.lcpMs > 0) pushSample(m.human.cwvSamples.lcpMs, ev.detail.lcpMs);
         if (typeof ev.detail.cls === "number") pushSample(m.human.cwvSamples.cls, ev.detail.cls);
