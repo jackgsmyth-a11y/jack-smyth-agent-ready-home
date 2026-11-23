@@ -1,0 +1,45 @@
+{
+  "updatedAt": "2026-11-23T22:27:16.097Z",
+  "runs": [
+    {
+      "week": "2026-W48",
+      "month": "2026-11",
+      "capturedAt": "2026-11-23T22:27:16.097Z",
+      "source": "https://jacksmyth.fyi",
+      "scorecard": {
+        "month": "2026-11",
+        "computedAt": "2026-11-23T22:27:16.094Z",
+        "totalPageViews": 31,
+        "paidLandingViews": 21,
+        "paidScroll50RatePct": 0,
+        "interactionRatePct": 12.9,
+        "ttfbP75Ms": 1879,
+        "lcpP75Ms": 1709,
+        "agentSuccessRatePct": 85.7,
+        "agentAvgLatencyMs": 3.6,
+        "compositeScore": 42,
+        "bottlenecks": []
+      },
+      "gate": {
+        "mode": "ops-only",
+        "allowUxCopyEdits": false,
+        "activeFlight": true,
+        "flightName": "Field Lab Cycle 01 - Benchmark vs Case Study",
+        "minViewsRequired": 50,
+        "currentViews": 31,
+        "reason": "Active Field Lab flight — ops-only mode."
+      },
+      "previousCycleGrade": {
+        "outcome": "baseline",
+        "deltaComposite": 0,
+        "newViewsSincePrev": 31,
+        "note": "First recorded hillclimb cycle — establishing baseline fitness scorecard."
+      },
+      "tier": "tier-0-ops",
+      "patchApplied": false,
+      "patch": null,
+      "skipReason": "GEMINI_API_KEY not set",
+      "reflectionSummary": null
+    }
+  ]
+}

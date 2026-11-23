@@ -1,22 +1,26 @@
-name: Monthly Self-Optimising Reflection
+name: Autonomous Weekly Hillclimber
 
 on:
   schedule:
-    # 1st of every month at 09:00 AEST (23:00 UTC on the last day / 00:00 UTC on the 1st)
-    - cron: "0 0 1 * *"
+    # Every Monday at 08:00 AEST (Sunday 22:00 UTC)
+    - cron: "0 22 * * 0"
   workflow_dispatch:
     inputs:
       month:
         description: "Target month (YYYY-MM). Defaults to current UTC month."
         required: false
         default: ""
+      enable_auto_patch:
+        description: "Allow bounded Tier-1 auto-patching (true/false)"
+        required: false
+        default: "true"
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  reflect-and-propose:
+  hillclimb:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -36,28 +40,61 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run monthly reflection against live jacksmyth.fyi telemetry
+      - name: Run weekly hillclimb reflection & bounded Tier-1 patcher
+        id: hillclimb
         env:
           SITE_ORIGIN: https://jacksmyth.fyi
           TARGET_MONTH: ${{ github.event.inputs.month }}
+          ENABLE_AUTO_PATCH: ${{ github.event.inputs.enable_auto_patch || 'true' }}
           SELF_OPT_CRON_SECRET: ${{ secrets.SELF_OPT_CRON_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node artifacts/home/scripts/monthly-reflect.mjs
+        run: node artifacts/home/scripts/weekly-hillclimb.mjs
 
-      - name: Run full verification suite (typecheck, build, MCP, protocols, browser, a11y, self-opt)
-        run: pnpm --filter @workspace/home run verify
+      - name: Verify build, MCP, protocols, browser, a11y, and self-opt (with auto-rollback on patch failure)
+        id: verify
+        run: |
+          if pnpm --filter @workspace/home run verify; then
+            echo "rolled_back=false" >> "$GITHUB_OUTPUT"
+          else
+            if [ "${{ steps.hillclimb.outputs.patch_applied }}" = "true" ]; then
+              echo "::warning::Tier-1 auto-patch failed verification; reverting src/ patch and keeping telemetry snapshot only."
+              git checkout -- artifacts/home/src/
+              echo "rolled_back=true" >> "$GITHUB_OUTPUT"
+              pnpm --filter @workspace/home run verify
+            else
+              exit 1
+            fi
+          fi
 
-      - name: Open Monthly Reflection Pull Request
+      - name: Read generated PR body
+        id: pr_body
+        run: |
+          {
+            echo "body<<EOF"
+            cat artifacts/home/content/reflections/latest-pr-body.md
+            if [ "${{ steps.verify.outputs.rolled_back }}" = "true" ]; then
+              echo ""
+              echo "> [!WARNING]"
+              echo "> Proposed Tier-1 patch failed \`pnpm verify\` and was automatically rolled back; only the telemetry snapshot & ledger are included."
+            fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open Hillclimb Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: self-opt/monthly-reflection
-          commit-message: "chore(self-opt): monthly UX & AI visibility reflection"
-          title: "Monthly Self-Optimising Reflection & Optimisation Proposals"
-          body: |
-            Automated monthly reflection generated from live zero-PII human UX (Core Web Vitals, scroll depth, lens switches, experiment clicks) and AI crawler/MCP telemetry on `jacksmyth.fyi`.
-
-            ### Guardrails Passed
-            - `pnpm --filter @workspace/home run verify` (typecheck, build, MCP, protocol, browser, axe-core accessibility, self-opt tests)
-
-            Review the reflection report in `artifacts/home/content/reflections/` and merge to deploy via Cloud Build → Cloud Run.
+          branch: self-opt/weekly-hillclimb
+          commit-message: "chore(hillclimb): ${{ steps.hillclimb.outputs.patch_title }}"
+          title: "[Hillclimb ${{ steps.hillclimb.outputs.week }}] ${{ steps.hillclimb.outputs.patch_title }}"
+          body: ${{ steps.pr_body.outputs.body }}
           labels: self-optimising, automated
+
+      - name: Auto-merge verified Tier 0 / Tier 1 PRs (hands-off deployment)
+        if: steps.cpr.outputs.pull-request-number != '' && (steps.hillclimb.outputs.tier == 'tier-0-ops' || steps.hillclimb.outputs.tier == 'tier-1-auto')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --squash --auto || \
+          gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --squash || \
+          echo "Auto-merge skipped (enable 'Allow auto-merge' in repo settings for zero-click merging)."

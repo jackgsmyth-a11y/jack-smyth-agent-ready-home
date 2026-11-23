@@ -74,4 +74,12 @@ assert.match(await refMdRes.text(), /# Self-Optimising Reflection Log/);
 const unauthReflect = await fetch(`${base}/api/self-opt/reflect`, { method: "POST" });
 assert.ok([401, 503].includes(unauthReflect.status), "POST /api/self-opt/reflect must require auth/config");
 
-console.log("Self-opt, SEO/AI visibility, and dual telemetry tests passed.");
+// 8. Check /api/self-opt/fitness scorecard + hillclimb gate
+const fitRes = await fetch(`${base}/api/self-opt/fitness`);
+assert.equal(fitRes.status, 200);
+const fit = await fitRes.json();
+assert.equal(typeof fit.scorecard?.compositeScore, "number", "Expected numeric compositeScore");
+assert.ok(["ops-only", "full-hillclimb"].includes(fit.gate?.mode), "Expected valid hillclimb gate mode");
+assert.ok(Array.isArray(fit.allowedTier1Files) && fit.allowedTier1Files.length > 0, "Expected allowedTier1Files");
+
+console.log("Self-opt, SEO/AI visibility, fitness scorecard, and dual telemetry tests passed.");

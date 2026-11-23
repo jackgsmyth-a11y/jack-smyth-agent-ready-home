@@ -1,0 +1,127 @@
+{
+  "week": "2026-W48",
+  "month": "2026-11",
+  "capturedAt": "2026-11-23T22:27:16.097Z",
+  "source": "https://jacksmyth.fyi",
+  "scorecard": {
+    "month": "2026-11",
+    "computedAt": "2026-11-23T22:27:16.094Z",
+    "totalPageViews": 31,
+    "paidLandingViews": 21,
+    "paidScroll50RatePct": 0,
+    "interactionRatePct": 12.9,
+    "ttfbP75Ms": 1879,
+    "lcpP75Ms": 1709,
+    "agentSuccessRatePct": 85.7,
+    "agentAvgLatencyMs": 3.6,
+    "compositeScore": 42,
+    "bottlenecks": []
+  },
+  "gate": {
+    "mode": "ops-only",
+    "allowUxCopyEdits": false,
+    "activeFlight": true,
+    "flightName": "Field Lab Cycle 01 - Benchmark vs Case Study",
+    "minViewsRequired": 50,
+    "currentViews": 31,
+    "reason": "Active Field Lab flight — ops-only mode."
+  },
+  "previousCycleGrade": {
+    "outcome": "baseline",
+    "deltaComposite": 0,
+    "newViewsSincePrev": 31,
+    "note": "First recorded hillclimb cycle — establishing baseline fitness scorecard."
+  },
+  "tier": "tier-0-ops",
+  "patchApplied": false,
+  "patch": null,
+  "skipReason": "GEMINI_API_KEY not set",
+  "reflectionSummary": null,
+  "telemetry": {
+    "month": "2026-11",
+    "updatedAt": "2026-11-23T22:15:17.387Z",
+    "storage": "firestore",
+    "human": {
+      "totalPageViews": 31,
+      "pageViews": {
+        "/experiments/field-lab": 24,
+        "/": 7
+      },
+      "events": {
+        "page_view": 31,
+        "cwv": 24,
+        "lens_switch": 2,
+        "scroll_depth": 10,
+        "experiment_click": 2
+      },
+      "lensSwitches": {
+        "human": 1,
+        "agent": 1
+      },
+      "experimentClicks": {
+        "/experiments/field-lab": 2
+      },
+      "outboundClicks": {},
+      "scrollMilestones": {
+        "25%": 4,
+        "50%": 2,
+        "75%": 2,
+        "100%": 2
+      },
+      "referrers": {
+        "youtube.com": 8,
+        "aimanhunt.online": 1
+      },
+      "campaignVariants": {
+        "cycle_2026_11:variant_a": {
+          "pageViews": 13,
+          "scroll50": 0,
+          "scroll75": 0,
+          "scroll100": 0
+        },
+        "cycle_2026_11:variant_b": {
+          "pageViews": 8,
+          "scroll50": 0,
+          "scroll75": 0,
+          "scroll100": 0
+        }
+      },
+      "cwvP75": {
+        "lcpMs": 1709,
+        "cls": 0,
+        "inpMs": 64,
+        "ttfbMs": 1879,
+        "sampleCount": 20
+      }
+    },
+    "agents": {
+      "totalRequests": 28,
+      "byAgent": {
+        "Agent-Client": 12,
+        "Applebot": 12,
+        "Bingbot": 4
+      },
+      "bySurface": {
+        "/.well-known/s1.php": 1,
+        "/.well-known/admin.php": 1,
+        "/.well-known/index.php": 1,
+        "/robots.txt": 4,
+        "/": 4,
+        "/webmcp.js": 2,
+        "/home-ui.js": 2,
+        "/telemetry.js": 2,
+        "/api/self-opt/summary": 2,
+        "/llms.txt": 2,
+        "/index.md": 2,
+        "/mcp": 1,
+        "/knowledge.json": 1,
+        "/.well-known/mcp.json": 1,
+        "/.well-known/poppy.json": 1,
+        "/.well-known/agent-card.json": 1
+      },
+      "errors4xx5xx": 4,
+      "avgLatencyMs": 3.6
+    }
+  },
+  "reflection": null
+}
