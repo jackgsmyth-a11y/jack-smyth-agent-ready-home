@@ -90,6 +90,7 @@ export const experimentScript = String.raw`
     let categoryId=new URL(location.href).searchParams.get('category')||'beauty';
     let data=[],verified=false,busy=false,checkoutBusy=false,verificationBusy=false,historyBusy=false;
     const pendingClaims=new Map();
+    const trackedPurchases=new Set();
     const receipt=()=> $('receipt').value.trim();
     const update=()=>{
       const locked=busy||checkoutBusy||verificationBusy;
@@ -126,7 +127,7 @@ export const experimentScript = String.raw`
     };
     $('verify-pack').onclick=async()=>{
       if(busy||verificationBusy)return;verificationBusy=true;verified=false;resetApproval();
-      try{const {data:d}=await request('leaderbored/credits',{checkoutSessionId:receipt()});verified=!!d.creditsGranted&&d.creditsRemaining>0;notice($('credit-status'),d.creditsGranted?d.creditsRemaining+' credits available. Payment verified by the existing service.':'Payment is not yet confirmed. Complete the checkout, then verify again.');}
+      try{const sid=receipt();const {data:d}=await request('leaderbored/credits',{checkoutSessionId:sid});verified=!!d.creditsGranted&&d.creditsRemaining>0;if(verified&&typeof window.fbq==='function'&&!trackedPurchases.has(sid)){trackedPurchases.add(sid);window.fbq('track','Purchase',{value:1.00,currency:'AUD',content_name:'Leaderbored 10-credit pack'});}notice($('credit-status'),d.creditsGranted?d.creditsRemaining+' credits available. Payment verified.':'Payment is not yet confirmed. Complete the checkout, then verify again.');}
       catch(error){verified=false;notice($('credit-status'),error.message,true);}finally{verificationBusy=false;resetApproval();}
     };
     $('copy-receipt').onclick=async()=>{if(!receipt()){notice($('credit-status'),'Create a checkout or restore a private receipt first.',true);return;}try{await navigator.clipboard.writeText(receipt());notice($('credit-status'),'Receipt copied. Save it somewhere private; this page will not retain it.');}catch{notice($('credit-status'),'Clipboard unavailable. Copy the receipt privately from the field.',true);}};

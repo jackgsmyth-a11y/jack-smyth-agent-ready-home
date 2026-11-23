@@ -12,7 +12,7 @@ export const EXPERIMENTS = [
     path: "/experiments/leaderbored",
     question: "What does an agency look like when its next client is an agent?",
     role: "A working demonstration of human-approved delegation: category context, budget, useful output.",
-    service: "https://leaderbored.replit.app",
+    service: "native-google-cloud",
     machineContent: "/experiments/leaderbored.md",
     actionMcp: "/experiments/leaderbored/mcp",
   },

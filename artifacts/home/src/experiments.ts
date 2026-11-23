@@ -1,10 +1,19 @@
 import type { Express, Request, Response } from "express";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import flair from "./data/flair.json";
 import categories from "./data/leaderbored.json";
 import { page } from "./site.js";
 import { experimentScript } from "./experiment-client.js";
 import { EXPERIMENTS } from "./experiment-catalog.js";
+import {
+  buildLeaderboredMcpServer,
+  claimNativeIdea,
+  createNativeCheckout,
+  getNativeCategoriesPayload,
+  listNativeHistory,
+  verifyNativeCredits,
+} from "./leaderbored-native.js";
 export { EXPERIMENTS } from "./experiment-catalog.js";
 
 export const RETAIL = flair;
@@ -124,13 +133,12 @@ export function registerExperiments(app: Express, origin: (r: Request) => string
   app.get("/experiments.js", (_req, res) => res.type("text/javascript").send(experimentScript));
   app.get("/api/experiments", (_req, res) => res.json({ experiments: EXPERIMENTS }));
   app.get("/api/experiments/facts-with-flair/examples", (_req, res) => res.json({ ...flair, research: RESEARCH }));
-  app.get("/api/experiments/leaderbored/categories", async (_req, res) => {
+  app.get("/api/experiments/leaderbored/categories", (_req, res) => {
     res.set("Cache-Control", "no-store");
-    res.json(await getCategories());
+    res.json(getNativeCategoriesPayload());
   });
-  // Deliberately fixed operation -> host mapping. This is not an open proxy.
-  // Only validated fields are sent. Never forward cookies, auth, arbitrary
-  // headers or query strings; never log or persist request/response bodies.
+  // Deliberately fixed operation -> handler/host mapping. This is not an open proxy.
+  // Leaderbored runs natively on Cloud Run + Firestore + Stripe + Gemini.
   app.post("/api/experiments/:experiment/:operation", async (req, res) => {
     const key = `${req.params.experiment}/${req.params.operation}`;
     const op = operations[key as keyof typeof operations];
@@ -139,10 +147,38 @@ export function registerExperiments(app: Express, origin: (r: Request) => string
     const parsed = op.schema.safeParse(req.body);
     if (!parsed.success) { res.status(400).json({ error: "Invalid request or missing explicit approval. Check the experiment form." }); return; }
     if (inFlightOperations >= 8) { res.status(429).set("Retry-After", "2").json({ error: "This instance is handling several experiment requests. Wait a moment and retry.", code: "busy" }); return; }
-    const body: Record<string, unknown> = { ...parsed.data };
-    const poll = body.poll; delete body.poll; delete body.approved;
     inFlightOperations++;
     try {
+      if (key === "leaderbored/checkout") {
+        const { categoryId } = parsed.data as { categoryId: string };
+        const result = await createNativeCheckout(categoryId, origin(req));
+        res.status(result.status).json(result.body);
+        return;
+      }
+      if (key === "leaderbored/credits") {
+        const { checkoutSessionId } = parsed.data as { checkoutSessionId: string };
+        const result = await verifyNativeCredits(checkoutSessionId);
+        res.status(result.status).json(result.body);
+        return;
+      }
+      if (key === "leaderbored/history") {
+        const { checkoutSessionId } = parsed.data as { checkoutSessionId: string };
+        const result = await listNativeHistory(checkoutSessionId);
+        res.status(result.status).json(result.body);
+        return;
+      }
+      if (key === "leaderbored/claim") {
+        const { categoryId, checkoutSessionId, requestId } = parsed.data as {
+          categoryId: string;
+          checkoutSessionId: string;
+          requestId: string;
+        };
+        const result = await claimNativeIdea({ categoryId, checkoutSessionId, requestId });
+        res.status(result.status).json(result.body);
+        return;
+      }
+      const body: Record<string, unknown> = { ...parsed.data };
+      const poll = body.poll; delete body.poll; delete body.approved;
       const upstream = await fetch(op.base + op.path, {
         method: "POST", headers: { "content-type": "application/json", ...(poll ? { "X-Leaderbored-Poll": "true" } : {}) },
         body: JSON.stringify(body), signal: AbortSignal.timeout(115000),
@@ -156,13 +192,17 @@ export function registerExperiments(app: Express, origin: (r: Request) => string
   });
   app.post("/experiments/leaderbored/mcp", async (req, res) => {
     res.set({ "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" });
+    const server = buildLeaderboredMcpServer(origin(req));
+    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    res.on("close", () => { void transport.close(); void server.close(); });
     try {
-      const r = await fetch(`${EXPERIMENTS[1].service}/api/agent/mcp`, {
-        method: "POST", headers: { "content-type": "application/json", accept: "application/json, text/event-stream", ...(req.get("MCP-Protocol-Version") ? { "MCP-Protocol-Version": req.get("MCP-Protocol-Version")! } : {}) },
-        body: JSON.stringify(req.body), signal: AbortSignal.timeout(115000),
-      });
-      res.status(r.status).type(r.headers.get("content-type") || "application/json").send(await r.text());
-    } catch { res.status(502).json({ jsonrpc: "2.0", id: req.body?.id ?? null, error: { code: -32603, message: "Leaderbored service unavailable. No successful action is assumed; use the same request ID for safe recovery." } }); }
+      await server.connect(transport);
+      await transport.handleRequest(req, res, req.body);
+    } catch {
+      if (!res.headersSent) {
+        res.status(500).json({ jsonrpc: "2.0", id: req.body?.id ?? null, error: { code: -32603, message: "Internal Leaderbored MCP error. Retry with the same request ID for safe recovery." } });
+      }
+    }
   });
   app.all("/experiments/leaderbored/mcp", (_req, res) => res.status(405).set("Allow", "POST").json({ error: "Stateless Streamable HTTP: use POST." }));
   for (const exp of EXPERIMENTS.filter(x => x.id === "facts-with-flair" || x.id === "leaderbored")) {
@@ -171,12 +211,31 @@ export function registerExperiments(app: Express, origin: (r: Request) => string
       res.vary("Accept");
       res.set("Link", `<${exp.path}.md>; rel="alternate"; type="text/markdown"`);
       if (req.accepts(["html", "text/markdown"]) === "text/markdown") { res.type("text/markdown").send(experimentMarkdown(exp.id, origin(req))); return; }
+      const nonce = res.locals.nonce as string;
+      let body = exp.id === "facts-with-flair" ? flairBody(String(req.query.example || "")) : leaderBody(String(req.query.category || ""));
+      if (exp.id === "leaderbored") {
+        // Scoped Meta Pixel (ID 2417943102308171) ONLY on /experiments/leaderbored with strict nonce CSP (no unsafe-inline).
+        // Fires PageView here; Purchase fires only on confirmed paid Stripe receipt in experiment-client.ts.
+        res.set("Content-Security-Policy", [
+          "default-src 'self'",
+          `script-src 'self' 'nonce-${nonce}' https://connect.facebook.net`,
+          `style-src 'self' 'nonce-${nonce}'`,
+          "font-src 'self'",
+          "img-src 'self' data: https://www.facebook.com",
+          "connect-src 'self' https://www.facebook.com https://connect.facebook.net",
+          "object-src 'none'",
+          "base-uri 'none'",
+          "frame-ancestors 'self'",
+          "form-action 'self'",
+        ].join("; "));
+        body += `<script nonce="${nonce}">!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','2417943102308171');fbq('track','PageView');</script>`;
+      }
       res.type("html").send(page(origin(req), {
         path: exp.path, title: `${exp.title} — ${exp.bet} in practice · Jack Smyth`,
         description: exp.question,
-        body: exp.id === "facts-with-flair" ? flairBody(String(req.query.example || "")) : leaderBody(String(req.query.category || "")),
+        body,
         script: "/experiments.js",
-      }, res.locals.nonce));
+      }, nonce));
     });
   }
 }

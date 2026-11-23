@@ -33,7 +33,7 @@ check("Markdown content negotiation and Vary header", negotiated.headers.get("co
 check("Canonical markdown equals llms.txt", await negotiated.text() === md);
 const html = await (await get("/")).text();
 check("Server-rendered HTML contains all three bets", ["Differentiation", "Multimodality", "Anticipation"].every(b => html.includes(b)));
-check("No JavaScript needed to discover work and sources", html.includes("Facts with flair.") && html.includes("Harvard Business Review") && html.includes("https://leaderbored.replit.app"));
+check("No JavaScript needed to discover work and sources", html.includes("Facts with flair.") && html.includes("Harvard Business Review") && html.includes("https://jacksmyth.fyi/experiments/leaderbored.md"));
 const ld = JSON.parse(html.match(/<script[^>]*type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 check("HBR JSON-LD uses published authors, not Jack", ld["@graph"].filter(n => n.url?.includes("hbr.org")).every(n => Array.isArray(n.author) && !JSON.stringify(n.author).includes("#jack")));
 check("WebMCP declarative search form annotated", html.includes('toolname="search_knowledge_form"') && html.includes('toolparamdescription='));
