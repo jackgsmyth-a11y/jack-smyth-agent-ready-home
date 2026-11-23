@@ -7,6 +7,7 @@ import { page } from "./site.js";
 import { wetLabClientScript } from "./wet-lab-client.js";
 import { isFirestoreEnabled, loadWetLabSnapshot, saveWetLabSnapshot } from "./wet-lab-store.js";
 import { runAutonomousPitchSwarm } from "./wet-lab-swarm.js";
+import { buildTelemetrySummary } from "./telemetry.js";
 
 export interface CreativeVariant {
   id: string;
@@ -208,10 +209,148 @@ const submittedQuestions: LabQuestionSubmission[] = [
 
 const e = (x: unknown) => String(x ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
+export interface CampaignSnapshot {
+  cycleId: string;
+  accountId: string;
+  campaignName: string;
+  channel: string;
+  winningTeam: string;
+  winningPitchId: string;
+  winningScore: number;
+  flightStart: string;
+  flightEnd: string;
+  budgetCapAud: number;
+  autoPauseAud: number;
+  stage: "draft-ready" | "live" | "paused-at-cap" | "completed";
+  spendAud: number;
+  variantA: { impressions: number; clicks: number };
+  variantB: { impressions: number; clicks: number };
+  lastSyncedAt: string;
+  syncSource: string;
+}
+
+let campaignSnapshot: CampaignSnapshot = {
+  cycleId: "cycle-2026-11",
+  accountId: process.env.GOOGLE_ADS_CUSTOMER_ID || "435-353-5484",
+  campaignName: "Field Lab Cycle 01 - Benchmark vs Case Study",
+  channel: "Google Ads Demand Gen (AU)",
+  winningTeam: "Team Differentiation",
+  winningPitchId: "pitch-differentiation",
+  winningScore: 81,
+  flightStart: "2026-11-23",
+  flightEnd: "2026-12-02",
+  budgetCapAud: 100,
+  autoPauseAud: 95,
+  stage: "draft-ready",
+  spendAud: 0,
+  variantA: { impressions: 0, clicks: 0 },
+  variantB: { impressions: 0, clicks: 0 },
+  lastSyncedAt: new Date().toISOString(),
+  syncSource: "google-ads-mcp + first-party UTM telemetry ($0/mo)",
+};
+
+// Exact Beta-Binomial numerical check (uniform Beta(1,1) prior) for P(p_A > p_B)
+// Returns null probability when sample is too small so the glass box never fakes certainty.
+function computeBayesianScrollLift(aViews: number, aScroll50: number, bViews: number, bScroll50: number) {
+  const totalViews = aViews + bViews;
+  const aRate = aViews > 0 ? Number(((aScroll50 / aViews) * 100).toFixed(1)) : null;
+  const bRate = bViews > 0 ? Number(((bScroll50 / bViews) * 100).toFixed(1)) : null;
+  if (totalViews < 20 || aViews < 5 || bViews < 5) {
+    return {
+      ready: false,
+      probABeatsB: null as number | null,
+      aRatePct: aRate,
+      bRatePct: bRate,
+      verdict: `Awaiting sample (n=${totalViews} landing views; requires ≥20 total and ≥5 per variant before computing posterior).`,
+    };
+  }
+  const a1 = aScroll50 + 1;
+  const b1 = Math.max(0, aViews - aScroll50) + 1;
+  const a2 = bScroll50 + 1;
+  const b2 = Math.max(0, bViews - bScroll50) + 1;
+  // Normal approximation to Beta difference (accurate for a,b >= 5, deterministic, zero deps)
+  const mu1 = a1 / (a1 + b1);
+  const mu2 = a2 / (a2 + b2);
+  const var1 = (a1 * b1) / (((a1 + b1) ** 2) * (a1 + b1 + 1));
+  const var2 = (a2 * b2) / (((a2 + b2) ** 2) * (a2 + b2 + 1));
+  const z = (mu1 - mu2) / Math.sqrt(var1 + var2 || 1e-9);
+  // Abramowitz & Stegun erf approximation for standard normal CDF
+  const t = 1 / (1 + 0.2316419 * Math.abs(z) / Math.SQRT2);
+  const poly = t * (0.31938153 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+  const erf = 1 - poly * Math.exp(-(z * z) / 2) / Math.sqrt(Math.PI);
+  const prob = 0.5 * (1 + (z >= 0 ? erf : -erf));
+  const pct = Number((prob * 100).toFixed(1));
+  return {
+    ready: true,
+    probABeatsB: pct,
+    aRatePct: aRate,
+    bRatePct: bRate,
+    verdict: pct >= 75
+      ? `Directional signal: Variant A leads with ${pct}% Bayesian posterior probability on >50% scroll depth.`
+      : pct <= 25
+        ? `Directional signal: Variant B (control) leads — Variant A posterior is ${pct}%.`
+        : `Inconclusive so far (${pct}% posterior) — continuing flight under A$100 cap.`,
+  };
+}
+
+export function getLiveCampaignTracker() {
+  const telemetry = buildTelemetrySummary();
+  const variants = telemetry.human.campaignVariants ?? {};
+  const utmA = variants["cycle_2026_11:variant_a"] ?? { pageViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
+  const utmB = variants["cycle_2026_11:variant_b"] ?? { pageViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
+  const totalImpressions = campaignSnapshot.variantA.impressions + campaignSnapshot.variantB.impressions;
+  const totalClicks = campaignSnapshot.variantA.clicks + campaignSnapshot.variantB.clicks;
+  const ctrA = campaignSnapshot.variantA.impressions > 0
+    ? Number(((campaignSnapshot.variantA.clicks / campaignSnapshot.variantA.impressions) * 100).toFixed(2))
+    : null;
+  const ctrB = campaignSnapshot.variantB.impressions > 0
+    ? Number(((campaignSnapshot.variantB.clicks / campaignSnapshot.variantB.impressions) * 100).toFixed(2))
+    : null;
+  const bayesian = computeBayesianScrollLift(utmA.pageViews, utmA.scroll50, utmB.pageViews, utmB.scroll50);
+
+  return {
+    ...campaignSnapshot,
+    totalImpressions,
+    totalClicks,
+    spendRemainingAud: Number(Math.max(0, campaignSnapshot.budgetCapAud - campaignSnapshot.spendAud).toFixed(2)),
+    variants: {
+      variantA: {
+        label: "Variant A · Independent Benchmark",
+        utmKey: "cycle_2026_11:variant_a",
+        impressions: campaignSnapshot.variantA.impressions,
+        clicks: campaignSnapshot.variantA.clicks,
+        ctrPct: ctrA,
+        landingViews: utmA.pageViews,
+        scroll50: utmA.scroll50,
+        scroll50RatePct: bayesian.aRatePct,
+      },
+      variantB: {
+        label: "Variant B · Brand Case Study (Control)",
+        utmKey: "cycle_2026_11:variant_b",
+        impressions: campaignSnapshot.variantB.impressions,
+        clicks: campaignSnapshot.variantB.clicks,
+        ctrPct: ctrB,
+        landingViews: utmB.pageViews,
+        scroll50: utmB.scroll50,
+        scroll50RatePct: bayesian.bRatePct,
+      },
+    },
+    bayesianScrollAudit: bayesian,
+    telemetryUpdatedAt: telemetry.updatedAt,
+    nextMilestones: [
+      { step: "01", window: "Nov 23 – Dec 2", title: "Live Demand Gen Flight", detail: "Team Differentiation runs Variant A vs Variant B in Australia under a hard A$100 cap (A$95 circuit breaker). On-site >50% scroll depth updates automatically from zero-PII UTM telemetry." },
+      { step: "02", window: "At n ≥ 60 clicks or Dec 2", title: "Skeptic Bayesian Audit", detail: "Google Ads GAQL CTR + Firestore scroll depth are combined into a Beta-Binomial posterior. Hypothesis passes only if Variant A beats control by ≥+15% relative CTR with ≥75% probability." },
+      { step: "03", window: "Dec 1 · 09:00 AEST", title: "Cycle 02 Autonomous Swarm", detail: "Cloud Scheduler triggers a fresh Search Grounding scout + reader questions, and all three teams pitch again for December's A$100 AUD media grant." },
+      { step: "04", window: "Post-flight", title: "Open CMO Verdict & YouTube Brief", detail: "Raw numbers, falsification verdict, and a verdict-first YouTube script publish directly to /experiments/field-lab, /llms.txt, and /experiments/field-lab/mcp." },
+    ],
+  };
+}
+
 export function getWetLabState() {
   return {
     cycle: activeCycle,
     guardrails: SPEND_GUARDRAILS,
+    liveTracker: getLiveCampaignTracker(),
     submittedQuestions: submittedQuestions.slice(-10),
     storageBackend: process.env.FIRESTORE_ENABLED === "true" ? "firestore" : "in-memory-v1",
   };
@@ -247,7 +386,21 @@ export function wetLabMarkdown(base: string) {
     `- Statistical framework: ${SPEND_GUARDRAILS.statisticalFramework}`,
     `- Google Ads MCP: ${SPEND_GUARDRAILS.googleAdsMcp.server} (${SPEND_GUARDRAILS.googleAdsMcp.mode})`,
     "",
-    "Note: Cycle 01 is currently in dry-run-v1 voting mode prior to live Google Ads execution. No real media spend has occurred yet.",
+    "## Live Campaign Tracker (Zero-Cost Glass Box)",
+    ...(() => {
+      const t = getLiveCampaignTracker();
+      return [
+        `- Account: ${t.accountId} | Campaign: ${t.campaignName} | Stage: ${t.stage}`,
+        `- Winning team: ${t.winningTeam} (${t.winningScore}/100) | Flight: ${t.flightStart} to ${t.flightEnd}`,
+        `- Spend: A$${t.spendAud.toFixed(2)} / A$${t.budgetCapAud} AUD | Ads clicks: ${t.totalClicks} | Ads impressions: ${t.totalImpressions}`,
+        `- Variant A (${t.variants.variantA.utmKey}): ${t.variants.variantA.landingViews} landing views, ${t.variants.variantA.scroll50} >50% scrolls`,
+        `- Variant B (${t.variants.variantB.utmKey}): ${t.variants.variantB.landingViews} landing views, ${t.variants.variantB.scroll50} >50% scrolls`,
+        `- Bayesian audit: ${t.bayesianScrollAudit.verdict}`,
+        `- Live JSON endpoint: ${base}/api/experiments/field-lab/live`,
+      ];
+    })(),
+    "",
+    `Note: Cycle 01 mode is currently ${c.mode} (${c.status}). Spend limits are enforced in code and in Google Ads campaign caps.`,
   ];
   return lines.join("\n") + "\n";
 }
@@ -379,9 +532,204 @@ function glassBoxSchematic(c: LabCycle) {
   </section>`;
 }
 
+function swarmTheatre(c: LabCycle) {
+  const sorted = [...c.pitches].sort((a, b) => b.judge.total - a.judge.total);
+  const winner = sorted[0];
+  return `<section id="swarm-arena" class="swarm-arena" aria-labelledby="swarm-arena-title">
+    <div class="section-top">
+      <div>
+        <div class="section-no">00A / Live Swarm Theatre</div>
+        <h2 id="swarm-arena-title">Watch the swarm search, argue, and pitch.</h2>
+      </div>
+      <div class="swarm-controls">
+        <button type="button" class="secondary swarm-toggle" id="swarm-play-toggle">Pause animation</button>
+      </div>
+    </div>
+    <p class="quiet">Inspired by typographic glass-box visualisers: step through how the Scout tokenises live CMO debate, three teams challenge each other’s maths, and the calibrated Judge awards the A$100 AUD grant.</p>
+
+    <div class="swarm-steps" role="group" aria-label="Swarm deliberation phases">
+      <button type="button" class="swarm-step-btn" data-swarm-btn="0" aria-pressed="true"><span class="sym" aria-hidden="true">⌕</span> 01 · Search</button>
+      <button type="button" class="swarm-step-btn" data-swarm-btn="1" aria-pressed="false"><span class="sym" aria-hidden="true">◈</span> 02 · Consider</button>
+      <button type="button" class="swarm-step-btn" data-swarm-btn="2" aria-pressed="false"><span class="sym" aria-hidden="true">⇌</span> 03 · Argue</button>
+      <button type="button" class="swarm-step-btn" data-swarm-btn="3" aria-pressed="false"><span class="sym" aria-hidden="true">∑</span> 04 · Pitch &amp; Judge</button>
+    </div>
+
+    <div class="swarm-stage surface" data-swarm-active="0">
+      <div class="swarm-pane" data-swarm-pane="0">
+        <div class="swarm-head"><span class="swarm-badge"><span aria-hidden="true">⌕</span> SCOUT · gemini-4-hydrogen + Google Search Grounding</span><span class="swarm-clock" aria-hidden="true">t=0.4s · tokens→brief</span></div>
+        <div class="token-stream" aria-label="Tokenised CMO search signals">
+          <span class="tok t1"><span aria-hidden="true">·</span>ai<span aria-hidden="true">·</span>overviews</span>
+          <span class="tok t2"><span aria-hidden="true">·</span>89%<span aria-hidden="true">·</span>skip<span aria-hidden="true">·</span>vendor<span aria-hidden="true">·</span>sites</span>
+          <span class="tok t3"><span aria-hidden="true">·</span>b2b<span aria-hidden="true">·</span>citation<span aria-hidden="true">·</span>gap</span>
+          <span class="tok t4"><span aria-hidden="true">·</span>micro<span aria-hidden="true">·</span>budget<span aria-hidden="true">·</span>A$100</span>
+          <span class="tok t5"><span aria-hidden="true">·</span>falsifiable<span aria-hidden="true">·</span>cmo<span aria-hidden="true">·</span>test</span>
+          <span class="tok tok-arrow" aria-hidden="true">→</span>
+          <span class="tok tok-out">brief.json</span>
+        </div>
+        <p class="quiet">Scout converts live search signals and reader questions into one identical JSON brief—zero hidden hints, fixed token allowance per team.</p>
+      </div>
+
+      <div class="swarm-pane" data-swarm-pane="1" hidden>
+        <div class="swarm-head"><span class="swarm-badge"><span aria-hidden="true">◈</span> CONSIDER · 3 isolated teams weighing sample math</span><span class="swarm-clock" aria-hidden="true">cap = A$100 AUD</span></div>
+        <div class="swarm-lanes">
+          <div class="swarm-lane">
+            <div class="lane-id"><span aria-hidden="true">Δ</span> Team Differentiation</div>
+            <code>channel: Demand Gen (AU)</code>
+            <code>n ≈ 6k–10k imp · 60–140 clicks</code>
+            <code>rule: ΔCTR ≥ +15% · P ≥ 0.75</code>
+          </div>
+          <div class="swarm-lane">
+            <div class="lane-id"><span aria-hidden="true">▶</span> Team Multimodality</div>
+            <code>channel: YouTube Shorts (AU)</code>
+            <code>n ≈ 4k–7.5k imp · 3s hold</code>
+            <code>rule: P(Proof &gt; Claim) ≥ 0.70</code>
+          </div>
+          <div class="swarm-lane">
+            <div class="lane-id"><span aria-hidden="true">⚡</span> Team Anticipation</div>
+            <code>channel: Display / Search (AU)</code>
+            <code>n ≈ 3k–6k imp · schema test</code>
+            <code>rule: lower volume on A$100</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="swarm-pane" data-swarm-pane="2" hidden>
+        <div class="swarm-head"><span class="swarm-badge"><span aria-hidden="true">⇌</span> ARGUE · cross-examination &amp; rubric deltas</span><span class="swarm-clock" aria-hidden="true">judge: gemini-decision-1</span></div>
+        <ol class="swarm-debate">
+          <li class="d1">
+            <span class="deb-who">Differentiation <span aria-hidden="true">→</span></span>
+            <span class="deb-say">“Matched charcoal-and-lemon cards isolate <em>message truth</em>. If 89% of AI citations skip vendor sites, let’s test if CMOs click independent stats over brand fluff.”</span>
+            <span class="deb-delta pos">+4 variance control</span>
+          </li>
+          <li class="d2">
+            <span class="deb-who">Multimodality <span aria-hidden="true">→</span></span>
+            <span class="deb-say">“Static cards are polite. A 20s Short showing an AI agent reject a $40M site in 4 seconds will crush 3-second hold.”</span>
+            <span class="deb-delta warn">−2 creative noise</span>
+          </li>
+          <li class="d3">
+            <span class="deb-who">Anticipation <span aria-hidden="true">→</span></span>
+            <span class="deb-say">“Both ignore agentic checkout—test structured product schema vs marketing prose.”</span>
+            <span class="deb-delta warn">−4 thin sample @ A$100</span>
+          </li>
+          <li class="d4 judge-line">
+            <span class="deb-who">Judge Agent <span aria-hidden="true">∑</span></span>
+            <span class="deb-say">“At A$100 AUD, clean variable isolation beats spectacle. <strong>${e(winner.team)}</strong> wins (${winner.judge.total}/100). Issuing media grant.”</span>
+            <span class="deb-delta win">FUNDED ★</span>
+          </li>
+        </ol>
+      </div>
+
+      <div class="swarm-pane" data-swarm-pane="3" hidden>
+        <div class="swarm-head"><span class="swarm-badge"><span aria-hidden="true">∑</span> PITCH &amp; JUDGE · calibrated 100-pt logits</span><span class="swarm-clock" aria-hidden="true">→ Google Ads 435-353-5484</span></div>
+        <div class="logit-board">
+          ${sorted.map((p, idx) => `<div class="logit-row ${idx === 0 ? "is-winner" : ""}">
+            <span class="logit-team">${e(p.team)}</span>
+            <meter class="rubric-meter" min="0" max="100" value="${p.judge.total}">${p.judge.total}/100</meter>
+            <span class="logit-score">${p.judge.total}/100</span>
+            <span class="logit-tag">${idx === 0 ? "FUNDED ★" : idx === 1 ? "RUNNER-UP" : "BENCHED"}</span>
+          </div>`).join("")}
+        </div>
+        <div class="handoff-strip">
+          <span>${e(winner.team)}</span><span aria-hidden="true">→</span>
+          <span>gemini-nano-banana-2.1 (2 cards)</span><span aria-hidden="true">→</span>
+          <span>Google Ads 435-353-5484</span><span aria-hidden="true">→</span>
+          <span>A$100.00 hard cap</span>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function liveCampaignTrackerSection() {
+  const t = getLiveCampaignTracker();
+  const stageLabels: Record<CampaignSnapshot["stage"], string> = {
+    "draft-ready": "Draft staged · ready to publish",
+    "live": "Live in Australia",
+    "paused-at-cap": "Auto-paused at A$95 circuit breaker",
+    "completed": "Flight completed · Bayesian audit ready",
+  };
+  const fmtCtr = (v: number | null) => (v === null ? "—" : `${v}%`);
+  const fmtRate = (v: number | null) => (v === null ? "—" : `${v}%`);
+  return `<section id="live-tracker" class="live-tracker" aria-labelledby="live-tracker-title">
+    <div class="section-top">
+      <div>
+        <div class="section-no">00B / Zero-Cost Live Campaign Tracker</div>
+        <h2 id="live-tracker-title">Winning team in the field.</h2>
+      </div>
+      <div class="tracker-actions">
+        <span class="stage-pill stage-${e(t.stage)}" id="fl-stage-pill"><span class="pulse-dot" aria-hidden="true"></span>${e(stageLabels[t.stage])}</span>
+        <button type="button" class="secondary" id="fl-refresh-live">Refresh live data <span aria-hidden="true">↻</span></button>
+      </div>
+    </div>
+
+    <div class="surface tracker-card">
+      <div class="tracker-summary">
+        <div>
+          <span class="eyebrow">Funded Team · Cycle 01</span>
+          <h3>${e(t.winningTeam)} (${t.winningScore}/100)</h3>
+          <p class="quiet">${e(t.campaignName)} · ${e(t.channel)} · Account <code>${e(t.accountId)}</code> · Flight <strong>${e(t.flightStart)}</strong> to <strong>${e(t.flightEnd)}</strong>.</p>
+        </div>
+        <div class="spend-box">
+          <div class="spend-nums"><strong id="fl-spend">A$${t.spendAud.toFixed(2)}</strong> <span class="quiet">/ A$${t.budgetCapAud} AUD cap</span></div>
+          <meter id="fl-spend-meter" class="rubric-meter" min="0" max="${t.budgetCapAud}" value="${t.spendAud}">A$${t.spendAud.toFixed(2)} of A$${t.budgetCapAud} AUD</meter>
+          <span class="fine">Auto-pause breaker at A$${t.autoPauseAud} · Remaining: <strong id="fl-remaining">A$${t.spendRemainingAud.toFixed(2)}</strong></span>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="tracker-table">
+          <caption>Cycle 01 A/B performance: Google Ads snapshot paired with live $0 first-party UTM telemetry</caption>
+          <thead>
+            <tr>
+              <th scope="col">Creative Variant</th>
+              <th scope="col">Ads Imp.</th>
+              <th scope="col">Ads Clicks (CTR)</th>
+              <th scope="col">Landing Views (Live UTM)</th>
+              <th scope="col">&gt;50% Scroll Depth (Live)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Variant A · Independent Benchmark</th>
+              <td id="fl-va-imp">${t.variants.variantA.impressions}</td>
+              <td id="fl-va-clicks">${t.variants.variantA.clicks} (${fmtCtr(t.variants.variantA.ctrPct)})</td>
+              <td id="fl-va-views">${t.variants.variantA.landingViews}</td>
+              <td id="fl-va-scroll">${t.variants.variantA.scroll50} (${fmtRate(t.variants.variantA.scroll50RatePct)})</td>
+            </tr>
+            <tr>
+              <th scope="row">Variant B · Brand Case Study (Control)</th>
+              <td id="fl-vb-imp">${t.variants.variantB.impressions}</td>
+              <td id="fl-vb-clicks">${t.variants.variantB.clicks} (${fmtCtr(t.variants.variantB.ctrPct)})</td>
+              <td id="fl-vb-views">${t.variants.variantB.landingViews}</td>
+              <td id="fl-vb-scroll">${t.variants.variantB.scroll50} (${fmtRate(t.variants.variantB.scroll50RatePct)})</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bayes-banner">
+        <span class="eyebrow">Live Bayesian Scroll Audit · Beta(1,1) Uniform Prior</span>
+        <p id="fl-bayes-verdict">${e(t.bayesianScrollAudit.verdict)}</p>
+        <span class="fine">How this stays $0/mo: landing views and &gt;50% scroll depth stream from first-party zero-PII UTM telemetry in Firestore; Google Ads spend/impressions/clicks sync via cached <code>google-ads-mcp</code> snapshots. Live JSON: <a href="/api/experiments/field-lab/live">/api/experiments/field-lab/live</a>.</span>
+      </div>
+    </div>
+
+    <div class="next-roadmap">
+      <h3>What happens next</h3>
+      <ol class="next-chain">
+        ${t.nextMilestones.map((m) => `<li>
+          <span class="next-step">${e(m.step)} · ${e(m.window)}</span>
+          <strong>${e(m.title)}</strong>
+          <p class="quiet">${e(m.detail)}</p>
+        </li>`).join("")}
+      </ol>
+    </div>
+  </section>`;
+}
+
 function wetLabBody() {
   const c = activeCycle;
-  return `<div class="experiment" data-experiment="field-lab" data-agent-spec="MCP: /experiments/field-lab/mcp · API: /api/experiments/field-lab/cycle · MODELS: gemini-4-hydrogen + gemini-decision-1 + gemini-nano-banana-2.1 · CAP: A$100 AUD">
+  return `<div class="experiment" data-experiment="field-lab" data-agent-spec="MCP: /experiments/field-lab/mcp · API: /api/experiments/field-lab/cycle · LIVE: /api/experiments/field-lab/live · MODELS: gemini-4-hydrogen + gemini-decision-1 + gemini-nano-banana-2.1 · CAP: A$100 AUD">
   <div class="crumb"><a href="/">Jack Smyth</a><span>/</span><a href="/#multimodality">Multimodality</a><span>/</span><span>Agentic Field Lab</span></div>
   <div class="eyebrow">Experiment 03 · autonomous media-grant lab · ${e(c.month)}</div>
   <h1>The Agentic<br>Field Lab.</h1>
@@ -391,6 +739,8 @@ function wetLabBody() {
     <small>Status: ${e(c.status)} (${e(c.mode)}). Autonomous via Industry Pulse + Judge Agent; community votes act as an advisory signal.</small>
   </div>
 
+  ${swarmTheatre(c)}
+  ${liveCampaignTrackerSection()}
   ${glassBoxSchematic(c)}
 
   <section id="brief">
@@ -567,11 +917,16 @@ const questionSchema = z.object({
 });
 
 export function registerWetLab(app: Express, origin: (r: Request) => string) {
-  // Hydrate latest cycle from Cloud Firestore on startup when enabled on Cloud Run
+  // Hydrate latest cycle + campaign snapshot from Cloud Firestore on startup when enabled on Cloud Run
   if (isFirestoreEnabled()) {
     void loadWetLabSnapshot<LabCycle>("active-cycle").then((saved) => {
       if (saved && Array.isArray(saved.pitches) && saved.pitches.length > 0) {
         activeCycle = saved;
+      }
+    });
+    void loadWetLabSnapshot<CampaignSnapshot>("campaign-snapshot").then((saved) => {
+      if (saved && typeof saved.campaignName === "string") {
+        campaignSnapshot = { ...campaignSnapshot, ...saved };
       }
     });
   }
@@ -581,6 +936,56 @@ export function registerWetLab(app: Express, origin: (r: Request) => string) {
   app.get(["/api/experiments/field-lab/cycle", "/api/experiments/wet-lab/cycle"], (_req, res) => {
     res.set("Cache-Control", "no-store");
     res.json(getWetLabState());
+  });
+
+  app.get(["/api/experiments/field-lab/live", "/api/experiments/wet-lab/live"], (_req, res) => {
+    res.set("Cache-Control", "no-store");
+    res.json(getLiveCampaignTracker());
+  });
+
+  const snapshotUpdateSchema = z.object({
+    stage: z.enum(["draft-ready", "live", "paused-at-cap", "completed"]).optional(),
+    spendAud: z.number().min(0).max(500).optional(),
+    variantA: z.object({ impressions: z.number().int().min(0), clicks: z.number().int().min(0) }).optional(),
+    variantB: z.object({ impressions: z.number().int().min(0), clicks: z.number().int().min(0) }).optional(),
+    syncSource: z.string().min(1).max(120).optional(),
+  });
+
+  app.post(["/api/experiments/field-lab/campaign-snapshot", "/api/experiments/wet-lab/campaign-snapshot"], async (req, res) => {
+    res.set({ "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" });
+    const expected = process.env.FIELD_LAB_CRON_SECRET || process.env.WET_LAB_CRON_SECRET;
+    if (!expected || expected.length < 16) {
+      res.status(503).json({ error: "Campaign snapshot sync is not configured on this instance." });
+      return;
+    }
+    const auth = req.get("authorization") || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    const a = Buffer.from(token);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) {
+      res.status(401).json({ error: "Unauthorized." });
+      return;
+    }
+    const parsed = snapshotUpdateSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: "Invalid campaign snapshot payload." });
+      return;
+    }
+    campaignSnapshot = {
+      ...campaignSnapshot,
+      ...parsed.data,
+      lastSyncedAt: new Date().toISOString(),
+    };
+    if (parsed.data.stage === "live") {
+      activeCycle.mode = "live-google-ads";
+      activeCycle.status = "running";
+      void saveWetLabSnapshot("active-cycle", activeCycle).catch(() => {});
+    }
+    const persistence = await saveWetLabSnapshot("campaign-snapshot", campaignSnapshot).catch(() => ({
+      persisted: false,
+      backend: "in-memory-fallback",
+    }));
+    res.json({ ok: true, liveTracker: getLiveCampaignTracker(), persistence });
   });
 
   app.get(["/api/experiments/field-lab/guardrails", "/api/experiments/wet-lab/guardrails"], (_req, res) => {

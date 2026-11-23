@@ -1,4 +1,88 @@
 export const wetLabClientScript = `(() => {
+  // 00A. Gemma-inspired Swarm Theatre (auto-steps unless reduced motion or paused)
+  const swarmBtns = Array.from(document.querySelectorAll("[data-swarm-btn]"));
+  const swarmPanes = Array.from(document.querySelectorAll("[data-swarm-pane]"));
+  const playToggle = document.getElementById("swarm-play-toggle");
+  const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let swarmIdx = 0;
+  let swarmPlaying = !prefersReduced;
+  let swarmTimer = null;
+
+  function showSwarmStage(idx) {
+    swarmIdx = ((idx % swarmPanes.length) + swarmPanes.length) % swarmPanes.length;
+    swarmBtns.forEach((btn) => {
+      const active = Number(btn.getAttribute("data-swarm-btn")) === swarmIdx;
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+    swarmPanes.forEach((pane) => {
+      const active = Number(pane.getAttribute("data-swarm-pane")) === swarmIdx;
+      if (active) pane.removeAttribute("hidden");
+      else pane.setAttribute("hidden", "");
+    });
+  }
+
+  function syncPlayLabel() {
+    if (playToggle) playToggle.textContent = swarmPlaying ? "Pause animation" : "Play animation";
+  }
+
+  function scheduleSwarm() {
+    if (swarmTimer) clearInterval(swarmTimer);
+    swarmTimer = null;
+    if (swarmPlaying && swarmPanes.length > 1) {
+      swarmTimer = setInterval(() => showSwarmStage(swarmIdx + 1), 5200);
+    }
+    syncPlayLabel();
+  }
+
+  if (swarmBtns.length && swarmPanes.length) {
+    swarmBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        swarmPlaying = false;
+        showSwarmStage(Number(btn.getAttribute("data-swarm-btn")) || 0);
+        scheduleSwarm();
+      });
+    });
+    if (playToggle) {
+      playToggle.addEventListener("click", () => {
+        swarmPlaying = !swarmPlaying;
+        scheduleSwarm();
+      });
+    }
+    scheduleSwarm();
+  }
+
+  // 00B. Live zero-cost campaign tracker refresh
+  const refreshBtn = document.getElementById("fl-refresh-live");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", async () => {
+      refreshBtn.setAttribute("disabled", "true");
+      try {
+        const res = await fetch("/api/experiments/field-lab/live", { cache: "no-store" });
+        if (!res.ok) throw new Error("Refresh failed");
+        const t = await res.json();
+        const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = String(val); };
+        const fmtPct = (v) => (v === null || v === undefined ? "—" : v + "%");
+        setTxt("fl-spend", "A$" + Number(t.spendAud || 0).toFixed(2));
+        setTxt("fl-remaining", "A$" + Number(t.spendRemainingAud || 0).toFixed(2));
+        const meter = document.getElementById("fl-spend-meter");
+        if (meter) meter.setAttribute("value", String(t.spendAud || 0));
+        setTxt("fl-va-imp", t.variants.variantA.impressions);
+        setTxt("fl-va-clicks", t.variants.variantA.clicks + " (" + fmtPct(t.variants.variantA.ctrPct) + ")");
+        setTxt("fl-va-views", t.variants.variantA.landingViews);
+        setTxt("fl-va-scroll", t.variants.variantA.scroll50 + " (" + fmtPct(t.variants.variantA.scroll50RatePct) + ")");
+        setTxt("fl-vb-imp", t.variants.variantB.impressions);
+        setTxt("fl-vb-clicks", t.variants.variantB.clicks + " (" + fmtPct(t.variants.variantB.ctrPct) + ")");
+        setTxt("fl-vb-views", t.variants.variantB.landingViews);
+        setTxt("fl-vb-scroll", t.variants.variantB.scroll50 + " (" + fmtPct(t.variants.variantB.scroll50RatePct) + ")");
+        setTxt("fl-bayes-verdict", t.bayesianScrollAudit.verdict);
+      } catch {
+        // Keep last rendered values on transient error
+      } finally {
+        refreshBtn.removeAttribute("disabled");
+      }
+    });
+  }
+
   // Interactive Glass-Box 5-stage schematic tabs
   const tabs = document.querySelectorAll("[data-gb-tab]");
   tabs.forEach((tab) => {
