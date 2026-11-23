@@ -33,8 +33,16 @@ function betSection(b: Bet) {
     : b === "multimodality"
     ? 'MCP: get_positions({ bet: "multimodality" }) · LAB: /experiments/field-lab/mcp'
     : 'MCP: get_positions({ bet: "anticipation" }) · ACTION MCP: /experiments/leaderbored/mcp';
+  const asciiFallback = b === "differentiation"
+    ? "  ==== commodity copy ====\n >[SPEC|PROOF · 89% CITED]<\n  ==== generic hype   ===="
+    : b === "multimodality"
+    ? "  .:*@#*:..   [▶ VIDEO]\n  --WAVEFORM-----> ★\n  :*#@*:.     AI CITED"
+    : "  [HUMAN]        [AGENT]\n     +--✓--> +====> [IDEA]\n   MCP: /leaderbored/mcp";
   return `<section class="bet" id="${b}" data-bet="${b}" data-agent-spec="${esc(agentSpec)}">
-  <div class="bet-head"><span class="num">0${B.n}</span><div><h2>${B.title}</h2><p class="q">${esc(B.question)}</p></div></div>
+  <div class="bet-head">
+    <div class="bet-head-main"><span class="num">0${B.n}</span><div><h2>${B.title}</h2><p class="q">${esc(B.question)}</p></div></div>
+    <pre class="bet-ascii" data-bet-ascii="${b}" aria-hidden="true">${asciiFallback}</pre>
+  </div>
   <p class="thesis">${esc(B.thesis)}</p>
   ${spotlight}
   <div class="cols">
@@ -42,7 +50,7 @@ function betSection(b: Bet) {
     <div><h3>Writing, talks & research</h3><ul class="work">${work.filter(w => w.type !== "experiment")
       .map((w) => `<li class="${w.status}"><span class="wt">${esc(w.type)}</span><h4>${w.url ? `<a href="${esc(w.url)}" rel="noopener">${esc(w.title)}</a>` : esc(w.title)}</h4><p>${esc(w.summary)}</p>${w.status === "pending-details" ? `<em>Awaiting details from Jack</em>` : `<small>${srcLinks(w.sources)}</small>`}</li>`)
       .join("")}</ul>
-    ${b === "multimodality" ? `<h3>Video briefs <small>(planned, not yet produced)</small></h3><ul class="briefs">${VIDEO_BRIEFS.map((v) => `<li><h4>${esc(v.title)}</h4><span class="wt">${esc(v.format)}</span><p>${esc(v.brief)}</p></li>`).join("")}</ul>` : ""}
+    ${b === "multimodality" ? `<details><summary>Video briefs (planned, not yet produced — ${VIDEO_BRIEFS.length})</summary><ul class="briefs">${VIDEO_BRIEFS.map((v) => `<li><h4>${esc(v.title)}</h4><span class="wt">${esc(v.format)}</span><p>${esc(v.brief)}</p></li>`).join("")}</ul></details>` : ""}
     </div>
   </div>
 </section>`;
@@ -175,7 +183,43 @@ main{max-width:1180px;margin:auto;padding:0 20px}
 .lens-switch{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px;background:var(--card);gap:2px}
 .lens-switch button{background:transparent!important;color:var(--mut)!important;border:0!important;border-radius:99px!important;padding:5px 11px!important;font:600 11px var(--mono)!important;letter-spacing:.06em;text-transform:uppercase;margin:0!important;line-height:1}
 .lens-switch button[aria-pressed=true]{background:var(--fg)!important;color:var(--lemon)!important}
-body[data-lens=agent]{--bg:#11110f;--fg:#f4f3ec;--mut:#a6a59a;--line:#2d2d27;--acc:#f2f64a;--card:#181814;--b1:#f2f64a;--b2:#7ee0b8;--b3:#e5d96b}
+body[data-lens=agent]{--bg:#11110f;--fg:#f4f3ec;--mut:#a6a59a;--line:#2d2d27;--acc:#f2f64a;--card:#181814;--b1:#f2f64a;--b2:#7ee0b8;--b3:#e5d96b;background-image:radial-gradient(rgba(242,246,74,.11) 1px,transparent 1px);background-size:22px 22px}
+body[data-lens=agent] .ascii-theatre,body[data-lens=agent] .bet-ascii,body[data-lens=agent] .species-pulse,body[data-lens=agent] .mcp-console{background:#151511!important;border-color:rgba(242,246,74,.4)!important}
+body[data-lens=agent] .ascii-grid,body[data-lens=agent] .bet-ascii{color:var(--lemon)!important}
+body[data-lens=agent] .ascii-whispers{color:rgba(242,246,74,.22)!important}
+body[data-lens=agent] .xray-banner{display:flex}
+.xray-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:18px 0 0;padding:10px 14px;border:1px dashed var(--lemon);border-radius:10px;background:rgba(242,246,74,.08);font:600 11.5px/1.5 var(--mono);color:var(--lemon)}
+.xray-banner a{color:#fff;text-decoration:underline}
+.cmd-trigger{background:var(--card)!important;color:var(--mut)!important;border:1px solid var(--line)!important;border-radius:8px!important;padding:5px 9px!important;font:600 11px var(--mono)!important;margin:0!important;line-height:1;min-block-size:28px}
+.cmd-trigger:hover{color:var(--fg)!important;border-color:var(--fg)!important}
+.bet-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.bet-head-main{display:flex;gap:20px;align-items:flex-start;flex:1 1 340px}
+.bet-ascii{margin:0!important;padding:12px 14px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:linear-gradient(135deg,#f8f9fc 0%,#f5f3ec 100%)!important;font:500 11.5px/1.35 var(--mono)!important;color:#2c4d9b;min-width:255px;white-space:pre;overflow:hidden}
+.species-pulse{margin:28px 0 0;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#fffefa;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font:12.5px var(--mono);color:var(--mut)}
+.species-pulse strong{color:var(--fg)}.pulse-bar{letter-spacing:.08em;color:#2c4d9b;font-weight:700}
+.species-pulse a{font-weight:600;color:var(--fg);text-decoration:none}.species-pulse a:hover{text-decoration:underline}
+.mcp-console{border:1px solid var(--fg);border-radius:14px;background:#fffefa;padding:20px;margin:22px 0 28px}
+.mcp-console-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.mcp-console-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.mcp-console-btns button{background:var(--bg)!important;color:var(--fg)!important;border:1px solid var(--line)!important;border-radius:99px;padding:7px 13px;font:600 12px var(--mono);margin:0!important;min-block-size:34px}
+.mcp-console-btns button[aria-pressed=true]{background:var(--fg)!important;color:var(--lemon)!important;border-color:var(--fg)!important}
+.mcp-console-badge{font:600 11px var(--mono);padding:3px 9px;border-radius:99px;background:var(--lemon);color:var(--fg);border:1px solid var(--fg)}
+.mcp-console-meta{font:12px var(--mono);color:var(--mut);margin-bottom:8px}
+.mcp-console pre{max-height:280px;margin:0}
+dialog.cmd-palette{padding:0;border:1px solid var(--fg);border-radius:16px;background:var(--card);color:var(--fg);width:min(560px,calc(100vw - 32px));max-height:min(78vh,560px);box-shadow:0 24px 64px rgba(0,0,0,.22)}
+dialog.cmd-palette:modal{overscroll-behavior:contain}
+dialog.cmd-palette::backdrop{background:rgba(20,20,18,.52);backdrop-filter:blur(3px);overflow:hidden;overscroll-behavior:contain}
+dialog.cmd-palette[open]{display:flex;flex-direction:column}
+.cmd-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.cmd-head h2{margin:0;font:600 13px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+.cmd-head form{margin:0}.cmd-head button{background:transparent!important;color:var(--mut)!important;border:1px solid var(--line)!important;padding:4px 10px!important;font:600 12px var(--mono)!important;margin:0!important;min-block-size:28px}
+.cmd-search-wrap{padding:12px 16px;border-bottom:1px solid var(--line)}
+.cmd-search-wrap input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:15px var(--sans)}
+.cmd-list{overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px}
+.cmd-item{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;text-decoration:none;padding:10px 12px;border-radius:10px;border:1px solid transparent;background:transparent!important;color:var(--fg)!important;font:500 14px var(--sans);cursor:pointer;margin:0!important;min-block-size:40px}
+.cmd-item:hover,.cmd-item:focus-visible{background:var(--bg)!important;border-color:var(--fg)!important;outline:none}
+.cmd-item code{font:600 11.5px var(--mono);color:var(--mut);background:var(--bg);padding:2px 7px;border-radius:6px;white-space:nowrap}
+.cmd-item[hidden]{display:none!important}
 body[data-lens=agent] header.top{background:rgba(17,17,15,.94)}
 body[data-lens=agent] .btn,body[data-lens=agent] button{background:var(--lemon);color:#11110f}
 body[data-lens=agent] .btn.ghost,body[data-lens=agent] button.secondary{background:transparent;color:var(--fg);border-color:var(--line)}
@@ -377,17 +421,19 @@ footer h3{font:700 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-
 <header class="top"><nav aria-label="Primary"><b><a href="/">Jack Smyth</a></b>
 <div class="bet-nav"><a href="/experiments/field-lab">Field Lab</a><a href="/#differentiation">Differentiation</a><a href="/#multimodality">Multimodality</a><a href="/#anticipation">Anticipation</a></div>
 <div class="lens-switch" role="group" aria-label="View lens"><button type="button" data-lens-btn="human" aria-pressed="true">Human</button><button type="button" data-lens-btn="agent" aria-pressed="false">Agent</button></div>
+<button type="button" class="cmd-trigger" id="cmd-open" aria-label="Open command palette">⌘K</button>
 <a class="nav-agent" href="/#mcp">MCP</a></nav></header>
 <main id="main" tabindex="-1">
+<div class="xray-banner" aria-hidden="true"><span>[ AGENT X-RAY ]  HTML ~32 KB vs /llms.txt ~4.2 KB (87% fewer tokens) · JSON-LD: Person + ProfilePage + Dataset · 7 Read-Only MCP Tools</span><a href="/llms.txt">Inspect /llms.txt ↗</a></div>
 ${view ? view.body : `
 <section class="hero" data-agent-spec="ENTITY: schema.org/Person + Dataset · DISCOVERY: /llms.txt · /.well-known/agent-card.json · /mcp">
 <div class="hero-grid">
   <div>
     <h1>Be the answer <em>agents</em> choose.</h1>
-    <p class="lead">${esc(SITE.tagline)} Frontier labs make researchers pitch for compute; here, three competing agent teams pitch for a A$100/mo media grant in the Agentic Field Lab—alongside open interfaces so agents can inspect and act directly.</p>
+    <p class="lead">${esc(SITE.tagline)} Three competing agent teams pitch monthly for a A$100 Google Ads grant—and every claim on this site is inspectable by humans and machines.</p>
     <div class="hero-actions">
       <a class="btn" href="/experiments/field-lab">Inspect the Field Lab →</a>
-      <a class="btn ghost" href="/#mcp">Connect an agent</a>
+      <a class="btn ghost" href="/#mcp">Try the live MCP</a>
     </div>
   </div>
   <figure class="circuit-wrap" id="signal-circuit">
@@ -455,10 +501,16 @@ ${view ? view.body : `
     <figcaption class="circuit-readout" id="circuit-readout"><strong>ACTIVE WINNER ·</strong> Team Differentiation (81/100): Independent Benchmark vs. Vendor Case Study on Demand Gen.</figcaption>
   </figure>
 </div>
+<aside class="species-pulse" id="species-pulse" aria-label="Live monthly human and AI agent readership">
+  <span><strong>Dual-Species Pulse</strong> · Humans: <strong id="pulse-humans">—</strong> · AI Agents: <strong id="pulse-agents">—</strong></span>
+  <span class="pulse-bar" id="pulse-bar" aria-hidden="true">█████░░░░░</span>
+  <span>Top agents: <strong id="pulse-bots">Googlebot · ClaudeBot · Agent-Client</strong> · <span id="pulse-cwv">Zero-PII Firestore</span></span>
+  <a href="/reflections">Live reflections →</a>
+</aside>
 </section>
 
 <section class="intro" data-agent-spec="THESIS: B2A (Brand-to-Agent) + GEM (Generative Engine Marketing) · AUTHOR: Jack Smyth, Country Lead AU, The Brandtech Group"><h2>Three bets. One direction.</h2>
-<p>Agents are an audience in their own right. They compare, watch, and act before a human ever clicks. Three bets—<strong>Differentiation</strong> (why an agent shortlists you), <strong>Multimodality</strong> (how video proves what text only claims), and <strong>Anticipation</strong> (interfaces built for call-to-agent)—tested live every month on a A$100 AUD media grant in the <a href="/experiments/field-lab">Agentic Field Lab</a>.</p>
+<p>Agents compare, watch, and act before a human ever clicks. Three bets—<strong>Differentiation</strong>, <strong>Multimodality</strong>, and <strong>Anticipation</strong>—tested live every month on a A$100 AUD Google Ads grant in the <a href="/experiments/field-lab">Agentic Field Lab</a>.</p>
 <small class="muted">Editorial framing of Jack's three-bet brief; not a quotation.</small>
 <div class="system"><a href="#differentiation"><b>Be worth choosing.</b><small>01 Differentiation → Facts with Flair</small></a><a href="#multimodality"><b>Be understood.</b><small>02 Multimodality → YouTube-in-AI &amp; Field Lab</small></a><a href="#anticipation"><b>Be useful in action.</b><small>03 Anticipation → Leaderbored</small></a></div>
 <h2>The person behind the bets</h2>
@@ -473,6 +525,19 @@ ${bets.map(betSection).join("\n")}
 <section id="mcp" data-agent-spec="TRANSPORT: Streamable HTTP · AUTH: none (read-only) · PROTOCOLS: MCP, A2A 1.0, Poppy 1.0, OpenAPI, WebMCP">
 <h2>Use my thinking in your agent</h2>
 <p class="rules">A read-only MCP server over this same knowledge base. Every item says whether it is sourced or generated synthesis, and carries source links. No login, no actions, nothing is stored.</p>
+<div class="mcp-console">
+  <div class="mcp-console-top">
+    <strong>Try the live MCP right now</strong>
+    <span class="mcp-console-badge" id="mcp-console-badge">READY · STREAMABLE HTTP</span>
+  </div>
+  <div class="mcp-console-btns" role="group" aria-label="Live MCP tool presets">
+    <button type="button" data-mcp-demo="profile" aria-pressed="false">get_profile()</button>
+    <button type="button" data-mcp-demo="strategy" aria-pressed="false">apply_strategy("Invisible in AI Overviews")</button>
+    <button type="button" data-mcp-demo="youtube" aria-pressed="false">search("YouTube")</button>
+  </div>
+  <div class="mcp-console-meta" id="mcp-console-meta">Click any preset to fire a real JSON-RPC 2.0 call to <code>/mcp</code>.</div>
+  <pre tabindex="0" aria-label="Live MCP JSON response"><code id="mcp-console-out">// Live JSON-RPC output appears here — exact payload any AI agent receives.</code></pre>
+</div>
 <h3 class="wt">Endpoint <button class="btn ghost copy" data-copy="MCP_URL" type="button">Copy</button></h3>
 <pre tabindex="0" aria-label="MCP endpoint"><code id="mcpurl">${esc(base)}/mcp</code></pre>
 <h3 class="wt">Client config (Streamable HTTP)</h3>
@@ -542,8 +607,31 @@ lBtns.forEach(b=>b.addEventListener('click',()=>setLens(b.getAttribute('data-len
 const secs=[...document.querySelectorAll('.bet,#mcp')],links=[...document.querySelectorAll('nav a')];
 if ('IntersectionObserver' in window) { const observer=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='/#'+e.target.id))}),{rootMargin:'-40% 0px -55% 0px'}); secs.forEach(s=>observer.observe(s)); }
 </script>
+<dialog id="cmd-palette" class="cmd-palette" closedby="any" aria-labelledby="cmd-title">
+  <div class="cmd-head">
+    <h2 id="cmd-title">Command Palette · Human &amp; Agent Grammar</h2>
+    <form method="dialog"><button type="submit" value="close">Close</button></form>
+  </div>
+  <div class="cmd-search-wrap">
+    <label class="sk" for="cmd-filter">Filter commands</label>
+    <input id="cmd-filter" type="search" placeholder="Jump to an experiment, protocol, or MCP tool…" autocomplete="off" autofocus>
+  </div>
+  <div class="cmd-list">
+    <a class="cmd-item" data-cmd-item href="/experiments/field-lab"><span>Inspect Agentic Field Lab (Cycle 01 Live)</span><code>field_lab_get_cycle</code></a>
+    <a class="cmd-item" data-cmd-item href="/experiments/facts-with-flair"><span>Try Facts with Flair (Bet 01)</span><code>get_work("w-fwf")</code></a>
+    <a class="cmd-item" data-cmd-item href="/experiments/leaderbored"><span>Try Leaderbored (Bet 03 · Transactional)</span><code>leaderbored_catalog</code></a>
+    <button type="button" class="cmd-item" data-cmd-item data-cmd-action="toggle-lens"><span>Toggle Human / Agent X-Ray Lens</span><code>view:dual-vision</code></button>
+    <button type="button" class="cmd-item" data-cmd-item data-cmd-action="copy-mcp"><span>Copy Identity MCP Endpoint URL</span><code>/mcp</code></button>
+    <a class="cmd-item" data-cmd-item href="/#mcp"><span>Open Live MCP Console</span><code>apply_strategy</code></a>
+    <a class="cmd-item" data-cmd-item href="/llms.txt"><span>Read Markdown Knowledge Base</span><code>GET /llms.txt</code></a>
+    <a class="cmd-item" data-cmd-item href="/.well-known/poppy.json"><span>Inspect Poppy 1.0 Discovery</span><code>/.well-known/poppy.json</code></a>
+    <a class="cmd-item" data-cmd-item href="/.well-known/agent-card.json"><span>Inspect A2A 1.0 Agent Card</span><code>/.well-known/agent-card.json</code></a>
+    <a class="cmd-item" data-cmd-item href="/reflections"><span>View Monthly Self-Optimising Reflections</span><code>/api/self-opt/summary</code></a>
+  </div>
+</dialog>
 <script src="/webmcp.js" defer></script>
 <script src="/telemetry.js" defer></script>
+<script src="/home-ui.js" defer></script>
 ${view?.script ? `<script src="${esc(view.script)}" defer></script>` : ""}
 </body></html>`;
 }

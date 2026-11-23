@@ -6,6 +6,7 @@ import { buildServer } from "./mcp.js";
 import { page } from "./site.js";
 import { registerProtocols } from "./protocols.js";
 import { webmcpScript } from "./webmcp.js";
+import { homeClientScript } from "./home-client.js";
 import { registerExperiments, EXPERIMENTS } from "./experiments.js";
 import { registerWetLab } from "./wet-lab.js";
 import { registerTelemetry } from "./telemetry.js";
@@ -64,6 +65,10 @@ registerWetLab(app, origin);
 registerExperiments(app, origin);
 registerSelfOpt(app, origin);
 app.get("/webmcp.js", (_req, res) => res.type("text/javascript").send(webmcpScript));
+app.get("/home-ui.js", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=3600");
+  res.type("text/javascript; charset=utf-8").send(homeClientScript);
+});
 
 // ---- MCP (stateless Streamable HTTP, read-only) ----
 app.post("/mcp", async (req, res) => {
