@@ -555,6 +555,39 @@ function swarmTheatre(c: LabCycle) {
     </div>
 
     <div class="swarm-stage surface" data-swarm-active="0">
+      <div class="ascii-theatre" aria-hidden="true">
+        <div class="ascii-whispers">
+          <span class="w1">gemini-4-hydrogen</span>
+          <span class="w2">Beta(1,1)</span>
+          <span class="w3">next pitch -&gt;</span>
+          <span class="w4">&lt;/argue&gt;</span>
+          <span class="w5">cap = A$100 AUD</span>
+          <span class="w6">P(A&gt;B) ≥ 0.75</span>
+          <span class="w7">gemini-decision-1</span>
+          <span class="w8">CTR +15%</span>
+          <span class="w9">435-353-5484</span>
+          <span class="w10">utm_content=variant_a</span>
+        </div>
+        <pre class="ascii-grid" id="swarm-ascii-grid">        |       -----\          |
+        *        \\\\\          |            gemini-4-hydrogen
+       .*:         \\\\         |
+  ------|-----------|-----------\-----------------
+      .:%+.         |            \\\        A$100 cap
+      .+*+          |             \\\
+     .++*:          |              \\       &lt;/turn&gt;
+    :+.*+:          |               \\
+   .::  :*+.        |                |      P(A&gt;B)
+         :+*:.      |                |
+           :+*%#*::.|.               |
+             .:+*%###@|@#%*----------|------------&gt;  LIVE ADS
+           :+%##%*+::.|.             |
+         .+%#%+:.   |                |      Beta(1,1)
+       .*#%+.       |               //
+      .+%*\\        |              //
+  ------|-----------/-------------///-------------
+       :*:         |            ///         435-353-5484</pre>
+        <div class="ascii-hud"><span id="swarm-ascii-caption">PHASE 01 // SCOUT SWEEP · tokenising CMO search signals</span><span id="swarm-ascii-fps">LIVE ASCII · 15fps</span></div>
+      </div>
       <div class="swarm-pane" data-swarm-pane="0">
         <div class="swarm-head"><span class="swarm-badge"><span aria-hidden="true">⌕</span> SCOUT · gemini-4-hydrogen + Google Search Grounding</span><span class="swarm-clock" aria-hidden="true">t=0.4s · tokens→brief</span></div>
         <div class="token-stream" aria-label="Tokenised CMO search signals">

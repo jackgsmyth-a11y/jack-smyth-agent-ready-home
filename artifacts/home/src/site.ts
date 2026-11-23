@@ -259,6 +259,20 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .swarm-step-btn[aria-pressed=true]{background:var(--fg)!important;color:#fffefa!important;border-color:var(--fg)!important}
 .swarm-step-btn .sym{color:var(--tone);margin-right:4px}.swarm-step-btn[aria-pressed=true] .sym{color:var(--lemon)}
 .swarm-stage{border:1px solid var(--fg)!important;background:#fffefa!important}
+.ascii-theatre{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:linear-gradient(135deg,#f8f9fc 0%,#f5f3ec 55%,#eef2f9 100%);margin-bottom:20px;padding:18px 20px 12px}
+.ascii-whispers{position:absolute;inset:0;pointer-events:none;font:500 11.5px var(--mono);color:rgba(38,67,138,.22);user-select:none}
+.ascii-whispers span{position:absolute;white-space:nowrap}
+.ascii-whispers .w1{top:10%;left:62%}.ascii-whispers .w2{top:24%;left:78%}.ascii-whispers .w3{top:38%;left:68%}
+.ascii-whispers .w4{top:14%;left:36%}.ascii-whispers .w5{top:56%;left:72%}.ascii-whispers .w6{top:72%;left:60%}
+.ascii-whispers .w7{top:82%;left:76%}.ascii-whispers .w8{top:30%;left:48%}.ascii-whispers .w9{top:68%;left:38%}.ascii-whispers .w10{top:84%;left:18%}
+.ascii-grid{position:relative;z-index:1;margin:0;padding:0;background:transparent!important;border:none!important;font:500 12.5px/1.28 var(--mono);color:#2c4d9b;letter-spacing:.04em;overflow-x:auto;white-space:pre}
+.ascii-hud{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;padding-top:10px;border-top:1px dashed rgba(44,77,155,.22);font:600 11px var(--mono);color:var(--mut);letter-spacing:.05em;text-transform:uppercase}
+@keyframes fl-drift{0%,100%{transform:translateX(0);opacity:.22}50%{transform:translateX(10px);opacity:.42}}
+@media (prefers-reduced-motion:no-preference){
+  .ascii-whispers span{animation:fl-drift 7s ease-in-out infinite}
+  .ascii-whispers .w2,.ascii-whispers .w5,.ascii-whispers .w8{animation-delay:-2.3s}
+  .ascii-whispers .w3,.ascii-whispers .w6,.ascii-whispers .w9{animation-delay:-4.6s}
+}
 .swarm-pane[hidden]{display:none!important}
 .swarm-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--line);font:600 12px var(--mono)}
 .swarm-badge{color:var(--fg);letter-spacing:.04em}.swarm-clock{color:var(--mut)}
