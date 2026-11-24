@@ -48,10 +48,14 @@ export interface HillclimbGate {
 
 export function computeFitnessScorecard(
   telemetry = buildTelemetrySummary(),
+  liveTracker = getLiveCampaignTracker(),
 ): FitnessScorecard {
   const views = telemetry.human.totalPageViews;
   const variants = Object.values(telemetry.human.campaignVariants ?? {});
-  const paidLandingViews = variants.reduce((sum, v) => sum + (v.pageViews || 0), 0);
+  const paidLandingViews = variants.reduce(
+    (sum, v) => sum + Math.max(v.pageViews || 0, v.serverLandingViews || 0),
+    0,
+  );
   const paidScroll50 = variants.reduce((sum, v) => sum + (v.scroll50 || 0), 0);
   const paidScroll50RatePct = paidLandingViews > 0
     ? Number(((paidScroll50 / paidLandingViews) * 100).toFixed(1))
@@ -80,7 +84,12 @@ export function computeFitnessScorecard(
     const lcpScore = lcp == null ? 80 : Math.max(0, Math.min(100, Math.round(100 - Math.max(0, lcp - 1200) / 25)));
     return Math.round((ttfbScore + lcpScore) / 2);
   })();
-  const paidScore = paidScroll50RatePct == null ? 50 : Math.min(100, Math.round(paidScroll50RatePct * 2));
+  const paidFunnelBroken = liveTracker.funnelHealth?.status === "alert-funnel-drop";
+  const paidScore = paidFunnelBroken
+    ? 15
+    : paidScroll50RatePct == null
+      ? 50
+      : Math.min(100, Math.round(paidScroll50RatePct * 2));
   const engageScore = interactionRatePct == null ? 50 : Math.min(100, Math.round(interactionRatePct * 2.5));
   const agentScore = agentSuccessRatePct == null ? 85 : Math.round(agentSuccessRatePct);
 
@@ -91,6 +100,9 @@ export function computeFitnessScorecard(
   const bottlenecks: string[] = [];
   if (ttfb != null && ttfb > 800) bottlenecks.push(`High TTFB p75 (${ttfb}ms — likely Cloud Run cold starts)`);
   if (lcp != null && lcp > 2500) bottlenecks.push(`Slow LCP p75 (${lcp}ms)`);
+  if (paidFunnelBroken) {
+    bottlenecks.push(liveTracker.funnelHealth.message);
+  }
   if (paidLandingViews >= 10 && (paidScroll50RatePct ?? 0) < 15) {
     bottlenecks.push(`Low paid >50% scroll rate (${paidScroll50RatePct}% across ${paidLandingViews} UTM landings)`);
   }

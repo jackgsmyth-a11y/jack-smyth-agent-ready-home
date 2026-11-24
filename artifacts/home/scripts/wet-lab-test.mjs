@@ -8,10 +8,15 @@ const base = (process.argv[2] || "http://127.0.0.1:5181").replace(/\/$/, "");
 let n = 0;
 const check = (name, ok) => { assert.ok(ok, name); console.log("PASS ", name); n++; };
 
-const pageRes = await fetch(base + "/experiments/field-lab");
+const pageRes = await fetch(base + "/experiments/field-lab?utm_source=google_ads&utm_medium=demand_gen&utm_campaign=cycle_2026_11&utm_content=variant_a", {
+  headers: { "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)" },
+});
 assert.equal(pageRes.status, 200);
 const html = await pageRes.text();
 check("Field Lab HTML renders natively inside shared shell", html.includes('data-experiment="field-lab"') && html.includes(">Jack Smyth</a>") && !html.includes("<iframe"));
+const liveRes = await fetch(base + "/api/experiments/field-lab/live");
+const liveData = await liveRes.json();
+check("Field Lab records server-side UTM landing views and exposes Skeptic funnelHealth", liveData.variants.variantA.serverLandingViews >= 1 && typeof liveData.funnelHealth?.status === "string" && typeof liveData.funnelHealth?.shouldHaltSpend === "boolean");
 check("Field Lab copy emphasises research/compute analogy with zero legacy Wet Lab wording", /pitch for compute/i.test(html) && !/wet lab/i.test(html));
 check("Field Lab Glass-Box schematic renders 5 stages with zero inline style attributes", html.includes('id="under-the-hood"') && html.includes("gemini-4-hydrogen") && html.includes("gemini-decision-1") && !html.includes('style="'));
 const csp = pageRes.headers.get("content-security-policy") || "";

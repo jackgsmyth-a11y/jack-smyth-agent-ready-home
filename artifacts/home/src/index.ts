@@ -83,24 +83,77 @@ app.post("/mcp", async (req, res) => {
     if (!res.headersSent) res.status(500).json({ jsonrpc: "2.0", error: { code: -32603, message: "Internal error" }, id: null });
   }
 });
-const notAllowed = (_: express.Request, res: express.Response) =>
-  res.status(405).set("Allow", "POST").json({ jsonrpc: "2.0", error: { code: -32000, message: "Method not allowed. This MCP server is stateless: use POST." }, id: null });
+const notAllowed = (req: express.Request, res: express.Response) => {
+  const base = origin(req);
+  res.status(405).set("Allow", "POST").json({
+    jsonrpc: "2.0",
+    error: {
+      code: -32000,
+      message: "Method not allowed. This MCP server is stateless: use POST.",
+      data: {
+        post_endpoint: `${base}/mcp`,
+        openapi: `${base}/openapi.json`,
+        knowledge: `${base}/knowledge.json`,
+        llms_txt: `${base}/llms.txt`,
+        get_mirrors: {
+          search: `${base}/api/tools/search?q=YouTube`,
+          apply_strategy: `${base}/api/tools/apply_strategy?brief=How+should+a+brand+prepare+for+AI+agents`,
+        },
+      },
+    },
+    id: null,
+  });
+};
 app.get("/mcp", notAllowed);
 app.delete("/mcp", notAllowed);
 
 // ---- machine-readable surfaces ----
 const PUBLIC_CACHE = "public, max-age=300, stale-while-revalidate=3600";
-const knowledge = () => ({
+const absUrl = (base: string, u?: string) => (u && u.startsWith("/") ? `${base}${u}` : u);
+const knowledge = (base: string) => ({
   name: SITE.name,
   description: SITE.canonicalNote,
   bets: BETS,
-  experiments: EXPERIMENTS,
+  claim_bets: ["identity", "differentiation", "multimodality", "anticipation"],
+  experiments: EXPERIMENTS.map((x) => {
+    const isUrl = x.service.startsWith("https://");
+    return {
+      id: x.id,
+      title: x.title,
+      bet: x.bet,
+      path: x.path,
+      url: `${base}${x.path}`,
+      question: x.question,
+      role: x.role,
+      hosting: isUrl ? "replit" : x.service,
+      ...(isUrl ? { service_url: x.service } : {}),
+      machineContent: `${base}${x.machineContent}`,
+      ...(x.actionMcp ? { actionMcp: `${base}${x.actionMcp}` } : {}),
+    };
+  }),
   claims: CLAIMS.map((c) => ({
     ...c,
     sources: c.sources.filter((id) => id !== "s-owner"),
     ...(c.sources.includes("s-owner") ? { based_on_owner_brief: true } : {}),
   })),
-  work: WORKS,
+  work: WORKS.map((w) => ({
+    ...w,
+    ...(w.url ? { url: absUrl(base, w.url) } : {}),
+    markdown_url: `${base}/work/${w.id}.md`,
+    ...(w.experiment
+      ? {
+          experiment: {
+            id: w.experiment.id,
+            title: w.experiment.title,
+            bet: w.experiment.bet,
+            path: w.experiment.path,
+            url: `${base}${w.experiment.path}`,
+            machineContent: `${base}${w.experiment.machineContent}`,
+            ...(w.experiment.actionMcp ? { actionMcp: `${base}${w.experiment.actionMcp}` } : {}),
+          },
+        }
+      : {}),
+  })),
   style_principles: STYLE_PRINCIPLES,
   video_briefs: VIDEO_BRIEFS,
   sources: SOURCES.filter((s) => s.id !== "s-owner"),
@@ -111,10 +164,15 @@ const knowledge = () => ({
     reported: "figure stated by the source, not independently verified",
     synthesis: "generated synthesis; not Jack Smyth's words",
   },
+  work_statuses: {
+    documented: "verified against a public source or byline",
+    "owner-reported": "identified by Jack Smyth; contribution not listed in the public byline",
+    "pending-details": "awaiting public source verification",
+  },
 });
-app.get("/knowledge.json", (_req, res) => {
+app.get("/knowledge.json", (req, res) => {
   res.set("Cache-Control", PUBLIC_CACHE);
-  res.json(knowledge());
+  res.json(knowledge(origin(req)));
 });
 
 app.get("/.well-known/mcp.json", (req, res) => {
@@ -130,10 +188,58 @@ app.get("/.well-known/mcp.json", (req, res) => {
   });
 });
 
+app.get("/.well-known/field-lab-mcp.json", (req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
+  res.json({
+    name: "agentic-field-lab",
+    description: "Dedicated Agentic Field Lab MCP for inspecting the active A$100 AUD monthly media-grant cycle, spend & funnel guardrails, submitting CMO research questions, and casting explicitly approved votes.",
+    transport: "streamable-http",
+    url: `${origin(req)}/experiments/field-lab/mcp`,
+    authentication: "none",
+    tools: ["field_lab_get_cycle", "field_lab_get_guardrails", "field_lab_cast_vote", "field_lab_submit_question"],
+    documentation: `${origin(req)}/experiments/field-lab.md`,
+  });
+});
+
+app.get("/work/:id.md", (req, res) => {
+  const w = WORKS.find((item) => item.id === req.params.id);
+  if (!w) {
+    res.status(404).type("text/plain; charset=utf-8").send("Work item not found.\n");
+    return;
+  }
+  const base = origin(req);
+  const absUrl = w.url ? (w.url.startsWith("/") ? `${base}${w.url}` : w.url) : null;
+  const refs = w.sources
+    .map((id) => SOURCES.find((s) => s.id === id))
+    .filter((s) => s && s.id !== "s-owner");
+  const lines = [
+    `# ${w.title}`,
+    "",
+    `- ID: ${w.id}`,
+    `- Type: ${w.type}`,
+    `- Bet: ${w.bet}`,
+    `- Status: ${w.status}`,
+    ...(absUrl ? [`- URL: ${absUrl}`] : []),
+    ...(w.authors?.length ? [`- Published authors: ${w.authors.join(", ")}`] : []),
+    ...(w.relationship ? [`- Relationship: ${w.relationship}`] : []),
+    ...(w.access ? [`- Access: ${w.access}`] : []),
+    "",
+    "## Summary",
+    w.summary,
+    "",
+    "## Sources",
+    ...refs.map((s) => `- ${s!.title} (${s!.publisher}${s!.date ? `, ${s!.date}` : ""}): ${s!.url}`),
+    "",
+    `Canonical knowledge base: ${base}/knowledge.json`,
+  ];
+  res.set("Cache-Control", PUBLIC_CACHE);
+  res.type("text/markdown; charset=utf-8").send(lines.join("\n") + "\n");
+});
+
 function markdown(base: string) {
   const L: string[] = [];
   L.push(`# ${SITE.name}`, "", `> ${SITE.tagline}`, "", SITE.canonicalNote, "");
-  L.push("## How to use this site", `- MCP server (Streamable HTTP, read-only, no auth): ${base}/mcp`, `- Full structured knowledge base: ${base}/knowledge.json`, `- Server card: ${base}/.well-known/mcp.json`, `- Personal Agent Protocol (Poppy 1.0, signed-out): ${base}/.well-known/poppy.json`, `- A2A 1.0 message-only adapter: ${base}/.well-known/agent-card.json`, `- OpenAPI: ${base}/openapi.json`, `- Protocol scope: ${base}/protocols.json`, "- Items marked [generated synthesis] are not Jack Smyth's words.", "");
+  L.push("## How to use this site", `- MCP server (Streamable HTTP, read-only, no auth): ${base}/mcp`, `- Fetch-only GET tool mirrors: ${base}/api/tools/search?q=YouTube and ${base}/api/tools/apply_strategy?brief=...`, `- Static work item Markdown pages: ${base}/work/<id>.md (e.g. ${base}/work/w-fwf.md)`, `- Full structured knowledge base: ${base}/knowledge.json`, `- Server cards: ${base}/.well-known/mcp.json and ${base}/.well-known/field-lab-mcp.json`, `- Personal Agent Protocol (Poppy 1.0, signed-out): ${base}/.well-known/poppy.json`, `- A2A 1.0 message-only adapter: ${base}/.well-known/agent-card.json`, `- OpenAPI: ${base}/openapi.json`, `- Protocol scope: ${base}/protocols.json`, "- Items marked [generated synthesis] are not Jack Smyth's words.", "");
   L.push("## Experiments make the bets tangible", ...EXPERIMENTS.map(x => `- ${x.title} (${x.bet}): ${base}${x.path} — ${x.role} Agent guide: ${base}${x.machineContent}`), "The identity MCP remains read-only. The Agentic Field Lab's dedicated MCP lives at /experiments/field-lab/mcp (inspect the A$100 AUD monthly media-grant cycle, spend guardrails, submit CMO questions, or cast an approved vote). Leaderbored's separate transactional MCP lives under /experiments/leaderbored/mcp and requires explicit human permission for payment and credit use.", "");
   L.push("## Identity");
   CLAIMS.filter((c) => c.bet === "identity").forEach((c) => L.push(`- ${c.text}`));

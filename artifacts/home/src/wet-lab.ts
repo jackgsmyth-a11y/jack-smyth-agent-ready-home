@@ -7,7 +7,7 @@ import { page } from "./site.js";
 import { wetLabClientScript } from "./wet-lab-client.js";
 import { isFirestoreEnabled, loadWetLabSnapshot, saveWetLabSnapshot } from "./wet-lab-store.js";
 import { runAutonomousPitchSwarm } from "./wet-lab-swarm.js";
-import { buildTelemetrySummary } from "./telemetry.js";
+import { buildTelemetrySummary, recordServerCampaignLanding } from "./telemetry.js";
 
 export interface CreativeVariant {
   id: string;
@@ -73,6 +73,7 @@ export const SPEND_GUARDRAILS = {
   hardCapMonthlyAud: 100,
   hardCapDailyAud: 10,
   autoPauseAtSpendAud: 95,
+  funnelIntegrityGuardrail: "Skeptic Agent halts/alerts if click-to-landing rate falls below 35% after 20+ paid clicks (prevents burning the A$100 cap on broken tracking or WebView drop-off).",
   statisticalFramework: "Bayesian probability of superiority (Beta-Binomial posterior)",
   minimumSignalPolicy: "Upper/mid-funnel high-volume signals only (impressions, 3s hold, CTR, micro-conversions). Down-funnel CPA tests rejected at A$100 scale.",
   googleAdsMcp: {
@@ -242,10 +243,10 @@ let campaignSnapshot: CampaignSnapshot = {
   budgetCapAud: 100,
   autoPauseAud: 95,
   stage: "live",
-  spendAud: 6.37,
-  variantA: { impressions: 1252, clicks: 26 },
-  variantB: { impressions: 1401, clicks: 23 },
-  lastSyncedAt: "2026-11-24T01:14:00.000Z",
+  spendAud: 9.99,
+  variantA: { impressions: 1499, clicks: 31 },
+  variantB: { impressions: 2816, clicks: 53 },
+  lastSyncedAt: "2026-11-24T08:48:00.000Z",
   syncSource: "google-ads-mcp (435-353-5484) + first-party UTM telemetry",
 };
 
@@ -296,10 +297,34 @@ function computeBayesianScrollLift(aViews: number, aScroll50: number, bViews: nu
 export function getLiveCampaignTracker() {
   const telemetry = buildTelemetrySummary();
   const variants = telemetry.human.campaignVariants ?? {};
-  const utmA = variants["cycle_2026_11:variant_a"] ?? { pageViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
-  const utmB = variants["cycle_2026_11:variant_b"] ?? { pageViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
+  const utmA = variants["cycle_2026_11:variant_a"] ?? { pageViews: 0, serverLandingViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
+  const utmB = variants["cycle_2026_11:variant_b"] ?? { pageViews: 0, serverLandingViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
   const totalImpressions = campaignSnapshot.variantA.impressions + campaignSnapshot.variantB.impressions;
   const totalClicks = campaignSnapshot.variantA.clicks + campaignSnapshot.variantB.clicks;
+  const totalJsLandingViews = (utmA.pageViews || 0) + (utmB.pageViews || 0);
+  const totalServerLandingViews = (utmA.serverLandingViews || 0) + (utmB.serverLandingViews || 0);
+  const effectiveLandingViews = Math.max(totalJsLandingViews, totalServerLandingViews);
+  const clickToLandingPct = totalClicks > 0 ? Number(((effectiveLandingViews / totalClicks) * 100).toFixed(1)) : null;
+  const jsClickToLandingPct = totalClicks > 0 ? Number(((totalJsLandingViews / totalClicks) * 100).toFixed(1)) : null;
+  const serverClickToLandingPct = totalClicks > 0 ? Number(((totalServerLandingViews / totalClicks) * 100).toFixed(1)) : null;
+  const funnelAlert = totalClicks >= 20 && (clickToLandingPct ?? 0) < 35;
+  const funnelHealth = {
+    status: totalClicks < 20 ? "awaiting-sample" : funnelAlert ? "alert-funnel-drop" : "healthy",
+    shouldHaltSpend: funnelAlert,
+    minClicksThreshold: 20,
+    minClickToLandingPct: 35,
+    totalClicks,
+    jsLandingViews: totalJsLandingViews,
+    serverLandingViews: totalServerLandingViews,
+    clickToLandingPct,
+    jsClickToLandingPct,
+    serverClickToLandingPct,
+    message: totalClicks < 20
+      ? `Awaiting ≥20 paid clicks before evaluating click-to-landing funnel integrity (${totalClicks}/20).`
+      : funnelAlert
+        ? `Skeptic funnel alert: ${effectiveLandingViews} landing views from ${totalClicks} paid clicks (${clickToLandingPct}% < 35% floor; JS=${totalJsLandingViews}, server=${totalServerLandingViews}). Audit landing telemetry and mobile WebView drop-off before scaling spend.`
+        : `Funnel integrity healthy: ${effectiveLandingViews} landing views from ${totalClicks} paid clicks (${clickToLandingPct}%).`,
+  };
   const ctrA = campaignSnapshot.variantA.impressions > 0
     ? Number(((campaignSnapshot.variantA.clicks / campaignSnapshot.variantA.impressions) * 100).toFixed(2))
     : null;
@@ -321,6 +346,7 @@ export function getLiveCampaignTracker() {
         clicks: campaignSnapshot.variantA.clicks,
         ctrPct: ctrA,
         landingViews: utmA.pageViews,
+        serverLandingViews: utmA.serverLandingViews ?? 0,
         scroll50: utmA.scroll50,
         scroll50RatePct: bayesian.aRatePct,
       },
@@ -331,10 +357,12 @@ export function getLiveCampaignTracker() {
         clicks: campaignSnapshot.variantB.clicks,
         ctrPct: ctrB,
         landingViews: utmB.pageViews,
+        serverLandingViews: utmB.serverLandingViews ?? 0,
         scroll50: utmB.scroll50,
         scroll50RatePct: bayesian.bRatePct,
       },
     },
+    funnelHealth,
     bayesianScrollAudit: bayesian,
     telemetryUpdatedAt: telemetry.updatedAt,
     nextMilestones: [
@@ -393,8 +421,9 @@ export function wetLabMarkdown(base: string) {
         `- Account: ${t.accountId} | Campaign: ${t.campaignName} | Stage: ${t.stage}`,
         `- Winning team: ${t.winningTeam} (${t.winningScore}/100) | Flight: ${t.flightStart} to ${t.flightEnd}`,
         `- Spend: A$${t.spendAud.toFixed(2)} / A$${t.budgetCapAud} AUD | Ads clicks: ${t.totalClicks} | Ads impressions: ${t.totalImpressions}`,
-        `- Variant A (${t.variants.variantA.utmKey}): ${t.variants.variantA.landingViews} landing views, ${t.variants.variantA.scroll50} >50% scrolls`,
-        `- Variant B (${t.variants.variantB.utmKey}): ${t.variants.variantB.landingViews} landing views, ${t.variants.variantB.scroll50} >50% scrolls`,
+        `- Variant A (${t.variants.variantA.utmKey}): ${t.variants.variantA.landingViews} JS landing views (${t.variants.variantA.serverLandingViews} server hits), ${t.variants.variantA.scroll50} >50% scrolls`,
+        `- Variant B (${t.variants.variantB.utmKey}): ${t.variants.variantB.landingViews} JS landing views (${t.variants.variantB.serverLandingViews} server hits), ${t.variants.variantB.scroll50} >50% scrolls`,
+        `- Skeptic funnel integrity: [${t.funnelHealth.status}] ${t.funnelHealth.message}`,
         `- Bayesian audit: ${t.bayesianScrollAudit.verdict}`,
         `- Live JSON endpoint: ${base}/api/experiments/field-lab/live`,
       ];
@@ -743,7 +772,8 @@ function liveCampaignTrackerSection() {
       <div class="bayes-banner">
         <span class="eyebrow">Live Bayesian Scroll Audit · Beta(1,1) Uniform Prior</span>
         <p id="fl-bayes-verdict">${e(t.bayesianScrollAudit.verdict)}</p>
-        <span class="fine">How this stays $0/mo: landing views and &gt;50% scroll depth stream from first-party zero-PII UTM telemetry in Firestore; Google Ads spend/impressions/clicks sync via cached <code>google-ads-mcp</code> snapshots. Live JSON: <a href="/api/experiments/field-lab/live">/api/experiments/field-lab/live</a>.</span>
+        <p id="fl-funnel-health" class="fine"><strong>Skeptic funnel check (${e(t.funnelHealth.status)}):</strong> ${e(t.funnelHealth.message)}</p>
+        <span class="fine">How this stays $0/mo: landing views (immediate JS + server-side UTM hit) and &gt;50% scroll depth stream from first-party zero-PII telemetry in Firestore; Google Ads spend/impressions/clicks sync via cached <code>google-ads-mcp</code> snapshots. Live JSON: <a href="/api/experiments/field-lab/live">/api/experiments/field-lab/live</a>.</span>
       </div>
     </div>
 
@@ -1117,6 +1147,7 @@ export function registerWetLab(app: Express, origin: (r: Request) => string) {
       res.type("text/markdown; charset=utf-8").send(wetLabMarkdown(origin(req)));
       return;
     }
+    recordServerCampaignLanding(req);
     res.type("html").send(page(origin(req), {
       path: "/experiments/field-lab",
       title: "Agentic Field Lab — autonomous media-grant research · Jack Smyth",

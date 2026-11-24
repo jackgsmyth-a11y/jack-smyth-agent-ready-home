@@ -21,12 +21,14 @@ export const telemetryScript = `(() => {
     }
     function destroy() {
       document.removeEventListener('visibilitychange', sendNow);
+      window.removeEventListener('pagehide', sendNow);
       clearTimeout(timeoutHandle);
     }
     if (document.visibilityState === 'hidden') {
       queueMicrotask(sendNow);
     } else {
       document.addEventListener('visibilitychange', sendNow);
+      window.addEventListener('pagehide', sendNow);
       if (typeof init.activateAfter === 'number' && init.activateAfter >= 0) {
         timeoutHandle = setTimeout(sendNow, init.activateAfter);
       }
@@ -36,11 +38,24 @@ export const telemetryScript = `(() => {
   };
 
   const ENDPOINT = '/api/telemetry';
-  const BATCH_WINDOW_MS = 10000;
+  const BATCH_WINDOW_MS = 5000;
   const MAX_QUEUE_SIZE = 40;
   const queue = [];
   let pendingResult = null;
   let pendingController = null;
+
+  function sendImmediate(event) {
+    try {
+      fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ events: [event] }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      // Ignore network errors gracefully.
+    }
+  }
 
   function enqueue(type, detail) {
     if (pendingResult?.activated || queue.length >= MAX_QUEUE_SIZE) {
@@ -83,7 +98,14 @@ export const telemetryScript = `(() => {
   const pvDetail = {};
   if (refHost) pvDetail.refHost = refHost;
   if (variantKey) pvDetail.variant = variantKey;
-  enqueue('page_view', Object.keys(pvDetail).length ? pvDetail : undefined);
+  // Send page_view immediately on load so fast mobile in-app WebView bounces
+  // (e.g. YouTube Mobile Demand Gen) are never lost inside a delayed batch window.
+  sendImmediate({
+    type: 'page_view',
+    path: location.pathname,
+    ts: Date.now(),
+    ...(Object.keys(pvDetail).length ? { detail: pvDetail } : {}),
+  });
 
   // 2. Lens switch (Human | Agent X-Ray)
   document.querySelectorAll('[data-lens-btn]').forEach((btn) => {

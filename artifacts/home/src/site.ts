@@ -592,7 +592,7 @@ ${bets.map(betSection).join("\n")}
 <p class="rules">Also for agents: <a href="/llms.txt">llms.txt</a>, <a href="/index.md">index.md</a>, <a href="/knowledge.json">knowledge.json</a>, <a href="/.well-known/mcp.json">server card</a>. Sending <code>Accept: text/markdown</code> to <code>/</code> returns the markdown version.</p>
 <h3>More than MCP</h3>
 <p class="rules">Personal agents can discover this service through <a href="/.well-known/poppy.json">Poppy 1.0</a>, or use the same tools through <a href="/openapi.json">OpenAPI / HTTP</a>. An <a href="/.well-known/agent-card.json">A2A 1.0 agent card</a> advertises a message-only adapter; it does not speak as Jack or store a conversation.</p>
-<p class="rules" id="webmcp-state" role="status">Checking native WebMCP availability…</p>
+<p class="rules" id="webmcp-state" role="status">WebMCP requires a supporting browser with JavaScript enabled; remote MCP (<code>/mcp</code>) and HTTP (<code>/openapi.json</code>) work everywhere.</p>
 <p class="rules"><a href="/protocols.json">Protocol scope and limitations</a>. This identity MCP stays read-only. Separately, the <a href="/experiments/field-lab#guardrails">Agentic Field Lab MCP</a> (<code>/experiments/field-lab/mcp</code>) exposes live A$100 media-grant cycles and voting, and <a href="/experiments/leaderbored#for-agents">Leaderbored’s MCP</a> (<code>/experiments/leaderbored/mcp</code>) supports human-approved purchases and credit use.</p>
 </section>
 

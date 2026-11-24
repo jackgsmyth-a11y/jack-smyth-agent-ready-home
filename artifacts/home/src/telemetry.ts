@@ -11,6 +11,7 @@ const METADATA_TOKEN_URL =
 
 export interface CampaignVariantMetrics {
   pageViews: number;
+  serverLandingViews?: number;
   scroll50: number;
   scroll75: number;
   scroll100: number;
@@ -301,11 +302,31 @@ function recordCampaignVariant(
   if (!(variant in m.human.campaignVariants) && Object.keys(m.human.campaignVariants).length >= 50) return;
   const bucket = (m.human.campaignVariants[variant] ??= {
     pageViews: 0,
+    serverLandingViews: 0,
     scroll50: 0,
     scroll75: 0,
     scroll100: 0,
   });
-  bucket[field] += 1;
+  bucket[field] = (bucket[field] ?? 0) + 1;
+}
+
+const BOT_UA_RE = /bot|crawler|spider|slurp|headless|preview|facebookexternalhit|linkedinbot|whatsapp|telegram|curl|wget|python-urllib|node-fetch|undici|axios/i;
+
+export function recordServerCampaignLanding(req: Request): string | null {
+  const ua = String(req.headers["user-agent"] || "");
+  const accept = String(req.headers.accept || "");
+  if (classifyAgent(ua, req.path, accept) || BOT_UA_RE.test(ua)) return null;
+  const clean = (v: unknown) => (typeof v === "string" ? v.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40) : "");
+  const camp = clean(req.query.utm_campaign);
+  const content = clean(req.query.utm_content);
+  const variantKey = camp && content ? `${camp}:${content}` : (camp || content);
+  if (!variantKey) return null;
+  const month = currentMonthKey();
+  const m = getMonthlyTelemetry(month);
+  recordCampaignVariant(m, variantKey, "serverLandingViews");
+  m.updatedAt = new Date().toISOString();
+  scheduleFlush(month);
+  return variantKey;
 }
 
 export function registerTelemetry(app: Express) {

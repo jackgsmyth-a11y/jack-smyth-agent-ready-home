@@ -53,6 +53,43 @@ export function registerProtocols(app: Express, origin: (req: any) => string) {
     const result = await withTools((c) => c.callTool({ name: "search", arguments: { query } }));
     res.json(result);
   });
+  app.get("/api/tools/search", async (req, res) => {
+    res.set("X-Robots-Tag", "noindex");
+    res.set("Cache-Control", PUBLIC_CACHE);
+    const query = String(req.query.q || "");
+    const rawLimit = req.query.limit !== undefined ? Number(req.query.limit) : undefined;
+    const args: Record<string, unknown> = { query };
+    if (rawLimit !== undefined && Number.isFinite(rawLimit)) args.limit = rawLimit;
+    const result = await withTools((c) => c.callTool({ name: "search", arguments: args }));
+    res.status(result.isError ? 400 : 200).json(result);
+  });
+  app.get("/api/tools/apply_strategy", async (req, res) => {
+    res.set("X-Robots-Tag", "noindex");
+    res.set("Cache-Control", "no-store");
+    const brief = String(req.query.brief || "");
+    const audience = typeof req.query.audience === "string" && req.query.audience ? req.query.audience : undefined;
+    const args: Record<string, unknown> = { brief };
+    if (audience) args.audience = audience;
+    const result = await withTools((c) => c.callTool({ name: "apply_strategy", arguments: args }));
+    res.status(result.isError ? 400 : 200).json(result);
+  });
+  app.get("/api/tools/call", (req, res) => {
+    const base = origin(req);
+    res.status(405).set("Allow", "POST").json({
+      error: "Method not allowed. Use POST /api/tools/call with { name, arguments }, or use a GET mirror below.",
+      post_endpoint: `${base}/api/tools/call`,
+      openapi: `${base}/openapi.json`,
+      tool_manifest: `${base}/api/tools`,
+      get_mirrors: {
+        search: `${base}/api/tools/search?q=YouTube`,
+        apply_strategy: `${base}/api/tools/apply_strategy?brief=How+should+a+brand+prepare+for+AI+agents`,
+      },
+      static_surfaces: {
+        knowledge: `${base}/knowledge.json`,
+        llms_txt: `${base}/llms.txt`,
+      },
+    });
+  });
   app.post("/api/tools/call", async (req, res) => {
     if (!req.body || typeof req.body.name !== "string" || !req.body.arguments ||
         typeof req.body.arguments !== "object" || Array.isArray(req.body.arguments)) {
@@ -75,6 +112,28 @@ export function registerProtocols(app: Express, origin: (req: any) => string) {
       servers: [{ url: origin(req) }],
       paths: {
         "/api/tools": { get: { operationId: "listTools", summary: "Discover callable tools", responses: { "200": { description: "Tool names, descriptions and JSON input schemas" } } } },
+        "/api/tools/search": { get: {
+          operationId: "searchGet", summary: "GET mirror of read-only search tool for fetch-only agents",
+          parameters: [
+            { name: "q", in: "query", required: true, schema: { type: "string", minLength: 2, maxLength: 200 } },
+            { name: "limit", in: "query", required: false, schema: { type: "integer", minimum: 1, maximum: 20 } },
+          ],
+          responses: {
+            "200": { description: "MCP-compatible content envelope with sourced search matches" },
+            "400": { description: "Invalid query or limit" },
+          },
+        } },
+        "/api/tools/apply_strategy": { get: {
+          operationId: "applyStrategyGet", summary: "GET mirror of deterministic apply_strategy tool for fetch-only agents",
+          parameters: [
+            { name: "brief", in: "query", required: true, schema: { type: "string", minLength: 10, maxLength: 2000 } },
+            { name: "audience", in: "query", required: false, schema: { type: "string", enum: ["brand", "person", "product"] } },
+          ],
+          responses: {
+            "200": { description: "MCP-compatible content envelope labelled GENERATED SYNTHESIS" },
+            "400": { description: "Invalid brief or audience" },
+          },
+        } },
         "/api/tools/call": { post: {
           operationId: "callTool", summary: "Run a read-only tool",
           requestBody: { required: true, content: { "application/json": { schema: {
@@ -112,6 +171,7 @@ export function registerProtocols(app: Express, origin: (req: any) => string) {
     supportedInterfaces: [{ url: `${base}/a2a`, protocolBinding: "JSONRPC", protocolVersion: "1.0" }],
     version: "1.0.0",
     documentationUrl: `${base}/#mcp`,
+    authentication: { schemes: ["none"] },
     capabilities: { streaming: false, pushNotifications: false, extendedAgentCard: false },
     defaultInputModes: ["text/plain", "application/json"], defaultOutputModes: ["application/json"],
     skills: [
