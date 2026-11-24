@@ -280,6 +280,7 @@ export const homeClientScript = String.raw`(() => {
     });
   }
   wireSegTabs("data-flair-tab", "data-flair-panel");
+  wireSegTabs("data-mm-tab", "data-mm-panel");
   wireSegTabs("data-lb-tab", "data-lb-panel");
 })();
 `;

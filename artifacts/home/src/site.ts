@@ -61,6 +61,54 @@ function renderHomeFlairSpotlight() {
   </aside>`;
 }
 
+function renderHomeMultimodalitySpotlight() {
+  return `<aside class="spotlight spotlight-mm">
+    <div class="spotlight-bar">
+      <div>
+        <h3>Beyond the metadata.</h3>
+        <p>Text tells an AI what a brand claims; video shows it. Compare what a text-only crawler sees from Jack’s BRXND LA 2025 talk against the multimodal signals an AI model actually extracts.</p>
+      </div>
+      <div class="seg-tabs" role="group" aria-label="Multimodal signal layers">
+        <button type="button" data-mm-tab="meta" aria-pressed="true">Metadata only</button>
+        <button type="button" data-mm-tab="av" aria-pressed="false">Audio + visual</button>
+        <button type="button" data-mm-tab="verdict" aria-pressed="false">Agent verdict</button>
+      </div>
+    </div>
+    <div class="mm-grid">
+      <div class="mm-media">
+        <a class="mm-poster" href="https://www.youtube.com/watch?v=MHm_zAgki1s" rel="noopener" aria-label="Watch Jack Smyth's BRXND LA 2025 talk on YouTube: The Most Important Audience You'll Never Meet (11 minutes)">
+          <img src="/lab/brxnd-la-2025.jpg" alt="Jack Smyth presenting The Most Important Audience You'll Never Meet at BRXND Marketing X AI Conf LA 2025" width="1280" height="720" loading="lazy">
+          <span class="mm-play" aria-hidden="true">▶ Watch on YouTube · 11 min</span>
+        </a>
+        <pre class="bet-ascii" data-bet-ascii="multimodality" aria-hidden="true">  .:*@#*:..   [▶ VIDEO]\n  --WAVEFORM-----> ★\n  :*#@*:.     AI CITED</pre>
+      </div>
+      <div class="mm-signals">
+        <div class="mm-panel" data-mm-panel="meta">
+          <div class="flair-col-label">What a text-only crawler gets from the URL</div>
+          <h4>The Most Important Audience You’ll Never Meet</h4>
+          <p class="mm-muted">Channel: BRXND · Published: 2025-02-06 · Length: 11 minutes</p>
+          <p>From metadata alone, a model only sees a conference title and speaker name. It gets none of the thesis, none of the brand examples, and no reason to cite this talk when a CMO asks how agents evaluate brands.</p>
+        </div>
+        <div class="mm-panel" data-mm-panel="av" hidden>
+          <div class="flair-col-label">What a multimodal model extracts by watching &amp; listening</div>
+          <h4>Spoken argument + on-screen slides + live examples</h4>
+          <p>Multimodal models index the spoken transcript, on-screen frameworks, and visual demonstrations together: how LLMs shortlist brands, why third-party evidence outranks brand claims, and how brand-to-agent (B2A) marketing changes creative briefs.</p>
+          <p class="flair-facts"><strong>Signals beyond metadata:</strong> Spoken thesis · Slide text &amp; diagrams · Demonstration cadence · Exact timestamp anchors</p>
+        </div>
+        <div class="mm-panel" data-mm-panel="verdict" hidden>
+          <div class="flair-col-label">Why this changes the Field Lab &amp; Share of Model</div>
+          <h4>Show the agent working, not just the claim</h4>
+          <p>Brandtech’s Share of Model analysis found YouTube is the platform AI engines recommend most, with about 1 in 7 long-form citations pointing to an exact timestamp. In the Field Lab, Team Multimodality tests that directly: a 20-second screen-recorded YouTube Short against a standard claim ad on A$100 AUD.</p>
+        </div>
+      </div>
+    </div>
+    <div class="spotlight-foot">
+      <a class="btn" href="/experiments/field-lab">Inspect Team Multimodality in the Field Lab →</a>
+      <small>Source talk: <a href="https://www.youtube.com/watch?v=MHm_zAgki1s" rel="noopener">BRXND LA 2025 (YouTube) ↗</a> · Zero third-party embeds or cookies.</small>
+    </div>
+  </aside>`;
+}
+
 function renderHomeLeaderboredSpotlight() {
   const categories = HOME_LB_IDS
     .map((id) => leaderboredData.find((c) => c.id === id))
@@ -139,7 +187,7 @@ function betSection(b: Bet) {
   const spotlight = b === "differentiation"
     ? renderHomeFlairSpotlight()
     : b === "multimodality"
-    ? `<aside class="spotlight spotlight-stage"><div><h3>Show the agent working vs. state the claim.</h3><p>In the Agentic Field Lab, Team Multimodality pitches a 20-second screen-recorded YouTube Short against a standard claim ad on A$100 AUD, competing head-to-head with Differentiation and Anticipation for the monthly media grant.</p><a class="btn" href="/experiments/field-lab">Inspect their pitch in the Field Lab →</a><small>Built on Gemini, YouTube Shorts, and Google Ads MCP.</small></div><pre class="bet-ascii" data-bet-ascii="${b}" aria-hidden="true">  .:*@#*:..   [▶ VIDEO]\n  --WAVEFORM-----> ★\n  :*#@*:.     AI CITED</pre></aside>`
+    ? renderHomeMultimodalitySpotlight()
     : b === "anticipation"
     ? renderHomeLeaderboredSpotlight()
     : "";
@@ -477,7 +525,19 @@ code{background:var(--surface-alt);padding:2px 6px;border-radius:5px;font-size:.
 .seg-tabs button{background:transparent!important;color:var(--mut)!important;border:0!important;border-radius:8px!important;padding:7px 13px!important;font:600 var(--text-sm) var(--sans)!important;margin:0!important;min-block-size:34px;transition:background-color 160ms var(--ease),color 160ms var(--ease)}
 .seg-tabs button:hover{color:var(--fg)!important}
 .seg-tabs button[aria-pressed=true]{background:var(--fg)!important;color:var(--lemon)!important}
-.flair-panel[hidden],.lb-panel[hidden]{display:none!important}
+.flair-panel[hidden],.mm-panel[hidden],.lb-panel[hidden]{display:none!important}
+.spotlight-mm{border-left-color:var(--b2);background:var(--surface-alt)}
+.mm-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:24px;align-items:start}
+.mm-media{display:flex;flex-direction:column;gap:12px;min-width:0}
+.mm-poster{position:relative;display:block;border-radius:12px;overflow:hidden;border:1px solid var(--fg);text-decoration:none;background:#11110f}
+.mm-poster img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;transition:transform 200ms var(--ease)}
+.mm-poster:hover img{transform:scale(1.02)}
+.mm-play{position:absolute;left:14px;bottom:14px;background:rgba(17,17,15,.88);color:var(--lemon);padding:7px 13px;border-radius:8px;font:600 var(--text-sm) var(--sans);border:1px solid rgba(242,246,74,.45)}
+.mm-signals{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--b2);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.mm-panel{display:flex;flex-direction:column;gap:10px}
+.mm-panel h4{margin:0;font-size:var(--text-body);font-weight:600;color:var(--fg)}
+.mm-panel p{margin:0;font-size:var(--text-body);line-height:1.6;max-width:none}
+.mm-muted{color:var(--mut);font-size:var(--text-sm)!important}
 .flair-compare{display:grid;grid-template-columns:1fr 1.15fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
 .flair-col{padding:20px 22px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .flair-before{background:var(--surface-alt)}
@@ -506,22 +566,25 @@ summary{cursor:pointer;font:600 var(--text-sm) var(--sans);padding:14px 0;color:
 .glassbox{margin:28px 0 16px}.gb-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 16px}
 .gb-node{text-align:left;background:var(--card)!important;color:var(--fg)!important;border:1px solid var(--line)!important;border-radius:12px;padding:14px;margin:0!important;cursor:pointer;transition:border-color .15s,background .15s}
 .gb-node:hover{border-color:var(--fg)!important}.gb-node[aria-selected=true]{border-color:var(--fg)!important;background:var(--surface)!important;box-shadow:inset 0 -3px 0 var(--lemon)}
-.gb-node .gb-step{display:block;font:600 11px var(--mono);color:var(--tone);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
-.gb-node strong{display:block;font:600 16px var(--display);letter-spacing:-.02em;margin-bottom:2px}
-.gb-node span.gb-sub{display:block;font:12px/1.35 var(--sans);color:var(--mut)}
+.gb-node .gb-step{display:block;font:600 var(--text-sm) var(--mono);color:var(--tone);margin-bottom:4px}
+.gb-node strong{display:block;font:600 var(--text-body) var(--display);letter-spacing:-.02em;margin-bottom:2px}
+.gb-node span.gb-sub{display:block;font:400 var(--text-sm)/1.35 var(--sans);color:var(--mut)}
 .gb-panel{border:1px solid var(--fg);background:var(--surface);border-radius:16px;padding:26px}.gb-panel[hidden]{display:none!important}
-.gb-meta{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.gb-meta span{font:12px var(--mono);padding:4px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
-.rubric-row{display:grid;grid-template-columns:180px 1fr 54px;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font:13px var(--sans)}
+.gb-meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0;padding-top:12px;border-top:1px solid var(--line)}.gb-meta span{font:500 var(--text-sm) var(--mono);color:var(--mut)}
+.gb-sub-block{padding-top:14px;border-top:1px solid var(--line)}
+.gb-sub-block strong{display:block;font-family:var(--display);font-size:var(--text-body);font-weight:600;margin-bottom:6px}
+.rubric-row{display:grid;grid-template-columns:180px 1fr 54px;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font:400 var(--text-sm) var(--sans)}
 .rubric-meter{width:100%;height:10px;accent-color:var(--b2)}.cap-track{display:grid;grid-template-columns:10fr 85fr 5fr;gap:3px;height:14px;margin:14px 0 8px}
 .cap-seg{border-radius:4px}.cap-seg.day{background:var(--b2)}.cap-seg.run{background:#d7d5cc}.cap-seg.stop{background:var(--lemon);border:1px solid var(--fg)}
-.gb-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+.gb-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px}
 .swarm-arena,.live-tracker{margin:34px 0 24px}
-.swarm-controls,.tracker-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.swarm-steps{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 14px}
-.swarm-step-btn{background:var(--card)!important;color:var(--mut)!important;border:1px solid var(--line)!important;border-radius:99px;padding:8px 14px;min-block-size:36px;font:600 12.5px var(--mono);cursor:pointer;margin:0!important;transition:border-color .15s,color .15s,background .15s}
-.swarm-step-btn:hover{border-color:var(--fg)!important;color:var(--fg)!important}
-.swarm-step-btn[aria-pressed=true]{background:var(--fg)!important;color:#fffefa!important;border-color:var(--fg)!important}
-.swarm-step-btn .sym{color:var(--tone);margin-right:4px}.swarm-step-btn[aria-pressed=true] .sym{color:var(--lemon)}
+.swarm-controls,.tracker-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.swarm-steps{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:3px;background:var(--bg);gap:3px;margin:16px 0 14px}
+.swarm-step-btn{background:transparent!important;color:var(--mut)!important;border:0!important;border-radius:8px!important;padding:8px 14px!important;min-block-size:36px;font:600 var(--text-sm) var(--sans)!important;cursor:pointer;margin:0!important;transition:color 160ms var(--ease),background-color 160ms var(--ease)}
+.swarm-step-btn:hover{color:var(--fg)!important}
+.swarm-step-btn[aria-pressed=true]{background:var(--fg)!important;color:var(--lemon)!important}
+body[data-lens=agent] .swarm-step-btn[aria-pressed=true]{background:var(--lemon)!important;color:#11110f!important}
+.swarm-step-btn .sym{color:var(--tone);margin-right:4px}.swarm-step-btn[aria-pressed=true] .sym{color:inherit}
 .swarm-stage{border:1px solid var(--fg)!important;background:var(--surface)!important}
 .ascii-theatre{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:linear-gradient(135deg,#f8f9fc 0%,#f5f3ec 55%,#eef2f9 100%);margin-bottom:20px;padding:18px 20px 12px}
 .ascii-whispers{position:absolute;inset:0;pointer-events:none;font:500 11.5px var(--mono);color:rgba(38,67,138,.22);user-select:none}
@@ -605,7 +668,7 @@ summary{cursor:pointer;font:600 var(--text-sm) var(--sans);padding:14px 0;color:
 .work-cta .surface{border:1px solid var(--fg);background:var(--surface);border-radius:16px;padding:32px;display:grid;grid-template-columns:1.4fr auto;gap:24px;align-items:center}
 .work-cta h2{font-size:var(--text-heading);letter-spacing:-.03em;margin:0 0 10px;line-height:1.08}
 .work-cta p{margin:0;color:var(--mut);max-width:58ch}.work-cta .actions{display:flex;gap:10px;flex-wrap:wrap}.work-cta a.btn{text-decoration:none}
-@media (max-width:820px){.bet-lead-split,.bet-workbench-split,.spotlight.spotlight-stage,.flair-compare{grid-template-columns:1fr;gap:20px}.flair-compare{gap:0}.flair-after{border-left:0;border-top:3px solid var(--lemon)}.gb-rail{grid-template-columns:1fr 1fr}.gb-cols,.work-cta .surface,.swarm-lanes,.tracker-summary,.next-chain,.claims-grid{grid-template-columns:1fr}.rubric-row{grid-template-columns:1fr 1fr 48px}.swarm-debate li,.logit-row{grid-template-columns:1fr;gap:6px}}
+@media (max-width:820px){.bet-lead-split,.bet-workbench-split,.spotlight.spotlight-stage,.flair-compare,.mm-grid{grid-template-columns:1fr;gap:20px}.flair-compare{gap:0}.flair-after{border-left:0;border-top:3px solid var(--lemon)}.gb-rail{grid-template-columns:1fr 1fr}.gb-cols,.work-cta .surface,.swarm-lanes,.tracker-summary,.next-chain,.claims-grid{grid-template-columns:1fr}.rubric-row{grid-template-columns:1fr 1fr 48px}.swarm-debate li,.logit-row{grid-template-columns:1fr;gap:6px}}
 .crumb{font:500 var(--text-sm) var(--sans);display:flex;gap:12px;color:var(--mut);margin-bottom:32px;flex-wrap:wrap}.crumb a{text-decoration:none}.eyebrow{font:600 var(--text-sm) var(--sans);color:var(--tone);margin-bottom:12px}
 .experiment h1{font-size:clamp(2.75rem,6.5vw,5rem);line-height:1.02;letter-spacing:-.04em;max-width:15ch;margin:10px 0 24px}.experiment .deck{color:var(--mut);font-size:var(--text-body);max-width:56ch}
 .experiment .context{max-width:65ch;border-left:2px solid var(--tone);padding:0 0 0 20px;margin:24px 0 34px;font-size:var(--text-body)}.context small{display:block;color:var(--mut);font-size:var(--text-sm)}

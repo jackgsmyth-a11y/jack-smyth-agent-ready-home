@@ -467,60 +467,57 @@ function glassBoxSchematic(c: LabCycle) {
   const leader = [...c.pitches].sort((a, b) => b.judge.total - a.judge.total)[0];
   return `<section id="under-the-hood" class="glassbox" aria-label="How the Agentic Field Lab works under the hood">
     <div class="section-top">
-      <div><div class="section-no">00 / Glass-box architecture</div><h2>Literally transparent, under the hood.</h2></div>
-      <p class="quiet">Click any stage to inspect the exact Google AI models, rubric weights, spend circuit-breakers, and statistical rules governing this field lab.</p>
+      <div><h2>Literally transparent, under the hood.</h2></div>
+      <p class="quiet">Select any stage to inspect the exact Google AI models, rubric weights, spend circuit-breakers, and statistical rules governing this field lab.</p>
     </div>
     <div class="gb-rail" role="tablist" aria-label="Agentic Field Lab stages">
       <button type="button" class="gb-node" role="tab" aria-selected="true" aria-controls="gb-p1" data-gb-tab="gb-p1">
-        <span class="gb-step">01 / Pulse</span><strong>Industry Pulse</strong><span class="gb-sub">Search + Trends</span>
+        <span class="gb-step">Stage 1</span><strong>Industry Pulse</strong><span class="gb-sub">Search + Trends</span>
       </button>
       <button type="button" class="gb-node" role="tab" aria-selected="false" aria-controls="gb-p2" data-gb-tab="gb-p2">
-        <span class="gb-step">02 / Swarm</span><strong>3 Agent Teams</strong><span class="gb-sub">Compete for A$100</span>
+        <span class="gb-step">Stage 2</span><strong>3 Agent Teams</strong><span class="gb-sub">Compete for A$100</span>
       </button>
       <button type="button" class="gb-node" role="tab" aria-selected="false" aria-controls="gb-p3" data-gb-tab="gb-p3">
-        <span class="gb-step">03 / Judge</span><strong>Calibrated Rubric</strong><span class="gb-sub">100-pt audit</span>
+        <span class="gb-step">Stage 3</span><strong>Calibrated Rubric</strong><span class="gb-sub">100-pt audit</span>
       </button>
       <button type="button" class="gb-node" role="tab" aria-selected="false" aria-controls="gb-p4" data-gb-tab="gb-p4">
-        <span class="gb-step">04 / Ads MCP</span><strong>Spend Breaker</strong><span class="gb-sub">Hard A$100 cap</span>
+        <span class="gb-step">Stage 4</span><strong>Spend Breaker</strong><span class="gb-sub">Hard A$100 cap</span>
       </button>
       <button type="button" class="gb-node" role="tab" aria-selected="false" aria-controls="gb-p5" data-gb-tab="gb-p5">
-        <span class="gb-step">05 / Verdict</span><strong>Bayesian Audit</strong><span class="gb-sub">Open CMO data</span>
+        <span class="gb-step">Stage 5</span><strong>Bayesian Audit</strong><span class="gb-sub">Open CMO data</span>
       </button>
     </div>
 
     <div class="gb-panel" id="gb-p1" role="tabpanel">
-      <div class="eyebrow">Stage 01 · Autonomous Industry Pulse (No Cold-Start Bottleneck)</div>
       <h3>Agents take the industry’s pulse before a single human votes.</h3>
-      <p>Waiting for public vote volume stalls early labs. Instead, the Scout Agent queries <strong>Google Search Grounding</strong> and <strong>Google Trends</strong> each month to detect what CMOs are actively debating—combining those signals with reader-submitted questions to set one falsifiable monthly brief.</p>
+      <p>Waiting for public vote volume stalls early labs. Instead, the Scout Agent queries <strong>Google Search Grounding</strong> and <strong>Google Trends</strong> each month to detect what CMOs are actively debating, combining those signals with reader-submitted questions to set one falsifiable monthly brief.</p>
       <div class="gb-meta">
         <span>Model: gemini-4-hydrogen</span>
         <span>Grounding: Google Search + Trends</span>
         <span>Community votes: Advisory signal (never blocks autonomy)</span>
       </div>
       <div class="gb-cols">
-        <div class="surface"><strong>Active Pulse Signals (${e(c.month)})</strong><p class="quiet">1. Rising CMO search interest in "AI Overviews video citations" and "agentic commerce".<br>2. High skepticism of unmeasured B2B AI marketing claims.<br>3. Need for repeatable micro-budget creative tests.</p></div>
-        <div class="surface"><strong>Output Artefact</strong><p class="quiet">A single JSON research brief distributed identically to all three competing teams with a fixed token allowance and A$100 AUD ceiling.</p></div>
+        <div class="gb-sub-block"><strong>Active Pulse Signals (${e(c.month)})</strong><p class="quiet">1. Rising CMO search interest in "AI Overviews video citations" and "agentic commerce".<br>2. High skepticism of unmeasured B2B AI marketing claims.<br>3. Need for repeatable micro-budget creative tests.</p></div>
+        <div class="gb-sub-block"><strong>Output Artefact</strong><p class="quiet">A single JSON research brief distributed identically to all three competing teams with a fixed token allowance and A$100 AUD ceiling.</p></div>
       </div>
     </div>
 
     <div class="gb-panel" id="gb-p2" role="tabpanel" hidden>
-      <div class="eyebrow">Stage 02 · Competing Research Swarm</div>
-      <h3>Three teams, three distinct hypotheses—mirroring Jack’s three bets.</h3>
-      <p>Just as frontier AI labs allocate compute to competing internal proposals, three isolated agent teams pitch against each other for the month’s A$100 AUD media grant. Every pitch must state an explicit <strong>falsification condition</strong>—what data would prove the team wrong.</p>
+      <h3>Three teams, three distinct hypotheses mirroring Jack’s three bets.</h3>
+      <p>Just as frontier AI labs allocate compute to competing internal proposals, three isolated agent teams pitch against each other for the month’s A$100 AUD media grant. Every pitch must state an explicit <strong>falsification condition</strong> defining what data would prove the team wrong.</p>
       <div class="gb-meta">
         <span>Strategy: gemini-4-hydrogen</span>
         <span>Stills: gemini-nano-banana-2.1</span>
         <span>Shorts: gemini-omni-1.2-flash</span>
       </div>
       <ul class="reasons">
-        ${c.pitches.map((p) => `<li><b>${e(p.team)}</b> — ${e(p.title)}<br><span class="quiet">${e(p.channel)} · ${e(p.expectedSampleSize)}</span></li>`).join("")}
+        ${c.pitches.map((p) => `<li><b>${e(p.team)}:</b> ${e(p.title)}<br><span class="quiet">${e(p.channel)} · ${e(p.expectedSampleSize)}</span></li>`).join("")}
       </ul>
     </div>
 
     <div class="gb-panel" id="gb-p3" role="tabpanel" hidden>
-      <div class="eyebrow">Stage 03 · Calibrated Judge Agent</div>
       <h3>Why ${e(leader.team)} currently leads (${leader.judge.total}/100).</h3>
-      <p>A separate Judge Agent scores every pitch against a locked 100-point rubric using <code>gemini-decision-1</code> calibrated scoring—eliminating hype and automatically rejecting experiments that cannot reach meaningful volume on A$100 AUD.</p>
+      <p>A separate Judge Agent scores every pitch against a locked 100-point rubric using <code>gemini-decision-1</code> calibrated scoring, eliminating hype and automatically rejecting experiments that cannot reach meaningful volume on A$100 AUD.</p>
       <div class="rubric-row"><span>CMO Actionability (30)</span><meter class="rubric-meter" min="0" max="30" value="${leader.judge.cmoActionability}">${leader.judge.cmoActionability}/30</meter><strong>${leader.judge.cmoActionability}/30</strong></div>
       <div class="rubric-row"><span>Statistical Feasibility (30)</span><meter class="rubric-meter" min="0" max="30" value="${leader.judge.statisticalFeasibility}">${leader.judge.statisticalFeasibility}/30</meter><strong>${leader.judge.statisticalFeasibility}/30</strong></div>
       <div class="rubric-row"><span>Novelty &amp; Rigour (20)</span><meter class="rubric-meter" min="0" max="20" value="${leader.judge.noveltyAndRigour}">${leader.judge.noveltyAndRigour}/20</meter><strong>${leader.judge.noveltyAndRigour}/20</strong></div>
@@ -529,8 +526,7 @@ function glassBoxSchematic(c: LabCycle) {
     </div>
 
     <div class="gb-panel" id="gb-p4" role="tabpanel" hidden>
-      <div class="eyebrow">Stage 04 · Google Ads MCP &amp; Hard-Coded Spend Circuit-Breaker</div>
-      <h3>Spend limits live in code—never in a prompt.</h3>
+      <h3>Spend limits live in code, never in a prompt.</h3>
       <p>Agents connect to Google’s official <code>googleads/google-ads-mcp</code> (Propose &amp; Confirm dry-run validation + daily GAQL reporting) paired with a guarded Cloud Run execution boundary enforcing strict A$100 AUD ceilings.</p>
       <div class="cap-track" aria-label="Spend circuit breaker: A$10 daily cap, A$95 auto-pause, A$100 hard ceiling">
         <div class="cap-seg day" title="Daily cap: A$10 AUD"></div>
@@ -546,14 +542,13 @@ function glassBoxSchematic(c: LabCycle) {
     </div>
 
     <div class="gb-panel" id="gb-p5" role="tabpanel" hidden>
-      <div class="eyebrow">Stage 05 · Bayesian Audit &amp; Open CMO Flywheel</div>
       <h3>Honest confidence intervals, not fake statistical certainty.</h3>
-      <p>Compare why the Judge Agent enforces upper/mid-funnel signals on A$100 AUD—and how a separate Skeptic Agent audits raw BigQuery / GAQL numbers before publishing back to <code>/llms.txt</code>, <code>/mcp</code>, and a verdict-first YouTube brief.</p>
-      <div class="picker" role="group" aria-label="Compare funnel economics on A$100 AUD">
-        <button type="button" class="secondary" data-bayes-mode="upper" aria-pressed="true">Upper-Funnel Shorts (Approved)</button>
-        <button type="button" class="secondary" data-bayes-mode="lower" aria-pressed="false">Down-Funnel B2B Lead CPA (Rejected)</button>
+      <p>Compare why the Judge Agent enforces upper/mid-funnel signals on A$100 AUD, and how a separate Skeptic Agent audits raw BigQuery / GAQL numbers before publishing back to <code>/llms.txt</code>, <code>/mcp</code>, and a verdict-first YouTube brief.</p>
+      <div class="seg-tabs" role="group" aria-label="Compare funnel economics on A$100 AUD">
+        <button type="button" data-bayes-mode="upper" aria-pressed="true">Upper-Funnel Shorts (Approved)</button>
+        <button type="button" data-bayes-mode="lower" aria-pressed="false">Down-Funnel B2B Lead CPA (Rejected)</button>
       </div>
-      <div id="gb-bayes-readout" class="surface">
+      <div id="gb-bayes-readout" class="gb-sub-block">
         <strong>Upper-Funnel YouTube Shorts / Demand Gen (A$100 AUD)</strong>
         <p class="quiet">~4,000–7,500 impressions · 80–180 engagements · Beta-Binomial posterior can reliably detect a +20% relative hook lift with ≥75% directional confidence. Result is published transparently as directional evidence, never overclaimed.</p>
       </div>
@@ -567,20 +562,19 @@ function swarmTheatre(c: LabCycle) {
   return `<section id="swarm-arena" class="swarm-arena" aria-labelledby="swarm-arena-title">
     <div class="section-top">
       <div>
-        <div class="section-no">00A / Live Swarm Theatre</div>
         <h2 id="swarm-arena-title">Watch the swarm search, argue, and pitch.</h2>
       </div>
       <div class="swarm-controls">
         <button type="button" class="secondary swarm-toggle" id="swarm-play-toggle">Pause animation</button>
       </div>
     </div>
-    <p class="quiet">Inspired by typographic glass-box visualisers: step through how the Scout tokenises live CMO debate, three teams challenge each other’s maths, and the calibrated Judge awards the A$100 AUD grant.</p>
+    <p class="quiet">Step through how the Scout tokenises live CMO debate, three teams challenge each other’s maths, and the calibrated Judge awards the A$100 AUD grant.</p>
 
     <div class="swarm-steps" role="group" aria-label="Swarm deliberation phases">
-      <button type="button" class="swarm-step-btn" data-swarm-btn="0" aria-pressed="true"><span class="sym" aria-hidden="true">⌕</span> 01 · Search</button>
-      <button type="button" class="swarm-step-btn" data-swarm-btn="1" aria-pressed="false"><span class="sym" aria-hidden="true">◈</span> 02 · Consider</button>
-      <button type="button" class="swarm-step-btn" data-swarm-btn="2" aria-pressed="false"><span class="sym" aria-hidden="true">⇌</span> 03 · Argue</button>
-      <button type="button" class="swarm-step-btn" data-swarm-btn="3" aria-pressed="false"><span class="sym" aria-hidden="true">∑</span> 04 · Pitch &amp; Judge</button>
+      <button type="button" class="swarm-step-btn" data-swarm-btn="0" aria-pressed="true"><span class="sym" aria-hidden="true">⌕</span> Search</button>
+      <button type="button" class="swarm-step-btn" data-swarm-btn="1" aria-pressed="false"><span class="sym" aria-hidden="true">◈</span> Consider</button>
+      <button type="button" class="swarm-step-btn" data-swarm-btn="2" aria-pressed="false"><span class="sym" aria-hidden="true">⇌</span> Argue</button>
+      <button type="button" class="swarm-step-btn" data-swarm-btn="3" aria-pressed="false"><span class="sym" aria-hidden="true">∑</span> Pitch &amp; Judge</button>
     </div>
 
     <div class="swarm-stage surface" data-swarm-active="0">
@@ -628,7 +622,7 @@ function swarmTheatre(c: LabCycle) {
           <span class="tok tok-arrow" aria-hidden="true">→</span>
           <span class="tok tok-out">brief.json</span>
         </div>
-        <p class="quiet">Scout converts live search signals and reader questions into one identical JSON brief—zero hidden hints, fixed token allowance per team.</p>
+        <p class="quiet">Scout converts live search signals and reader questions into one identical JSON brief, with zero hidden hints and a fixed token allowance per team.</p>
       </div>
 
       <div class="swarm-pane" data-swarm-pane="1" hidden>
@@ -715,7 +709,6 @@ function liveCampaignTrackerSection() {
   return `<section id="live-tracker" class="live-tracker" aria-labelledby="live-tracker-title">
     <div class="section-top">
       <div>
-        <div class="section-no">00B / Zero-Cost Live Campaign Tracker</div>
         <h2 id="live-tracker-title">Winning team in the field.</h2>
       </div>
       <div class="tracker-actions">
@@ -727,8 +720,7 @@ function liveCampaignTrackerSection() {
     <div class="surface tracker-card">
       <div class="tracker-summary">
         <div>
-          <span class="eyebrow">Funded Team · Cycle 01</span>
-          <h3>${e(t.winningTeam)} (${t.winningScore}/100)</h3>
+          <h3>${e(t.winningTeam)} (${t.winningScore}/100) · Cycle 01</h3>
           <p class="quiet">${e(t.campaignName)} · ${e(t.channel)} · Account <code>${e(t.accountId)}</code> · Flight <strong>${e(t.flightStart)}</strong> to <strong>${e(t.flightEnd)}</strong>.</p>
         </div>
         <div class="spend-box">
@@ -770,7 +762,7 @@ function liveCampaignTrackerSection() {
       </div>
 
       <div class="bayes-banner">
-        <span class="eyebrow">Live Bayesian Scroll Audit · Beta(1,1) Uniform Prior</span>
+        <strong>Live Bayesian scroll audit · Beta(1,1) uniform prior</strong>
         <p id="fl-bayes-verdict">${e(t.bayesianScrollAudit.verdict)}</p>
         <p id="fl-funnel-health" class="fine"><strong>Skeptic funnel check (${e(t.funnelHealth.status)}):</strong> ${e(t.funnelHealth.message)}</p>
         <span class="fine">How this stays $0/mo: landing views (immediate JS + server-side UTM hit) and &gt;50% scroll depth stream from first-party zero-PII telemetry in Firestore; Google Ads spend/impressions/clicks sync via cached <code>google-ads-mcp</code> snapshots. Live JSON: <a href="/api/experiments/field-lab/live">/api/experiments/field-lab/live</a>.</span>
@@ -794,12 +786,11 @@ function wetLabBody() {
   const c = activeCycle;
   return `<div class="experiment" data-experiment="field-lab" data-agent-spec="MCP: /experiments/field-lab/mcp · API: /api/experiments/field-lab/cycle · LIVE: /api/experiments/field-lab/live · MODELS: gemini-4-hydrogen + gemini-decision-1 + gemini-nano-banana-2.1 · CAP: A$100 AUD">
   <div class="crumb"><a href="/">Jack Smyth</a><span>/</span><a href="/#multimodality">Multimodality</a><span>/</span><span>Agentic Field Lab</span></div>
-  <div class="eyebrow">Experiment 03 · autonomous media-grant lab · ${e(c.month)}</div>
-  <h1>The Agentic<br>Field Lab.</h1>
-  <p class="deck">Frontier AI labs make researchers pitch for compute. Here, three competing agent teams pitch for a A$100 AUD monthly Google Ads grant—testing hypotheses in the live market and publishing honest Bayesian evidence for CMOs.</p>
+  <h1>The Agentic Field Lab.</h1>
+  <p class="deck">Frontier AI labs make researchers pitch for compute. Here, three competing agent teams pitch for a A$100 AUD monthly Google Ads grant, testing hypotheses in the live market and publishing honest Bayesian evidence for CMOs.</p>
   <div class="context">
-    <p>Think of it as a research compute grant, applied to real media spend: an autonomous Scout reads live industry pulse via Google Search &amp; Trends, three competing teams pitch falsifiable tests, a calibrated Judge scores every proposal, and hard-coded spend guardrails run the winner in the field—no synthetic panels, no black boxes.</p>
-    <small>Status: ${e(c.status)} (${e(c.mode)}). Autonomous via Industry Pulse + Judge Agent; community votes act as an advisory signal.</small>
+    <p>Think of it as a research compute grant applied to real media spend: an autonomous Scout reads live industry pulse via Google Search &amp; Trends, three competing teams pitch falsifiable tests, a calibrated Judge scores every proposal, and hard-coded spend guardrails run the winner in the field with no synthetic panels and no black boxes.</p>
+    <small>Status: ${e(c.status)} (${e(c.mode)}) · ${e(c.month)}. Autonomous via Industry Pulse + Judge Agent; community votes act as an advisory signal.</small>
   </div>
 
   ${swarmTheatre(c)}
@@ -808,13 +799,13 @@ function wetLabBody() {
 
   <section id="brief">
     <div class="section-top">
-      <div><div class="section-no">01 / This month's scouted question</div><h2>What the swarm is testing.</h2></div>
-      <span class="tag">${e(c.id)}</span>
+      <div><h2>What the swarm is testing.</h2></div>
+      <span class="quiet">${e(c.id)}</span>
     </div>
     <div class="surface">
       <h3>${e(c.researchQuestion)}</h3>
       <p class="quiet">${e(c.context)}</p>
-      <div class="facts">
+      <div class="gb-meta">
         <span>Scout · ${e(c.scoutSource)}</span>
         <span>Hard Cap · A$${SPEND_GUARDRAILS.hardCapMonthlyAud} AUD/mo</span>
         <span>Auto-Pause · A$${SPEND_GUARDRAILS.autoPauseAtSpendAud} AUD</span>
@@ -825,8 +816,8 @@ function wetLabBody() {
 
   <section id="creatives">
     <div class="section-top">
-      <div><div class="section-no">01B / Live ad creatives (Cycle 01 winner)</div><h2>Generated by <code>gemini-nano-banana-2.1</code>.</h2></div>
-      <p class="quiet">Identical visual palette, layout, and typography—isolating copy framing alone so A$100 AUD measures message truth rather than design noise.</p>
+      <div><h2>Live ad creatives generated by <code>gemini-nano-banana-2.1</code>.</h2></div>
+      <p class="quiet">Identical visual palette, layout, and typography, isolating copy framing alone so A$100 AUD measures message truth rather than design noise.</p>
     </div>
     <div class="split">
       <figure class="surface creative-card">
@@ -842,7 +833,7 @@ function wetLabBody() {
 
   <section id="pitches">
     <div class="section-top">
-      <div><div class="section-no">02 / The grant round</div><h2>Three competing agent pitches.</h2></div>
+      <div><h2>Three competing agent pitches.</h2></div>
       <p class="quiet">Each team is mapped to one of Jack's three bets. The Judge Agent scored each pitch on CMO actionability, statistical feasibility at A$100, rigour, and ad-policy safety. Cast your vote below.</p>
     </div>
     <div id="fieldlab-vote-status" role="status" aria-live="polite"></div>
@@ -852,7 +843,6 @@ function wetLabBody() {
   </section>
 
   <section id="suggest">
-    <div class="section-no">03 / Propose next month's test</div>
     <h2>Give the swarm a CMO problem.</h2>
     <p class="quiet">Submit a real marketing question you want three agent teams to test next month on a A$100 AUD media grant. The Scout Agent reviews submissions alongside Google Search trends.</p>
     <form id="fieldlab-question-form" class="surface">
@@ -871,7 +861,7 @@ function wetLabBody() {
   <section class="method" id="guardrails">
     <h2>Google-native stack &amp; spend guardrails.</h2>
     <p><strong>Why A$100 AUD works:</strong> At A$100/month, down-funnel purchase conversions have too little sample size. The Judge Agent rejects low-volume CPA tests and restricts v1 experiments to high-volume upper/mid-funnel signals (impressions, 3-second hold, CTR, on-site micro-conversions), reported with Bayesian probability of superiority rather than overclaimed p-values.</p>
-    <p><strong>Google Ads MCP + Guarded Execution:</strong> Agents use Google's official <code>googleads/google-ads-mcp</code> for GAQL performance queries and dry-run asset creation (Propose &amp; Confirm). Hard-coded caps (<code>A$100/mo</code>, <code>A$10/day</code>, auto-pause at <code>A$95</code>) are enforced in code—never left to prompts.</p>
+    <p><strong>Google Ads MCP + Guarded Execution:</strong> Agents use Google's official <code>googleads/google-ads-mcp</code> for GAQL performance queries and dry-run asset creation (Propose &amp; Confirm). Hard-coded caps (<code>A$100/mo</code>, <code>A$10/day</code>, auto-pause at <code>A$95</code>) are enforced in code, never left to prompts.</p>
     <p><strong>YouTube-in-AI Flywheel:</strong> Every completed cycle auto-generates a verdict-first YouTube video brief (<code>${e(c.youtubeVideoBrief.title)}</code>) so the empirical findings feed directly back into multimodal AI citations.</p>
     <details class="agent-box">
       <summary>Connect your agent to the Agentic Field Lab</summary>
@@ -882,8 +872,8 @@ function wetLabBody() {
   </section>
 
   <div class="next">
-    <div><span class="eyebrow">Return to the argument</span><br><a href="/#multimodality">Why multimodality matters →</a></div>
-    <div><span class="eyebrow">See Experiment 02</span><br><a href="/experiments/leaderbored">Try Leaderbored →</a></div>
+    <div><a href="/#multimodality">Why multimodality matters →</a></div>
+    <div><a href="/experiments/leaderbored">Try Leaderbored →</a></div>
   </div>
 </div>`;
 }
