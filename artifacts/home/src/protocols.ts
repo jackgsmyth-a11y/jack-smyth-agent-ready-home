@@ -33,11 +33,16 @@ export const PROTOCOL_MATRIX = [
   { protocol: "NLWeb", scope: "Reviewed as a separate natural-language query stack; not advertised or implemented here. Search is available through MCP, HTTP and WebMCP.", status: "not-implemented" },
 ];
 
+const PUBLIC_CACHE = "public, max-age=300, stale-while-revalidate=3600";
+
 export function registerProtocols(app: Express, origin: (req: any) => string) {
-  app.get("/protocols.json", (_req, res) => res.json({
-    protocols: PROTOCOL_MATRIX,
-    disclaimer: "Implementation scope, not certification or proof of a third-party agent connection. See CONNECT.md and TEST-EVIDENCE.md in the project for actual runs.",
-  }));
+  app.get("/protocols.json", (_req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
+    res.json({
+      protocols: PROTOCOL_MATRIX,
+      disclaimer: "Implementation scope, not certification or proof of a third-party agent connection. See CONNECT.md and TEST-EVIDENCE.md in the project for actual runs.",
+    });
+  });
   app.get("/api/tools", async (_req, res) => {
     const result = await withTools((c) => c.listTools());
     res.json(result);
@@ -62,6 +67,7 @@ export function registerProtocols(app: Express, origin: (req: any) => string) {
     }
   });
   app.get("/openapi.json", async (req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
     const { tools } = await withTools((c) => c.listTools());
     res.json({
       openapi: "3.1.0",
@@ -86,6 +92,7 @@ export function registerProtocols(app: Express, origin: (req: any) => string) {
     });
   });
   app.get("/.well-known/poppy.json", (req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
     const base = origin(req);
     res.json({
       protocol_version: "1.0",
@@ -111,7 +118,10 @@ export function registerProtocols(app: Express, origin: (req: any) => string) {
       { id: "source-backed-thinking", name: "Retrieve and apply documented thinking", description: "Use profile, positions, work and style tools. Text briefs run through apply_strategy; no live conversation, actions, or memory.", tags: ["brand-to-agent", "GEO", "multimodality", "strategy"], examples: ["How can a skincare brand become useful to shopping agents?"] },
     ],
   });
-  app.get("/.well-known/agent-card.json", (req, res) => res.json(card(origin(req))));
+  app.get("/.well-known/agent-card.json", (req, res) => {
+    res.set("Cache-Control", PUBLIC_CACHE);
+    res.json(card(origin(req)));
+  });
   app.post("/a2a", async (req, res) => {
     res.set("A2A-Version", "1.0");
     const { id = null, method, params } = req.body || {};

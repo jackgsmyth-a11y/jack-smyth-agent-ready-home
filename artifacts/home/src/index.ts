@@ -1,5 +1,6 @@
 import express from "express";
 import compression from "compression";
+import { readFileSync } from "node:fs";
 import { requestSecurity, safeError } from "./security.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { buildServer } from "./mcp.js";
@@ -88,16 +89,21 @@ app.get("/mcp", notAllowed);
 app.delete("/mcp", notAllowed);
 
 // ---- machine-readable surfaces ----
+const PUBLIC_CACHE = "public, max-age=300, stale-while-revalidate=3600";
 const knowledge = () => ({
   name: SITE.name,
   description: SITE.canonicalNote,
   bets: BETS,
   experiments: EXPERIMENTS,
-  claims: CLAIMS,
+  claims: CLAIMS.map((c) => ({
+    ...c,
+    sources: c.sources.filter((id) => id !== "s-owner"),
+    ...(c.sources.includes("s-owner") ? { based_on_owner_brief: true } : {}),
+  })),
   work: WORKS,
   style_principles: STYLE_PRINCIPLES,
   video_briefs: VIDEO_BRIEFS,
-  sources: SOURCES,
+  sources: SOURCES.filter((s) => s.id !== "s-owner"),
   limitations: SOURCE_GAPS,
   claim_kinds: {
     quote: "verbatim from a published source",
@@ -106,9 +112,13 @@ const knowledge = () => ({
     synthesis: "generated synthesis; not Jack Smyth's words",
   },
 });
-app.get("/knowledge.json", (_req, res) => res.json(knowledge()));
+app.get("/knowledge.json", (_req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
+  res.json(knowledge());
+});
 
-app.get("/.well-known/mcp.json", (req, res) =>
+app.get("/.well-known/mcp.json", (req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
   res.json({
     name: "jack-smyth-thinking",
     description: "Read-only MCP exposing Jack Smyth's public positions, work and documented style, with source references.",
@@ -117,8 +127,8 @@ app.get("/.well-known/mcp.json", (req, res) =>
     authentication: "none",
     tools: ["get_profile", "get_positions", "list_work", "get_work", "get_style_guide", "search", "apply_strategy"],
     documentation: `${origin(req)}/#mcp`,
-  }),
-);
+  });
+});
 
 function markdown(base: string) {
   const L: string[] = [];
@@ -141,9 +151,16 @@ function markdown(base: string) {
   L.push("", "## Source gaps", ...SOURCE_GAPS.map((g) => `- ${g}`));
   return L.join("\n") + "\n";
 }
-app.get("/llms.txt", (req, res) => res.type("text/plain; charset=utf-8").send(markdown(origin(req))));
-app.get("/index.md", (req, res) => res.type("text/markdown; charset=utf-8").send(markdown(origin(req))));
+app.get("/llms.txt", (req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
+  res.type("text/plain; charset=utf-8").send(markdown(origin(req)));
+});
+app.get("/index.md", (req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
+  res.type("text/markdown; charset=utf-8").send(markdown(origin(req)));
+});
 app.get("/agents.md", (req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
   const base = origin(req);
   res.type("text/markdown").send([
     "# Jack Smyth — an interface for your agent", "",
@@ -157,13 +174,15 @@ app.get("/agents.md", (req, res) => {
     "## Discovery", `Poppy 1.0: ${base}/.well-known/poppy.json`, `A2A 1.0 message-only identity adapter: ${base}/.well-known/agent-card.json`, `Read-only OpenAPI: ${base}/openapi.json`, `Exact implementation scope: ${base}/protocols.json`,
   ].join("\n"));
 });
-app.get("/robots.txt", (req, res) =>
-  res.type("text/plain").send(`User-agent: *\nAllow: /\n\nSitemap: ${origin(req)}/sitemap.xml\n`),
-);
+app.get("/robots.txt", (req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
+  res.type("text/plain").send(`User-agent: *\nAllow: /\n\nSitemap: ${origin(req)}/sitemap.xml\n`);
+});
 const SITEMAP_LASTMOD = new Date().toISOString().slice(0, 10);
 app.get("/sitemap.xml", (req, res) => {
+  res.set("Cache-Control", PUBLIC_CACHE);
   const b = origin(req);
-  const paths = ["/", "/reflections", "/llms.txt", "/knowledge.json", ...EXPERIMENTS.map(x => x.path)];
+  const paths = ["/", "/reflections", "/llms.txt", "/agents.md", "/knowledge.json", ...EXPERIMENTS.map(x => x.path)];
   res.type("application/xml").send(
     `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${paths.map((p) => `<url><loc>${b}${p}</loc><lastmod>${SITEMAP_LASTMOD}</lastmod></url>`).join("")}</urlset>`,
   );
@@ -175,6 +194,11 @@ app.get("/og-image.svg", (_req, res) => {
   res.set("Cache-Control", "public, max-age=86400");
   res.type("image/svg+xml").send(OG_IMAGE_SVG);
 });
+const OG_IMAGE_PNG = readFileSync(new URL("../public/og-image.png", import.meta.url));
+app.get("/og-image.png", (_req, res) => {
+  res.set("Cache-Control", "public, max-age=86400");
+  res.type("image/png").send(OG_IMAGE_PNG);
+});
 
 const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#171714"/><rect x="8" y="48" width="48" height="8" rx="3" fill="#f2f64a"/><text x="32" y="38" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-weight="700" font-size="28" letter-spacing="-1.5" fill="#f6f4ee">JS</text></svg>`;
 app.get(["/favicon.svg", "/favicon.ico"], (_req, res) => {
@@ -185,7 +209,8 @@ app.get(["/favicon.svg", "/favicon.ico"], (_req, res) => {
 // ---- human site ----
 app.get("/", (req, res) => {
   res.vary("Accept");
-  res.set("Link", `</llms.txt>; rel="describedby"; type="text/plain", </.well-known/mcp.json>; rel="mcp", </openapi.json>; rel="service-desc", </.well-known/poppy.json>; rel="describedby"`);
+  res.set("Cache-Control", PUBLIC_CACHE);
+  res.set("Link", `</llms.txt>; rel="describedby"; type="text/plain", </agents.md>; rel="describedby"; type="text/markdown", </.well-known/mcp.json>; rel="mcp", </openapi.json>; rel="service-desc", </.well-known/poppy.json>; rel="describedby"`);
   // Agents asking for markdown get the canonical text version.
   if ((req.headers.accept || "").includes("text/markdown")) { res.type("text/markdown").send(markdown(origin(req))); return; }
   res.type("html").send(page(origin(req), undefined, res.locals.nonce));

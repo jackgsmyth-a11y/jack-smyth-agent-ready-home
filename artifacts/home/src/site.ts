@@ -12,15 +12,32 @@ function srcLinks(ids: string[]) {
 }
 
 function claimLi(c: (typeof CLAIMS)[number]) {
-  const tag = c.kind === "synthesis" ? `<span class="tag syn">Generated synthesis</span>` : c.kind === "reported" ? `<span class="tag rep">Reported figure</span>` : c.kind === "quote" ? `<span class="tag q">Quote</span>` : "";
+  const tag = c.kind === "synthesis" ? `<span class="tag syn">Synthesis</span>` : c.kind === "reported" ? `<span class="tag rep">Reported figure</span>` : c.kind === "quote" ? `<span class="tag q">Quote</span>` : "";
   const text = c.kind === "quote" ? `<q>${esc(c.text)}</q>` : esc(c.text);
   const src = srcLinks(c.sources);
   return `<li class="${c.kind}">${tag}<p>${text}</p>${src ? `<small>${src}</small>` : ""}</li>`;
 }
 
+function workCard(w: (typeof WORKS)[number]) {
+  const body = w.humanSummary || w.summary;
+  const prov = w.provenanceNote
+    ? `<span class="prov" title="${esc(w.relationship || "")}">${esc(w.provenanceNote)}${w.authors ? ` · Byline: ${esc(w.authors.join(", "))}` : ""}</span>`
+    : "";
+  const footer = w.status === "pending-details"
+    ? `<em>Awaiting details from Jack</em>`
+    : `<small>${srcLinks(w.sources)}</small>`;
+  return `<li class="${w.status}">
+    <div class="work-kicker"><span class="wt">${esc(w.type)}</span>${w.access ? `<span class="tag">${esc(w.access)}</span>` : ""}</div>
+    <h4>${w.url ? `<a href="${esc(w.url)}" rel="noopener">${esc(w.title)}</a>` : esc(w.title)}</h4>
+    <p>${esc(body)}</p>
+    <div class="work-foot">${prov}${footer}</div>
+  </li>`;
+}
+
 function betSection(b: Bet) {
   const B = BETS[b];
-  const work = WORKS.filter((w) => w.bet === b);
+  const betClaims = CLAIMS.filter((c) => c.bet === b);
+  const archiveWork = WORKS.filter((w) => w.bet === b && !w.experiment);
   const spotlight = b === "differentiation"
     ? `<aside class="spotlight"><span class="wt">Focused build 01 · differentiation in practice</span><h3>Facts with flair.</h3><p>Being legible is the starting point. Giving an agent a real reason to choose you is the work.</p><p>Compare eight source-backed product reframings, then try your own. The facts stay the constraint; the buying decision becomes clearer.</p><a class="btn" href="/experiments/facts-with-flair">Try Facts with Flair →</a><small>Powered by Flint from Springboards. No measured ranking claim.</small></aside>`
     : b === "multimodality"
@@ -38,6 +55,8 @@ function betSection(b: Bet) {
     : b === "multimodality"
     ? "  .:*@#*:..   [▶ VIDEO]\n  --WAVEFORM-----> ★\n  :*#@*:.     AI CITED"
     : "  [HUMAN]        [AGENT]\n     +--✓--> +====> [IDEA]\n   MCP: /leaderbored/mcp";
+  const initialClaims = betClaims.slice(0, 4);
+  const moreClaims = betClaims.slice(4);
   return `<section class="bet" id="${b}" data-bet="${b}" data-agent-spec="${esc(agentSpec)}">
   <div class="bet-head">
     <div class="bet-head-main"><span class="num">0${B.n}</span><div><h2>${B.title}</h2><p class="q">${esc(B.question)}</p></div></div>
@@ -45,12 +64,16 @@ function betSection(b: Bet) {
   </div>
   <p class="thesis">${esc(B.thesis)}</p>
   ${spotlight}
-  <div class="cols">
-    <div><h3>The thinking</h3><ul class="claims">${CLAIMS.filter((c) => c.bet === b).slice(0, 2).map(claimLi).join("")}</ul><details><summary>All ${CLAIMS.filter((c) => c.bet === b).length} sourced positions &amp; evidence</summary><ul class="claims">${CLAIMS.filter((c) => c.bet === b).slice(2).map(claimLi).join("")}</ul></details></div>
-    <div><h3>Writing, talks & research</h3><ul class="work">${work.filter(w => w.type !== "experiment")
-      .map((w) => `<li class="${w.status}"><span class="wt">${esc(w.type)}</span><h4>${w.url ? `<a href="${esc(w.url)}" rel="noopener">${esc(w.title)}</a>` : esc(w.title)}</h4><p>${esc(w.summary)}</p>${w.status === "pending-details" ? `<em>Awaiting details from Jack</em>` : `<small>${srcLinks(w.sources)}</small>`}</li>`)
-      .join("")}</ul>
-    ${b === "multimodality" ? `<details><summary>Video briefs (planned, not yet produced — ${VIDEO_BRIEFS.length})</summary><ul class="briefs">${VIDEO_BRIEFS.map((v) => `<li><h4>${esc(v.title)}</h4><span class="wt">${esc(v.format)}</span><p>${esc(v.brief)}</p></li>`).join("")}</ul></details>` : ""}
+  <div class="bet-bands">
+    <div class="thinking-band">
+      <h3>The thinking</h3>
+      <ul class="claims claims-grid">${initialClaims.map(claimLi).join("")}</ul>
+      ${moreClaims.length ? `<details><summary>All ${betClaims.length} sourced positions &amp; evidence (+${moreClaims.length} more)</summary><ul class="claims claims-grid">${moreClaims.map(claimLi).join("")}</ul></details>` : ""}
+    </div>
+    <div class="work-band">
+      <h3>Writing, talks &amp; research</h3>
+      <ul class="work work-grid">${archiveWork.map(workCard).join("")}</ul>
+      ${b === "multimodality" ? `<details><summary>Video briefs (planned, not yet produced — ${VIDEO_BRIEFS.length})</summary><ul class="briefs">${VIDEO_BRIEFS.map((v) => `<li><h4>${esc(v.title)}</h4><span class="wt">${esc(v.format)}</span><p>${esc(v.brief)}</p></li>`).join("")}</ul></details>` : ""}
     </div>
   </div>
 </section>`;
@@ -60,8 +83,10 @@ export function page(base: string, view?: PageView, nonce = "") {
   const pageUrl = `${base}${view?.path || "/"}`;
   const pageTitle = view?.title || "Jack Smyth — three bets on agents, video and anticipation";
   const pageDesc = view?.description || SITE.tagline;
-  const ogImage = `${base}/og-image.svg`;
-  const lastMod = "2026-11-23";
+  const ogImage = `${base}/og-image.png`;
+  const lastMod = "2026-11-24";
+  const isFieldLab = !view || view.path === "/experiments/field-lab";
+  const isInteractiveApp = view?.path === "/experiments/facts-with-flair" || view?.path === "/experiments/leaderbored";
   const ld = {
     "@context": "https://schema.org",
     "@graph": [
@@ -84,7 +109,7 @@ export function page(base: string, view?: PageView, nonce = "") {
         mainEntity: { "@id": `${base}/#jack` },
         isPartOf: { "@id": `${base}/#site` },
       }] : []),
-      {
+      ...(isFieldLab ? [{
         "@type": "Dataset",
         "@id": `${base}/experiments/field-lab#dataset`,
         name: "Agentic Field Lab — Open CMO Ad Experiments",
@@ -92,7 +117,7 @@ export function page(base: string, view?: PageView, nonce = "") {
         url: `${base}/experiments/field-lab`,
         creator: { "@id": `${base}/#jack` },
         isAccessibleForFree: true,
-      },
+      }] : []),
       ...(view ? [
         { "@type": "WebPage", "@id": pageUrl, url: pageUrl, name: pageTitle, description: pageDesc, isPartOf: { "@id": `${base}/#site` }, about: { "@id": `${base}/#jack` } },
         {
@@ -107,6 +132,16 @@ export function page(base: string, view?: PageView, nonce = "") {
           publisher: { "@id": `${base}/#jack` },
           mainEntityOfPage: { "@id": pageUrl },
         },
+        ...(isInteractiveApp ? [{
+          "@type": "WebApplication",
+          "@id": `${pageUrl}#app`,
+          name: pageTitle,
+          description: pageDesc,
+          url: pageUrl,
+          applicationCategory: "BusinessApplication",
+          operatingSystem: "Web",
+          author: { "@id": `${base}/#jack` },
+        }] : []),
         {
           "@type": "BreadcrumbList",
           "@id": `${pageUrl}#breadcrumb`,
@@ -116,17 +151,24 @@ export function page(base: string, view?: PageView, nonce = "") {
           ],
         },
       ] : []),
-      ...WORKS.filter((w) => w.status === "documented" && w.url && (w.type === "writing" || w.type === "research")).map((w) => ({
-        "@type": "Article", headline: w.title, url: w.url,
-        ...(w.authors ? { author: w.authors.map((name) => name === "Jack Smyth" ? { "@id": `${base}/#jack` } : { "@type": "Person", name }) }
-          : ["w-gem-paper", "w-geo-gem", "w-b2a", "w-yt-ai"].includes(w.id) ? { author: w.id === "w-gem-paper" ? [{ "@id": `${base}/#jack` }, { "@type": "Person", name: "John Dawson" }] : { "@id": `${base}/#jack` } } : {}),
-      })),
+      ...WORKS.filter((w) => w.status === "documented" && w.url && (w.type === "writing" || w.type === "research")).map((w) => {
+        const primarySrc = sourceRefs(w.sources).find((s) => s.id !== "s-owner");
+        return {
+          "@type": "Article",
+          headline: w.title,
+          url: w.url,
+          ...(primarySrc?.publisher ? { publisher: { "@type": "Organization", name: primarySrc.publisher } } : {}),
+          ...(primarySrc?.date ? { datePublished: primarySrc.date } : {}),
+          ...(w.authors ? { author: w.authors.map((name) => name === "Jack Smyth" ? { "@id": `${base}/#jack` } : { "@type": "Person", name }) } : {}),
+        };
+      }),
     ],
   };
 
   return `<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <title>${esc(pageTitle)}</title>
 <meta name="description" content="${esc(pageDesc)}">
@@ -144,7 +186,8 @@ export function page(base: string, view?: PageView, nonce = "") {
 @font-face{font-family:"DM Sans";font-style:normal;font-weight:400 800;font-display:swap;src:url("/fonts/dmsans-9fea608a94.woff2") format("woff2")}
 @font-face{font-family:"Space Grotesk";font-style:normal;font-weight:400 700;font-display:swap;src:url("/fonts/spacegrotesk-0640890476.woff2") format("woff2")}
 @font-face{font-family:"DM Mono";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/dmmono-e1896b13b2.woff2") format("woff2")}
-:root{--bg:#f6f4ee;--fg:#171714;--mut:#626259;--line:#d9d7cf;--acc:#171714;--b1:#626800;--b2:#3f6156;--b3:#696718;--card:#fbfaf6;--lemon:#f2f64a;--sans:"DM Sans",ui-sans-serif,system-ui,sans-serif;--display:"Space Grotesk",var(--sans);--mono:"DM Mono",ui-monospace,monospace}
+:root{color-scheme:light;--bg:#f6f4ee;--fg:#171714;--mut:#626259;--line:#d9d7cf;--acc:#171714;--b1:#626800;--b2:#3f6156;--b3:#696718;--card:#fbfaf6;--surface:#fffefa;--surface-alt:#eeede5;--lemon:#f2f64a;--sans:"DM Sans",ui-sans-serif,system-ui,sans-serif;--display:"Space Grotesk",var(--sans);--mono:"DM Mono",ui-monospace,monospace}
+:root[data-lens=agent]{color-scheme:dark}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 var(--sans);-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:var(--display);font-weight:600}::selection{background:var(--lemon);color:var(--fg)}
@@ -183,7 +226,7 @@ main{max-width:1180px;margin:auto;padding:0 20px}
 .lens-switch{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px;background:var(--card);gap:2px}
 .lens-switch button{background:transparent!important;color:var(--mut)!important;border:0!important;border-radius:99px!important;padding:5px 11px!important;font:600 11px var(--mono)!important;letter-spacing:.06em;text-transform:uppercase;margin:0!important;line-height:1}
 .lens-switch button[aria-pressed=true]{background:var(--fg)!important;color:var(--lemon)!important}
-body[data-lens=agent]{--bg:#11110f;--fg:#f4f3ec;--mut:#a6a59a;--line:#2d2d27;--acc:#f2f64a;--card:#181814;--b1:#f2f64a;--b2:#7ee0b8;--b3:#e5d96b;background-image:radial-gradient(rgba(242,246,74,.11) 1px,transparent 1px);background-size:22px 22px}
+body[data-lens=agent]{--bg:#11110f;--fg:#f4f3ec;--mut:#a6a59a;--line:#2d2d27;--acc:#f2f64a;--card:#181814;--surface:#161612;--surface-alt:#1b1b16;--b1:#f2f64a;--b2:#7ee0b8;--b3:#e5d96b;background-image:radial-gradient(rgba(242,246,74,.11) 1px,transparent 1px);background-size:22px 22px}
 body[data-lens=agent] .ascii-theatre,body[data-lens=agent] .bet-ascii,body[data-lens=agent] .species-pulse,body[data-lens=agent] .mcp-console{background:#151511!important;border-color:rgba(242,246,74,.4)!important}
 body[data-lens=agent] .ascii-grid,body[data-lens=agent] .bet-ascii{color:var(--lemon)!important}
 body[data-lens=agent] .ascii-whispers{color:rgba(242,246,74,.22)!important}
@@ -194,11 +237,12 @@ body[data-lens=agent] .xray-banner{display:flex}
 .cmd-trigger:hover{color:var(--fg)!important;border-color:var(--fg)!important}
 .bet-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap}
 .bet-head-main{display:flex;gap:20px;align-items:flex-start;flex:1 1 340px}
-.bet-ascii{margin:0!important;padding:12px 14px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:linear-gradient(135deg,#f8f9fc 0%,#f5f3ec 100%)!important;font:500 11.5px/1.35 var(--mono)!important;color:#2c4d9b;min-width:255px;white-space:pre;overflow:hidden}
-.species-pulse{margin:28px 0 0;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#fffefa;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font:12.5px var(--mono);color:var(--mut)}
-.species-pulse strong{color:var(--fg)}.pulse-bar{letter-spacing:.08em;color:#2c4d9b;font-weight:700}
+.bet-ascii{margin:0!important;padding:12px 14px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:var(--surface)!important;font:500 11.5px/1.35 var(--mono)!important;color:var(--b1);min-width:255px;white-space:pre;overflow:hidden}
+#multimodality .bet-ascii{color:var(--b2)}#anticipation .bet-ascii{color:var(--b3)}
+.species-pulse{margin:28px 0 0;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font:12.5px var(--mono);color:var(--mut)}
+.species-pulse strong{color:var(--fg)}.pulse-bar{letter-spacing:.08em;color:var(--b1);font-weight:700}
 .species-pulse a{font-weight:600;color:var(--fg);text-decoration:none}.species-pulse a:hover{text-decoration:underline}
-.mcp-console{border:1px solid var(--fg);border-radius:14px;background:#fffefa;padding:20px;margin:22px 0 28px}
+.mcp-console{border:1px solid var(--fg);border-radius:14px;background:var(--surface);padding:20px;margin:22px 0 28px}
 .mcp-console-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .mcp-console-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .mcp-console-btns button{background:var(--bg)!important;color:var(--fg)!important;border:1px solid var(--line)!important;border-radius:99px;padding:7px 13px;font:600 12px var(--mono);margin:0!important;min-block-size:34px}
@@ -235,41 +279,38 @@ body[data-lens=agent] .circuit-svg .node.accent .n-t,body[data-lens=agent] .circ
 body[data-lens=agent] .circuit-svg .wire{stroke:#3a3a32}body[data-lens=agent] .circuit-svg .wire-active{stroke:var(--lemon)}
 body[data-lens=agent] [data-agent-spec]::before{content:"[ AGENT X-RAY ]  " attr(data-agent-spec);display:block;font:600 11px/1.5 var(--mono);color:var(--lemon);border:1px dashed rgba(242,246,74,.45);background:rgba(242,246,74,.06);padding:7px 12px;border-radius:8px;margin-bottom:18px;letter-spacing:.03em;overflow-wrap:anywhere}
 .sans,.tag,.wt,nav,.btn,button,small{font-family:var(--sans)}code,pre{font-family:var(--mono)}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.tile{display:block;text-decoration:none;border:1px solid var(--line);background:var(--card);padding:24px;border-radius:13px;min-height:220px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s}
-.tile:hover{transform:translateY(-3px);color:var(--fg)}
-.tile[data-bet=differentiation]:hover{border-color:var(--b1)}.tile[data-bet=multimodality]:hover{border-color:var(--b2)}.tile[data-bet=anticipation]:hover{border-color:var(--b3)}
-.tile .n{font:700 13px ui-sans-serif,system-ui;letter-spacing:.1em;color:var(--mut)}
-.tile h3{font-size:28px;margin:10px 0 8px;letter-spacing:-.02em}.tile p{margin:0;color:var(--mut);font-size:15px;line-height:1.45}
-.tile .home{position:absolute;left:22px;bottom:18px;font:600 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-spacing:.06em}
-.tile[data-bet=differentiation] .home{color:var(--b1)}.tile[data-bet=multimodality] .home{color:var(--b2)}.tile[data-bet=anticipation] .home{color:var(--b3)}
-.ask{margin:42px 0 0;border:1px solid var(--line);border-radius:13px;padding:24px;background:#eeede5}
-.ask h2{margin:0 0 6px;font-size:22px}.ask p{margin:0 0 14px;color:var(--mut)}
+.ask{margin:36px 0 0;border:1px solid var(--line);border-radius:13px;padding:24px;background:var(--surface-alt)}
+.ask h2{margin:0 0 6px;font-size:22px}.ask p{margin:0 0 14px;color:var(--mut);max-width:65ch}
 .ask form{display:flex;gap:10px;flex-wrap:wrap}
-.ask input{flex:1 1 280px;min-width:0;background:#fffefa;color:var(--fg);border:1px solid #bab8ad;border-radius:8px;padding:14px 16px;font:16px var(--sans)}
+.ask input{flex:1 1 280px;min-width:0;background:var(--surface);color:var(--fg);border:1px solid #bab8ad;border-radius:8px;padding:14px 16px;font:16px var(--sans)}
 .btn,button{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:14px 20px;font-weight:600;font-size:14px;cursor:pointer}
 .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
 #answer{margin-top:16px;display:none}#answer .hit{border-top:1px solid var(--line);padding:12px 0}#answer small{color:var(--mut)}
-.intro{padding:72px 0 8px;max-width:760px}.intro h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.02em;line-height:1.1;margin:0 0 16px}
-.intro p{color:var(--mut)}
+.intro{padding:64px 0 8px}.intro h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.02em;line-height:1.1;margin:0 0 16px}
+.intro>p{color:var(--mut);max-width:65ch}
 .bet{padding:72px 0;border-top:1px solid var(--line);margin-top:40px}
 .bet-head{display:flex;gap:20px;align-items:flex-start}
 .num{font:400 clamp(44px,6vw,76px)/0.9 var(--display);letter-spacing:-.065em}
 #differentiation .num,#differentiation h3{color:var(--b1)}#multimodality .num,#multimodality h3{color:var(--b2)}#anticipation .num,#anticipation h3{color:var(--b3)}
 .bet h2{font-size:clamp(30px,5vw,56px);margin:0;letter-spacing:-.03em;line-height:1}.bet .q{margin:8px 0 0;color:var(--mut);font-size:19px}
-.thesis{font-size:clamp(20px,2.6vw,28px);line-height:1.35;max-width:30em;margin:30px 0 36px}
-.cols{display:grid;grid-template-columns:1.2fr 1fr;gap:40px}
-.bet h3{font:700 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-spacing:.12em;margin:0 0 14px}
+.thesis{font-size:clamp(20px,2.6vw,28px);line-height:1.35;max-width:34em;margin:30px 0 36px}
+.bet-bands{display:flex;flex-direction:column;gap:40px}
+.bet h3{font:700 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-spacing:.12em;margin:0 0 16px}
 ul{list-style:none;padding:0;margin:0}
-.claims li{padding:14px 0;border-top:1px solid var(--line)}.claims p{margin:4px 0 4px;font-size:16px}.claims small{color:var(--mut);font-size:12.5px}
-.claims li.synthesis{border-left:2px solid var(--b1);padding-left:14px;background:#eeede5}
+.claims-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 32px}
+.claims li{padding:14px 0;border-top:1px solid var(--line)}.claims p{margin:6px 0 6px;font-size:16px}.claims small{color:var(--mut);font-size:12.5px}
+.claims li.synthesis{border-left:2px solid var(--b1);padding:14px 16px;background:var(--surface-alt);border-radius:0 10px 10px 0}
 .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mut)}
 .tag.syn{color:var(--b1);border-color:var(--b1)}
-.work li{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px;background:var(--card)}
+.work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(310px,100%),1fr));gap:16px}
+.work li{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--card);display:grid;grid-row:span 4;grid-template-rows:auto auto 1fr auto;grid-template-rows:subgrid;gap:8px;min-inline-size:0}
 .work li.pending-details{border-style:dashed;opacity:.85}
-.work h4,.briefs h4{margin:4px 0 4px;font-size:19px}.work p,.briefs p{margin:0 0 8px;font-size:15px;color:var(--mut);line-height:1.45}
+.work-kicker{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.work h4,.briefs h4{margin:0;font-size:19px;line-height:1.25}.work p,.briefs p{margin:0;font-size:15px;color:var(--mut);line-height:1.5}
+.work-foot{display:flex;flex-direction:column;gap:6px;padding-top:8px;border-top:1px solid var(--line)}
+.work-foot .prov{font:500 12px/1.4 var(--sans);color:var(--mut)}
 .wt{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}
-.briefs{margin-top:8px}.briefs li{padding:12px 0;border-top:1px solid var(--line)}
+.briefs{margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:16px}.briefs li{padding:14px 0;border-top:1px solid var(--line)}
 .work small,.work em{font-size:12.5px;color:var(--mut)}
 #mcp{padding:72px 0;border-top:1px solid var(--line)}
 #mcp h2{font-size:clamp(30px,5vw,56px);margin:0 0 12px;letter-spacing:-.03em}
@@ -285,11 +326,11 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .fieldlab-grid{display:grid;grid-template-columns:1fr;gap:20px;margin:22px 0}.fieldlab-pitch h3{margin:6px 0 10px}
 .glassbox{margin:28px 0 16px}.gb-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 16px}
 .gb-node{text-align:left;background:var(--card)!important;color:var(--fg)!important;border:1px solid var(--line)!important;border-radius:12px;padding:14px;margin:0!important;cursor:pointer;transition:border-color .15s,background .15s}
-.gb-node:hover{border-color:var(--fg)!important}.gb-node[aria-selected=true]{border-color:var(--fg)!important;background:#fffefa!important;box-shadow:inset 0 -3px 0 var(--lemon)}
+.gb-node:hover{border-color:var(--fg)!important}.gb-node[aria-selected=true]{border-color:var(--fg)!important;background:var(--surface)!important;box-shadow:inset 0 -3px 0 var(--lemon)}
 .gb-node .gb-step{display:block;font:600 11px var(--mono);color:var(--tone);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
 .gb-node strong{display:block;font:600 16px var(--display);letter-spacing:-.02em;margin-bottom:2px}
 .gb-node span.gb-sub{display:block;font:12px/1.35 var(--sans);color:var(--mut)}
-.gb-panel{border:1px solid var(--fg);background:#fffefa;border-radius:16px;padding:26px}.gb-panel[hidden]{display:none!important}
+.gb-panel{border:1px solid var(--fg);background:var(--surface);border-radius:16px;padding:26px}.gb-panel[hidden]{display:none!important}
 .gb-meta{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.gb-meta span{font:12px var(--mono);padding:4px 9px;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
 .rubric-row{display:grid;grid-template-columns:180px 1fr 54px;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font:13px var(--sans)}
 .rubric-meter{width:100%;height:10px;accent-color:var(--b2)}.cap-track{display:grid;grid-template-columns:10fr 85fr 5fr;gap:3px;height:14px;margin:14px 0 8px}
@@ -302,7 +343,7 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .swarm-step-btn:hover{border-color:var(--fg)!important;color:var(--fg)!important}
 .swarm-step-btn[aria-pressed=true]{background:var(--fg)!important;color:#fffefa!important;border-color:var(--fg)!important}
 .swarm-step-btn .sym{color:var(--tone);margin-right:4px}.swarm-step-btn[aria-pressed=true] .sym{color:var(--lemon)}
-.swarm-stage{border:1px solid var(--fg)!important;background:#fffefa!important}
+.swarm-stage{border:1px solid var(--fg)!important;background:var(--surface)!important}
 .ascii-theatre{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:linear-gradient(135deg,#f8f9fc 0%,#f5f3ec 55%,#eef2f9 100%);margin-bottom:20px;padding:18px 20px 12px}
 .ascii-whispers{position:absolute;inset:0;pointer-events:none;font:500 11.5px var(--mono);color:rgba(38,67,138,.22);user-select:none}
 .ascii-whispers span{position:absolute;white-space:nowrap}
@@ -327,10 +368,10 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .swarm-lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0}
 .swarm-lane{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg);display:flex;flex-direction:column;gap:6px}
 .lane-id{font:700 13px var(--display);color:var(--fg);margin-bottom:4px}
-.swarm-lane code{display:block;font:12px/1.45 var(--mono);background:#fffefa;border:1px solid var(--line);padding:4px 8px;border-radius:6px}
+.swarm-lane code{display:block;font:12px/1.45 var(--mono);background:var(--surface);border:1px solid var(--line);padding:4px 8px;border-radius:6px}
 .swarm-debate{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .swarm-debate li{display:grid;grid-template-columns:150px 1fr auto;gap:12px;align-items:baseline;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:13.5px}
-.swarm-debate li.judge-line{border-color:var(--fg);background:#fffefa;box-shadow:inset 4px 0 0 var(--lemon)}
+.swarm-debate li.judge-line{border-color:var(--fg);background:var(--surface);box-shadow:inset 4px 0 0 var(--lemon)}
 .deb-who{font:700 12px var(--mono);color:var(--fg)}.deb-say{color:var(--fg);line-height:1.45}
 .deb-delta{font:600 11.5px var(--mono);padding:3px 8px;border-radius:99px;white-space:nowrap}
 .deb-delta.pos{background:#e7f3ec;color:#14532d;border:1px solid #bbf7d0}
@@ -338,7 +379,7 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .deb-delta.win{background:var(--lemon);color:var(--fg);border:1px solid var(--fg)}
 .logit-board{display:flex;flex-direction:column;gap:10px;margin:8px 0 16px}
 .logit-row{display:grid;grid-template-columns:180px 1fr 64px 96px;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font:13px var(--mono)}
-.logit-row.is-winner{border-color:var(--fg);background:#fffefa;box-shadow:inset 4px 0 0 var(--lemon)}
+.logit-row.is-winner{border-color:var(--fg);background:var(--surface);box-shadow:inset 4px 0 0 var(--lemon)}
 .logit-team{font-weight:700;color:var(--fg)}.logit-score{text-align:right;font-weight:700}
 .logit-tag{font-size:11px;text-align:center;padding:3px 6px;border-radius:6px;background:var(--bg);border:1px solid var(--line);color:var(--mut)}
 .logit-row.is-winner .logit-tag{background:var(--lemon);border-color:var(--fg);color:var(--fg);font-weight:700}
@@ -359,10 +400,10 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
   .swarm-pane:not([hidden]) .swarm-debate li.d4{animation-delay:.36s}
   .pulse-dot{animation:fl-pulse 2.4s ease-in-out infinite}
 }
-.stage-pill{display:inline-flex;align-items:center;gap:8px;font:600 12px var(--mono);padding:6px 12px;border-radius:99px;border:1px solid var(--fg);background:#fffefa;color:var(--fg)}
+.stage-pill{display:inline-flex;align-items:center;gap:8px;font:600 12px var(--mono);padding:6px 12px;border-radius:99px;border:1px solid var(--fg);background:var(--surface);color:var(--fg)}
 .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--b2);display:inline-block}
 .stage-live .pulse-dot{background:#15803d}
-.tracker-card{border:1px solid var(--fg)!important;background:#fffefa!important}
+.tracker-card{border:1px solid var(--fg)!important;background:var(--surface)!important}
 .tracker-summary{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line)}
 .spend-box{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
 .spend-nums strong{font:700 24px var(--display);letter-spacing:-.03em}
@@ -381,16 +422,11 @@ code{background:#eeede6;padding:2px 6px;border-radius:5px;font-size:.86em}pre co
 .next-chain strong{font:600 15px var(--display);color:var(--fg)}
 .next-chain p{margin:0}
 :where(.swarm-step-btn,.swarm-toggle,#fl-refresh-live):focus-visible{outline:2px solid var(--fg);outline-offset:2px}
-.flagship{border:1px solid var(--fg);background:#fffefa;border-radius:16px;padding:28px;margin:0 0 28px;display:grid;grid-template-columns:1.4fr auto;gap:24px;align-items:center}
-.flagship .fl-kicker{display:inline-flex;align-items:center;gap:8px;font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.1em;background:var(--lemon);color:var(--fg);padding:4px 10px;border-radius:99px;margin-bottom:10px}
-.flagship h2{font-size:clamp(24px,3.2vw,36px);line-height:1.08;letter-spacing:-.035em;margin:0 0 8px}
-.flagship p{margin:0;color:var(--mut);max-width:58ch;font-size:15.5px}
-.flagship .btn{text-decoration:none;white-space:nowrap}
 .work-cta{border-top:1px solid var(--line);padding:64px 0 40px;margin-top:40px}
-.work-cta .surface{border:1px solid var(--fg);background:#fffefa;border-radius:16px;padding:32px;display:grid;grid-template-columns:1.4fr auto;gap:24px;align-items:center}
+.work-cta .surface{border:1px solid var(--fg);background:var(--surface);border-radius:16px;padding:32px;display:grid;grid-template-columns:1.4fr auto;gap:24px;align-items:center}
 .work-cta h2{font-size:clamp(26px,3.8vw,42px);letter-spacing:-.03em;margin:0 0 10px;line-height:1.08}
 .work-cta p{margin:0;color:var(--mut);max-width:58ch}.work-cta .actions{display:flex;gap:10px;flex-wrap:wrap}.work-cta a.btn{text-decoration:none}
-@media (max-width:820px){.hero-grid{grid-template-columns:1fr;gap:28px}.gb-rail{grid-template-columns:1fr 1fr}.gb-cols,.flagship,.work-cta .surface,.swarm-lanes,.tracker-summary,.next-chain{grid-template-columns:1fr}.rubric-row{grid-template-columns:1fr 1fr 48px}.swarm-debate li,.logit-row{grid-template-columns:1fr;gap:6px}}
+@media (max-width:820px){.hero-grid{grid-template-columns:1fr;gap:28px}.gb-rail{grid-template-columns:1fr 1fr}.gb-cols,.work-cta .surface,.swarm-lanes,.tracker-summary,.next-chain,.claims-grid{grid-template-columns:1fr}.rubric-row{grid-template-columns:1fr 1fr 48px}.swarm-debate li,.logit-row{grid-template-columns:1fr;gap:6px}}
 .crumb{font:600 12px ui-sans-serif,system-ui;display:flex;gap:12px;color:var(--mut);margin-bottom:32px;flex-wrap:wrap}.crumb a{text-decoration:none}.eyebrow{font:700 11px ui-sans-serif,system-ui;text-transform:uppercase;letter-spacing:.14em;color:var(--tone);margin-bottom:14px}
 .experiment h1{font-size:clamp(44px,7vw,84px);line-height:1.02;letter-spacing:-.04em;max-width:15ch;margin:10px 0 24px}.experiment .deck{color:var(--mut);font-size:clamp(19px,2.4vw,25px);max-width:42ch}
 .experiment .context{max-width:65ch;border-left:2px solid var(--tone);padding:0 0 0 20px;margin:24px 0 34px;font-size:15px}.context small{display:block;color:var(--mut);font-size:12px}
@@ -424,7 +460,7 @@ footer h3{font:700 12px ui-sans-serif,system-ui;text-transform:uppercase;letter-
 <button type="button" class="cmd-trigger" id="cmd-open" aria-label="Open command palette">⌘K</button>
 <a class="nav-agent" href="/#mcp">MCP</a></nav></header>
 <main id="main" tabindex="-1">
-<div class="xray-banner" aria-hidden="true"><span>[ AGENT X-RAY ]  HTML ~32 KB vs /llms.txt ~4.2 KB (87% fewer tokens) · JSON-LD: Person + ProfilePage + Dataset · 7 Read-Only MCP Tools</span><a href="/llms.txt">Inspect /llms.txt ↗</a></div>
+<div class="xray-banner" aria-hidden="true"><span>[ AGENT X-RAY ]  Dual-audience surface · Clean Markdown at /llms.txt · JSON-LD: Person + ProfilePage + Dataset · 7 Read-Only MCP Tools</span><a href="/llms.txt">Inspect /llms.txt ↗</a></div>
 ${view ? view.body : `
 <section class="hero" data-agent-spec="ENTITY: schema.org/Person + Dataset · DISCOVERY: /llms.txt · /.well-known/agent-card.json · /mcp">
 <div class="hero-grid">
@@ -511,7 +547,6 @@ ${view ? view.body : `
 
 <section class="intro" data-agent-spec="THESIS: B2A (Brand-to-Agent) + GEM (Generative Engine Marketing) · AUTHOR: Jack Smyth, Country Lead AU, The Brandtech Group"><h2>Three bets. One direction.</h2>
 <p>Agents compare, watch, and act before a human ever clicks. Three bets—<strong>Differentiation</strong>, <strong>Multimodality</strong>, and <strong>Anticipation</strong>—tested live every month on a A$100 AUD Google Ads grant in the <a href="/experiments/field-lab">Agentic Field Lab</a>.</p>
-<small class="muted">Editorial framing of Jack's three-bet brief; not a quotation.</small>
 <div class="system"><a href="#differentiation"><b>Be worth choosing.</b><small>01 Differentiation → Facts with Flair</small></a><a href="#multimodality"><b>Be understood.</b><small>02 Multimodality → YouTube-in-AI &amp; Field Lab</small></a><a href="#anticipation"><b>Be useful in action.</b><small>03 Anticipation → Leaderbored</small></a></div>
 <h2>The person behind the bets</h2>
 <p>${esc(CLAIMS.find((c) => c.id === "id-1")!.text)} ${esc(CLAIMS.find((c) => c.id === "id-2")!.text)} ${srcLinks(["s-li", "s-cta"])}</p>
@@ -564,9 +599,9 @@ ${bets.map(betSection).join("\n")}
 <section id="work-with-me" class="work-cta">
   <div class="surface">
     <div>
-      <span class="wt">Work with Jack · The Brandtech Group</span>
+      <span class="wt">Work with me · The Brandtech Group</span>
       <h2>Bring this to your brand.</h2>
-      <p>Jack Smyth is Country Lead: Australia at The Brandtech Group. If you’re a CMO looking to measure Share of Model, build a Generative Engine Marketing (GEM) strategy, or run agentic marketing experiments inside your own organisation, let’s talk.</p>
+      <p>I’m Country Lead: Australia at The Brandtech Group. If you’re a CMO looking to measure Share of Model, build a Generative Engine Marketing (GEM) strategy, or run agentic marketing experiments inside your own organisation, let’s talk.</p>
     </div>
     <div class="actions">
       <a class="btn" href="https://linkedin.com/in/jtsmyth" rel="noopener">Connect on LinkedIn →</a>
@@ -601,7 +636,7 @@ const cWrap=document.getElementById('signal-circuit'),cBtn=document.getElementBy
 if(cWrap&&cBtn)cBtn.addEventListener('click',()=>{const p=cWrap.classList.toggle('paused');cBtn.textContent=p?'Play motion':'Pause motion'});
 if(cRead)document.querySelectorAll('[data-circuit-info]').forEach(el=>{const show=()=>{cRead.textContent=el.getAttribute('data-circuit-info')||''};el.addEventListener('mouseenter',show);el.addEventListener('focus',show)});
 const lBtns=document.querySelectorAll('[data-lens-btn]');
-function setLens(mode){const apply=()=>{if(mode==='agent')document.body.setAttribute('data-lens','agent');else document.body.removeAttribute('data-lens');lBtns.forEach(b=>b.setAttribute('aria-pressed',b.getAttribute('data-lens-btn')===mode?'true':'false'));try{localStorage.setItem('js-lens',mode)}catch{}};if(document.startViewTransition&&window.matchMedia('(prefers-reduced-motion: no-preference)').matches)document.startViewTransition(apply);else apply()}
+function setLens(mode){const apply=()=>{if(mode==='agent'){document.documentElement.setAttribute('data-lens','agent');document.body.setAttribute('data-lens','agent')}else{document.documentElement.removeAttribute('data-lens');document.body.removeAttribute('data-lens')}lBtns.forEach(b=>b.setAttribute('aria-pressed',b.getAttribute('data-lens-btn')===mode?'true':'false'));try{localStorage.setItem('js-lens',mode)}catch{}};if(document.startViewTransition&&window.matchMedia('(prefers-reduced-motion: no-preference)').matches)document.startViewTransition(apply);else apply()}
 try{if(localStorage.getItem('js-lens')==='agent')setLens('agent')}catch{}
 lBtns.forEach(b=>b.addEventListener('click',()=>setLens(b.getAttribute('data-lens-btn')||'human')));
 const secs=[...document.querySelectorAll('.bet,#mcp')],links=[...document.querySelectorAll('nav a')];

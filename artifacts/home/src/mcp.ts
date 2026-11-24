@@ -33,13 +33,22 @@ const ok = (data: unknown) => ({
 const betEnum = z.enum(["differentiation", "multimodality", "anticipation"]);
 const readOnly = { annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } };
 
+function stem(w: string) {
+  if (w.length > 5 && w.endsWith("ies")) return w.slice(0, -3) + "y";
+  if (w.length > 5 && w.endsWith("ing")) return w.slice(0, -3);
+  if (w.length > 4 && w.endsWith("ed")) return w.slice(0, -2);
+  if (w.length > 4 && w.endsWith("es")) return w.slice(0, -2);
+  if (w.length > 3 && w.endsWith("s") && !w.endsWith("ss")) return w.slice(0, -1);
+  return w;
+}
 function tokens(s: string) {
-  return s.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 2);
+  return [...new Set(s.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 2).map(stem))];
 }
 function score(text: string, q: string[]) {
   const t = text.toLowerCase();
   return q.reduce((n, w) => n + (t.includes(w) ? 1 : 0), 0);
 }
+const publicSources = (ids: string[]) => sourceRefs(ids).filter((s) => s.id !== "s-owner");
 
 const BET_KEYWORDS: Record<Bet, string[]> = {
   differentiation: ["stand", "visible", "brand", "geo", "cited", "citation", "found", "discover", "compare", "positioning", "seo", "differenti", "reputation", "authority"],
@@ -111,7 +120,7 @@ export function buildServer() {
       ok({
         work: WORKS.filter((w) => (!bet || w.bet === bet) && (!type || w.type === type)).map((w) => ({
           ...w,
-          sources: sourceRefs(w.sources).map((s) => ({ title: s.title, url: s.url })),
+          sources: publicSources(w.sources).map((s) => ({ title: s.title, url: s.url })),
         })),
       }),
   );
@@ -127,7 +136,7 @@ export function buildServer() {
     async ({ id }) => {
       const w = WORKS.find((x) => x.id === id);
       if (!w) return { isError: true, content: [{ type: "text" as const, text: `No work with id "${id}". Call list_work for valid ids.` }] };
-      return ok({ work: { ...w, sources: sourceRefs(w.sources) } });
+      return ok({ work: { ...w, sources: publicSources(w.sources) } });
     },
   );
 
@@ -143,7 +152,7 @@ export function buildServer() {
       ok({
         principles: STYLE_PRINCIPLES.map((p) => ({
           id: p.id, principle: p.principle, kind: p.kind, label: LABELS[p.kind],
-          sources: sourceRefs(p.sources).map((s) => ({ title: s.title, url: s.url })),
+          sources: publicSources(p.sources).map((s) => ({ title: s.title, url: s.url })),
         })),
         video_briefs: VIDEO_BRIEFS,
       }),
@@ -161,8 +170,8 @@ export function buildServer() {
       const q = tokens(query);
       const hits = [
         ...CLAIMS.map((c) => ({ type: "position", s: score(c.text, q), item: claimOut(c) })),
-        ...WORKS.map((w) => ({ type: "work", s: score(w.title + " " + w.summary, q), item: { ...w, sources: sourceRefs(w.sources).map((s) => ({ title: s.title, url: s.url })) } })),
-        ...SOURCES.filter((s) => s.id !== "s-owner").map((s) => ({ type: "source", s: score(s.title + " " + s.publisher, q), item: s })),
+        ...WORKS.map((w) => ({ type: "work", s: score(w.title, q) * 2 + score(w.summary, q), item: { ...w, sources: publicSources(w.sources).map((s) => ({ title: s.title, url: s.url })) } })),
+        ...SOURCES.filter((s) => s.id !== "s-owner").map((s) => ({ type: "source", s: score(s.title, q) * 2 + score(s.publisher, q), item: s })),
       ]
         .filter((h) => h.s > 0)
         .sort((a, b) => b.s - a.s)
