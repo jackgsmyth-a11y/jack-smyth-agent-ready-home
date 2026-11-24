@@ -738,7 +738,7 @@ function liveCampaignTrackerSection() {
         </div>
       </div>
 
-      <div class="table-wrap">
+      <div class="table-wrap" tabindex="0">
         <table class="tracker-table">
           <caption>Cycle 01 A/B performance: Google Ads snapshot paired with live $0 first-party UTM telemetry</caption>
           <thead>

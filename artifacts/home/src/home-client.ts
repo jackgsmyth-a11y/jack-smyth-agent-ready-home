@@ -263,5 +263,23 @@ export const homeClientScript = String.raw`(() => {
       dlg.addEventListener("pointerup", (e) => { if (pressedOutside && outside(e)) dlg.close(); });
     }
   }
+  // 5. Inline experiment previews on homepage (Facts with Flair & Leaderbored)
+  function wireSegTabs(tabAttr, panelAttr) {
+    const tabs = Array.from(document.querySelectorAll("[" + tabAttr + "]"));
+    const panels = Array.from(document.querySelectorAll("[" + panelAttr + "]"));
+    if (!tabs.length || !panels.length) return;
+    tabs.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute(tabAttr);
+        tabs.forEach((b) => b.setAttribute("aria-pressed", b === btn ? "true" : "false"));
+        panels.forEach((p) => {
+          if (p.getAttribute(panelAttr) === id) p.removeAttribute("hidden");
+          else p.setAttribute("hidden", "");
+        });
+      });
+    });
+  }
+  wireSegTabs("data-flair-tab", "data-flair-panel");
+  wireSegTabs("data-lb-tab", "data-lb-panel");
 })();
 `;

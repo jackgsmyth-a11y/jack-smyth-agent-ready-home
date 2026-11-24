@@ -212,24 +212,7 @@ export function registerExperiments(app: Express, origin: (r: Request) => string
       res.set("Link", `<${exp.path}.md>; rel="alternate"; type="text/markdown"`);
       if (req.accepts(["html", "text/markdown"]) === "text/markdown") { res.type("text/markdown").send(experimentMarkdown(exp.id, origin(req))); return; }
       const nonce = res.locals.nonce as string;
-      let body = exp.id === "facts-with-flair" ? flairBody(String(req.query.example || "")) : leaderBody(String(req.query.category || ""));
-      if (exp.id === "leaderbored") {
-        // Scoped Meta Pixel (ID 2417943102308171) ONLY on /experiments/leaderbored with strict nonce CSP (no unsafe-inline).
-        // Fires PageView here; Purchase fires only on confirmed paid Stripe receipt in experiment-client.ts.
-        res.set("Content-Security-Policy", [
-          "default-src 'self'",
-          `script-src 'self' 'nonce-${nonce}' https://connect.facebook.net`,
-          `style-src 'self' 'nonce-${nonce}'`,
-          "font-src 'self'",
-          "img-src 'self' data: https://www.facebook.com",
-          "connect-src 'self' https://www.facebook.com https://connect.facebook.net",
-          "object-src 'none'",
-          "base-uri 'none'",
-          "frame-ancestors 'self'",
-          "form-action 'self'",
-        ].join("; "));
-        body += `<script nonce="${nonce}">!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','2417943102308171');fbq('track','PageView');</script>`;
-      }
+      const body = exp.id === "facts-with-flair" ? flairBody(String(req.query.example || "")) : leaderBody(String(req.query.category || ""));
       res.type("html").send(page(origin(req), {
         path: exp.path, title: `${exp.title} — ${exp.bet} in practice · Jack Smyth`,
         description: exp.question,
