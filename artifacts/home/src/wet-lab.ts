@@ -437,12 +437,12 @@ export function wetLabMarkdown(base: string) {
 function pitchCard(p: LabPitch) {
   return `<article class="surface fieldlab-pitch" data-pitch-id="${e(p.id)}">
     <div class="section-top">
-      <span class="eyebrow">${e(p.team)} · Bet: ${e(p.bet)}</span>
+      <span class="quiet">${e(p.team)} · Bet: ${e(p.bet)}</span>
       <span class="tag">Judge ${p.judge.total}/100</span>
     </div>
     <h3>${e(p.title)}</h3>
     <p>${e(p.hypothesis)}</p>
-    <div class="facts">
+    <div class="gb-meta">
       <span>Channel · ${e(p.channel)}</span>
       <span>Budget · A$${p.budgetAud} AUD</span>
       <span>Metric · ${e(p.primaryMetric)}</span>
