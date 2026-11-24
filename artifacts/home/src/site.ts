@@ -1,6 +1,10 @@
+import { createHash } from "node:crypto";
 import { BETS, CLAIMS, SITE, SOURCES, SOURCE_GAPS, STYLE_PRINCIPLES, VIDEO_BRIEFS, WORKS, sourceRefs, type Bet } from "./knowledge.js";
+import { homeClientScript } from "./home-client.js";
 import flairData from "./data/flair.json" with { type: "json" };
 import leaderboredData from "./data/leaderbored.json" with { type: "json" };
+
+const HOME_UI_VER = createHash("sha256").update(homeClientScript).digest("hex").slice(0, 8);
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 const bets = Object.keys(BETS) as Bet[];
@@ -921,7 +925,7 @@ if(topHdr){const onScroll=()=>{if(window.scrollY>8)topHdr.setAttribute('data-scr
 </dialog>
 <script src="/webmcp.js" defer></script>
 <script src="/telemetry.js" defer></script>
-<script src="/home-ui.js" defer></script>
+<script src="/home-ui.js?v=${HOME_UI_VER}" defer></script>
 ${view?.script ? `<script src="${esc(view.script)}" defer></script>` : ""}
 </body></html>`;
 }
