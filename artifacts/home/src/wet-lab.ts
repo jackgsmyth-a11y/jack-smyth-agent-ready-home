@@ -242,11 +242,11 @@ let campaignSnapshot: CampaignSnapshot = {
   budgetCapAud: 100,
   autoPauseAud: 95,
   stage: "live",
-  spendAud: 0,
-  variantA: { impressions: 0, clicks: 0 },
-  variantB: { impressions: 0, clicks: 0 },
-  lastSyncedAt: new Date().toISOString(),
-  syncSource: "google-ads-mcp + first-party UTM telemetry ($0/mo)",
+  spendAud: 6.37,
+  variantA: { impressions: 1252, clicks: 26 },
+  variantB: { impressions: 1401, clicks: 23 },
+  lastSyncedAt: "2026-11-24T01:14:00.000Z",
+  syncSource: "google-ads-mcp (435-353-5484) + first-party UTM telemetry",
 };
 
 // Exact Beta-Binomial numerical check (uniform Beta(1,1) prior) for P(p_A > p_B)
