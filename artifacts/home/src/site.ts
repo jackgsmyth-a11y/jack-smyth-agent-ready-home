@@ -84,16 +84,16 @@ function renderHomeMultimodalitySpotlight() {
       </div>
       <div class="mm-signals">
         <div class="mm-panel" data-mm-panel="meta">
-          <div class="flair-col-label">What a text-only crawler gets from the URL</div>
-          <h4>The Most Important Audience You’ll Never Meet</h4>
-          <p class="mm-muted">Channel: BRXND · Published: 2025-02-06 · Length: 11 minutes</p>
-          <p>From metadata alone, a model only sees a conference title and speaker name. It gets none of the thesis, none of the brand examples, and no reason to cite this talk when a CMO asks how agents evaluate brands.</p>
+          <div class="flair-col-label">Literal YouTube metadata on MHm_zAgki1s (verified live)</div>
+          <h4>11 words of description. Zero keywords. Zero chapters.</h4>
+          <p class="mm-muted">“Jack Smyth of Jellyfish on how large language models perceive brands.” · Duration: 11:22 (682s) · Keywords: [] · Captions: auto-ASR only</p>
+          <p>Beyond that single 11-word sentence, the YouTube description is generic conference boilerplate. A text-only crawler sees a title and a speaker name, with none of the thesis, frameworks, or examples inside the 11-minute talk.</p>
         </div>
         <div class="mm-panel" data-mm-panel="av" hidden>
-          <div class="flair-col-label">What a multimodal model extracts by watching &amp; listening</div>
-          <h4>Spoken argument + on-screen slides + live examples</h4>
-          <p>Multimodal models index the spoken transcript, on-screen frameworks, and visual demonstrations together: how LLMs shortlist brands, why third-party evidence outranks brand claims, and how brand-to-agent (B2A) marketing changes creative briefs.</p>
-          <p class="flair-facts"><strong>Signals beyond metadata:</strong> Spoken thesis · Slide text &amp; diagrams · Demonstration cadence · Exact timestamp anchors</p>
+          <div class="flair-col-label">What multimodal models extract across all 682 seconds</div>
+          <h4>Spoken argument + on-screen slides + visual framing</h4>
+          <p>When a multimodal model watches and listens instead of stopping at the 11-word metadata, it indexes the spoken keynote on Share of Model and brand-to-agent (B2A) marketing alongside on-screen visual cues (such as the “AI is your new audience.” slide framing) and timestamped spoken claims.</p>
+          <p class="flair-facts"><strong>Signals beyond metadata:</strong> 682s spoken transcript · Slide copy &amp; visual hierarchy · Live demonstration context · Exact timestamp anchors</p>
         </div>
         <div class="mm-panel" data-mm-panel="verdict" hidden>
           <div class="flair-col-label">Why this changes the Field Lab &amp; Share of Model</div>
@@ -677,8 +677,10 @@ body[data-lens=agent] .swarm-step-btn[aria-pressed=true]{background:var(--lemon)
 .experiment .surface{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:26px;min-width:0}
 .experiment .split{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:22px 0}.experiment .source-copy{white-space:pre-line;color:var(--mut);font-size:var(--text-body)}.experiment .reframed{font-size:var(--text-body);line-height:1.75}.experiment mark{background:rgba(255,210,63,.13);color:var(--fg);border-bottom:1px solid var(--tone)}
 .experiment .quiet{font:400 var(--text-sm)/1.6 var(--sans);color:var(--mut)}.experiment .fine{font:400 var(--text-sm)/1.6 var(--sans);color:var(--mut)}.experiment .muted{color:var(--mut)}
-.experiment .picker{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}.experiment .picker button{background:transparent;border:1px solid var(--line);color:var(--mut);padding:10px 14px;border-radius:99px;font-size:var(--text-sm)}.experiment .picker button[aria-pressed=true]{border-color:var(--tone);color:var(--fg);background:var(--card)}
-.experiment .picker a{display:block;text-decoration:none;border:1px solid var(--line);color:var(--mut);padding:10px 14px;border-radius:99px;font:600 var(--text-sm) var(--sans)}.experiment .picker a[aria-current=true]{border-color:var(--tone);color:var(--fg);background:var(--card)}
+.experiment .picker{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:3px;background:var(--bg);gap:3px;margin:22px 0}.experiment .picker button{background:transparent;border:0;color:var(--mut);padding:8px 13px;border-radius:8px;font-size:var(--text-sm);margin:0;transition:background-color 160ms var(--ease),color 160ms var(--ease)}.experiment .picker button[aria-pressed=true]{background:var(--fg);color:var(--lemon)}
+.experiment .picker a{display:block;text-decoration:none;border:0;color:var(--mut);padding:8px 13px;border-radius:8px;font:600 var(--text-sm) var(--sans);transition:background-color 160ms var(--ease),color 160ms var(--ease)}.experiment .picker a:hover{color:var(--fg)}.experiment .picker a[aria-current=true]{background:var(--fg);color:var(--lemon)}
+body[data-lens=agent] .experiment .picker a[aria-current=true],body[data-lens=agent] .experiment .picker button[aria-pressed=true]{background:var(--lemon);color:#11110f}
+.tag{font:600 var(--text-sm) var(--sans);color:var(--mut)}
 .experiment label.field{display:block;font:600 var(--text-sm) var(--sans);margin:18px 0 8px}.experiment input:not([type=checkbox]),.experiment textarea,.experiment select{width:100%;background:var(--surface);border:1px solid #bab8ad;color:var(--fg);padding:14px;border-radius:10px;font:400 var(--text-body) var(--sans);min-width:0}.experiment textarea{min-height:150px;resize:vertical}
 .experiment button{background:var(--fg);color:#fff;margin:10px 0}.experiment button.secondary{background:transparent;border:1px solid var(--line);color:var(--fg)}button:disabled{opacity:.45;cursor:wait}
 .experiment .actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.experiment .actions a.btn{background:var(--fg);color:#fff;display:inline-block;text-decoration:none;margin:10px 0}.experiment .notice{font:400 var(--text-sm)/1.65 var(--sans);padding:14px 18px;border:1px solid var(--line);border-left:3px solid var(--tone);border-radius:8px;margin:18px 0;overflow-wrap:anywhere}.experiment .notice.error{border-left-color:#ff7966}

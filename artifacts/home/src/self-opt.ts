@@ -314,16 +314,15 @@ function reflectionsBody() {
 
   return `<div class="experiment" data-experiment="self-optimising-loop">
   <div class="crumb"><a href="/">Jack Smyth</a><span>/</span><span>Self-Optimising Reflections</span></div>
-  <div class="eyebrow">Autonomous Weekly Hillclimb Loop</div>
-  <h1>A site that learns<br>from every visit.</h1>
+  <h1>A site that learns from every visit.</h1>
   <p class="deck">Zero-PII human UX + AI crawler telemetry, graded weekly against a 4-metric fitness scorecard and shipped through CI-verified Pull Requests.</p>
   <section id="pulse">
-    <div class="section-top"><div><div class="section-no">01 / Live Pulse &amp; Fitness (${esc(t.month)})</div><h2>Human &amp; agent telemetry.</h2></div><p class="quiet">Fitness: <strong>${scorecard.compositeScore}/100</strong> · Gate: <code>${esc(gate.mode)}</code></p></div>
+    <div class="section-top"><div><h2>Human &amp; agent telemetry (${esc(t.month)}).</h2></div><p class="quiet">Fitness: <strong>${scorecard.compositeScore}/100</strong> · Gate: <code>${esc(gate.mode)}</code></p></div>
     <div class="split">
       <article class="surface">
-        <div class="eyebrow">Human Experience</div>
+        <h3>Human experience</h3>
         <p><strong>${t.human.totalPageViews}</strong> page views · <strong>${t.human.lensSwitches.agent}</strong> Agent X-Ray switches · Paid &gt;50% scroll: <strong>${scorecard.paidScroll50RatePct ?? "n/a"}%</strong></p>
-        <div class="facts">
+        <div class="gb-meta">
           <span>TTFB p75 · ${t.human.cwvP75.ttfbMs ?? "collecting"}ms</span>
           <span>LCP p75 · ${t.human.cwvP75.lcpMs ?? "collecting"}ms</span>
           <span>INP p75 · ${t.human.cwvP75.inpMs ?? "collecting"}ms</span>
@@ -331,26 +330,25 @@ function reflectionsBody() {
         </div>
       </article>
       <article class="surface">
-        <div class="eyebrow">Agent &amp; Crawler Surface</div>
+        <h3>Agent &amp; crawler surface</h3>
         <p><strong>${t.agents.totalRequests}</strong> crawler / MCP hits · <strong>${t.agents.avgLatencyMs}ms</strong> avg latency · <strong>${t.agents.errors4xx5xx}</strong> errors</p>
-        <div class="facts">${agentList}</div>
+        <div class="gb-meta">${agentList}</div>
       </article>
     </div>
     <p class="quiet"><strong>Hillclimb Gate (${esc(gate.mode)}):</strong> ${esc(gate.reason)}</p>
   </section>
   <section id="log">
-    <div class="section-no">02 / Reflection &amp; Hillclimb Log</div>
     <h2>What the loop observed &amp; shipped.</h2>
     ${reflections.map((r) => `<article class="surface">
-      <div class="section-top"><h3>${esc(r.month)} Reflection</h3><span class="tag">${esc(r.model)}</span></div>
+      <div class="section-top"><h3>${esc(r.month)} Reflection</h3><span class="quiet">${esc(r.model)}</span></div>
       <p>${esc(r.summary)}</p>
       <p class="quiet"><strong>Prior cycle verdict:</strong> ${esc(r.previousCycleVerdict)}</p>
-      <ul class="reasons">${r.proposals.map((p) => `<li><b>[${esc(p.status)}] ${esc(p.title)}</b> <span class="tag">${esc(p.tier)}</span><br>${esc(p.hypothesis)}<br><small>Target: ${esc(p.targetMetric)} · Files: ${esc(p.files.join(", "))}</small></li>`).join("")}</ul>
+      <ul class="reasons">${r.proposals.map((p) => `<li><b>[${esc(p.status)}] ${esc(p.title)}</b> · <span class="quiet">${esc(p.tier)}</span><br>${esc(p.hypothesis)}<br><small>Target: ${esc(p.targetMetric)} · Files: ${esc(p.files.join(", "))}</small></li>`).join("")}</ul>
     </article>`).join("")}
   </section>
   <section class="method" id="guardrails">
     <h2>Guarded by design.</h2>
-    <p>Every Monday via GitHub Actions, the autonomous hillclimber evaluates human UX, Core Web Vitals, and AI crawler telemetry against the prior baseline, enforces the data &amp; A/B flight gate, grades previous changes (keep/revert), and opens a Pull Request verified by <code>pnpm run verify</code> (typecheck, MCP, protocol, browser, and axe-core accessibility tests) — auto-merging bounded Tier-1 improvements while holding Tier-2 changes for human review.</p>
+    <p>Every Monday via GitHub Actions, the autonomous hillclimber evaluates human UX, Core Web Vitals, and AI crawler telemetry against the prior baseline, enforces the data &amp; A/B flight gate, grades previous changes (keep/revert), and opens a Pull Request verified by <code>pnpm run verify</code> (typecheck, MCP, protocol, browser, and axe-core accessibility tests), auto-merging bounded Tier-1 improvements while holding Tier-2 changes for human review.</p>
     <p><a href="/reflections.md">Read the Markdown reflection log</a> · <a href="/api/self-opt/summary">Live telemetry JSON</a> · <a href="/api/self-opt/fitness">Live fitness &amp; gate JSON</a></p>
   </section>
 </div>`;
