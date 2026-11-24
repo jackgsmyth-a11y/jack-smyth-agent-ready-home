@@ -465,8 +465,8 @@ ${view ? view.body : `
 <section class="hero" data-agent-spec="ENTITY: schema.org/Person + Dataset · DISCOVERY: /llms.txt · /.well-known/agent-card.json · /mcp">
 <div class="hero-grid">
   <div>
-    <h1>Be the answer <em>agents</em> choose.</h1>
-    <p class="lead">${esc(SITE.tagline)} Three competing agent teams pitch monthly for a A$100 Google Ads grant—and every claim on this site is inspectable by humans and machines.</p>
+    <h1>Make it for humans. Prove it to <em>agents</em>.</h1>
+    <p class="lead">Three bets on brand affinity, machine legibility, and anticipation—backed by live experiments, a monthly A$100 autonomous Field Lab, and a site inspectable by both audiences.</p>
     <div class="hero-actions">
       <a class="btn" href="/experiments/field-lab">Inspect the Field Lab →</a>
       <a class="btn ghost" href="/#mcp">Try the live MCP</a>
