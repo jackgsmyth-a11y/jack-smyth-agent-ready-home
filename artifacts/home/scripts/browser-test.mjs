@@ -1,13 +1,16 @@
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import assert from "node:assert/strict";
 
-// Uses real Chromium over CDP, with no mocked WebMCP object.
+// Uses real Chromium/Chrome over CDP, with no mocked WebMCP object.
+const MAC_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const CHROME_BIN = process.env.CHROME || (existsSync(MAC_CHROME) ? MAC_CHROME : "chromium");
 const base = process.argv[2] || "http://127.0.0.1:5173";
 const profile = await mkdtemp(join(tmpdir(), "jack-browser-"));
-const chrome = spawn("chromium", [
+const chrome = spawn(CHROME_BIN, [
   "--headless=new", "--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu",
   "--enable-experimental-web-platform-features", "--enable-features=WebMCPTesting",
   "--enable-blink-features=WebMCP", "--remote-debugging-port=9227",
@@ -45,15 +48,58 @@ try {
     return r.result.value;
   };
   await command("Runtime.enable"); await command("Page.enable");
-  for (const width of [1280, 390]) {
-    await command("Emulation.setDeviceMetricsOverride", { width, height: 900, deviceScaleFactor: 1, mobile: false });
+  for (const vp of [
+    { width: 1280, height: 900, dpr: 1, mobile: false, label: "1280px" },
+    { width: 393, height: 852, dpr: 2, mobile: true, label: "393px (iPhone 15)" },
+    { width: 320, height: 667, dpr: 2, mobile: true, label: "320px (narrow mobile)" },
+  ]) {
+    await command("Emulation.setDeviceMetricsOverride", { width: vp.width, height: vp.height, deviceScaleFactor: vp.dpr, mobile: vp.mobile });
     const navigation = await command("Page.navigate", { url: base });
     await wait(2200);
     console.log("Browser page:", JSON.stringify(await evaluate("({url:location.href,title:document.title,spotlights:document.querySelectorAll('.spotlight').length})")), navigation.errorText || "");
-    check(`${width}px: no horizontal overflow`, await evaluate("document.documentElement.scrollWidth <= innerWidth"));
-    check(`${width}px: experiment links stay inside the core app`, await evaluate("!!document.querySelector('.spotlight a[href=\"/experiments/facts-with-flair\"]') && !!document.querySelector('.spotlight a[href=\"/experiments/leaderbored\"]')"));
+    check(`${vp.label}: no horizontal overflow`, await evaluate("document.documentElement.scrollWidth <= innerWidth"));
+    check(`${vp.label}: experiment links stay inside the core app`, await evaluate("!!document.querySelector('.spotlight a[href=\"/experiments/facts-with-flair\"]') && !!document.querySelector('.spotlight a[href=\"/experiments/leaderbored\"]')"));
+    if (vp.mobile) {
+      const layoutAudit = await evaluate(`(() => {
+        const issues = [];
+        const mainWidth = document.querySelector('main')?.getBoundingClientRect().width || innerWidth;
+        for (const bet of document.querySelectorAll('.bet')) {
+          const id = bet.id || 'unknown';
+          const headMain = bet.querySelector('.bet-head-main');
+          const ascii = bet.querySelector('.bet-head .bet-ascii');
+          const thesis = bet.querySelector('.thesis');
+          if (headMain) {
+            const r = headMain.getBoundingClientRect();
+            const childrenBottom = Math.max(...[...headMain.children].map(c => c.getBoundingClientRect().bottom));
+            const deadSpace = Math.round(r.bottom - childrenBottom);
+            if (deadSpace > 32) issues.push(id + ': .bet-head-main has ' + deadSpace + 'px vertical dead space');
+            const next = ascii || thesis;
+            if (next) {
+              const gap = Math.round(next.getBoundingClientRect().top - childrenBottom);
+              if (gap > 64) issues.push(id + ': gap below heading is ' + gap + 'px (> 64px)');
+            }
+          }
+          if (ascii) {
+            const ar = ascii.getBoundingClientRect();
+            if (ar.right > innerWidth + 1) issues.push(id + ': .bet-ascii overflows viewport');
+            if (ar.width < (mainWidth - 40) * 0.9) issues.push(id + ': .bet-ascii too narrow on mobile (' + Math.round(ar.width) + 'px)');
+          }
+        }
+        return issues;
+      })()`);
+      check(`${vp.label}: no mobile vertical dead space or lopsided headers`, layoutAudit.length === 0 || (console.error("Layout issues:", layoutAudit), false));
+    }
     const shot = await command("Page.captureScreenshot", { format: "png" });
-    await writeFile(`/tmp/jack-home-${width}.png`, Buffer.from(shot.data, "base64"));
+    await writeFile(`/tmp/jack-home-${vp.width}.png`, Buffer.from(shot.data, "base64"));
+    if (vp.width === 393) {
+      for (const secId of ["differentiation", "multimodality", "anticipation"]) {
+        await evaluate(`document.getElementById(${JSON.stringify(secId)})?.scrollIntoView({ behavior: 'instant', block: 'start' })`);
+        await wait(250);
+        const secShot = await command("Page.captureScreenshot", { format: "png" });
+        await writeFile(`/tmp/jack-home-393-${secId}.png`, Buffer.from(secShot.data, "base64"));
+      }
+      await evaluate("window.scrollTo(0, 0)");
+    }
   }
   await evaluate("document.getElementById('q').value='Flint'; document.getElementById('f').requestSubmit();");
   await wait(700);
