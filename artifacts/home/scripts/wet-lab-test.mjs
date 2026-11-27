@@ -16,7 +16,7 @@ const html = await pageRes.text();
 check("Field Lab HTML renders natively inside shared shell", html.includes('data-experiment="field-lab"') && html.includes(">Jack Smyth</a>") && !html.includes("<iframe"));
 const liveRes = await fetch(base + "/api/experiments/field-lab/live");
 const liveData = await liveRes.json();
-check("Field Lab records server-side UTM landing views and exposes Skeptic funnelHealth", liveData.variants.variantA.serverLandingViews >= 1 && typeof liveData.funnelHealth?.status === "string" && typeof liveData.funnelHealth?.shouldHaltSpend === "boolean");
+check("Field Lab records server-side UTM landing views and exposes Skeptic funnelHealth + sync freshness", liveData.variants.variantA.serverLandingViews >= 1 && typeof liveData.funnelHealth?.status === "string" && typeof liveData.funnelHealth?.shouldHaltSpend === "boolean" && (liveData.syncStatus === "fresh" || liveData.syncStatus === "stale") && typeof liveData.syncAgeHours === "number");
 check("Field Lab copy emphasises research/compute analogy with zero legacy Wet Lab wording", /pitch for compute/i.test(html) && !/wet lab/i.test(html));
 check("Field Lab Glass-Box schematic renders 5 stages with zero inline style attributes", html.includes('id="under-the-hood"') && html.includes("gemini-4-hydrogen") && html.includes("gemini-decision-1") && !html.includes('style="'));
 const csp = pageRes.headers.get("content-security-policy") || "";
@@ -71,6 +71,13 @@ const unauthSwarm = await fetch(base + "/api/experiments/field-lab/run-cycle", {
   body: JSON.stringify({}),
 });
 check("Field Lab autonomous swarm trigger refuses unauthenticated callers", unauthSwarm.status === 401 || unauthSwarm.status === 503);
+
+const unauthSync = await fetch(base + "/api/experiments/field-lab/sync-google-ads", {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify({}),
+});
+check("Field Lab Google Ads sync refuses unauthenticated callers", unauthSync.status === 401 || unauthSync.status === 503);
 
 // Agent & crawler discovery coherence checks across all surfaces
 const [homeHtml, llmsTxt, agentsMd, sitemapXml, poppyJson, protocolsJson, ogSvg] = await Promise.all([

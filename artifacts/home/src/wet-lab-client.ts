@@ -149,9 +149,17 @@ export const wetLabClientScript = `(() => {
     asciiEl.textContent = grid.map((row) => row.join("")).join("\\n");
   }
 
+  let asciiVisible = true;
+  if (asciiEl && "IntersectionObserver" in window) {
+    const asciiIo = new IntersectionObserver((entries) => {
+      asciiVisible = entries.some((entry) => entry.isIntersecting);
+    }, { threshold: 0.05 });
+    asciiIo.observe(asciiEl);
+  }
+
   function tickAscii(ts) {
     if (!swarmPlaying) { asciiRaf = null; return; }
-    if (ts - lastAsciiTs >= 66) { // ~15fps smooth & ultra-lightweight
+    if (!document.hidden && asciiVisible && ts - lastAsciiTs >= 66) { // ~15fps smooth & battery-safe
       lastAsciiTs = ts;
       asciiFrame += 1;
       renderAsciiFrame(swarmIdx, asciiFrame);
@@ -210,7 +218,31 @@ export const wetLabClientScript = `(() => {
     scheduleSwarm();
   }
 
-  // 00B. Live zero-cost campaign tracker refresh
+  // 00B. Live zero-cost campaign tracker refresh + relative sync time formatting
+  function formatElapsedSince(iso) {
+    const ms = Date.parse(iso || "");
+    if (!Number.isFinite(ms)) return iso || "";
+    const totalMinutes = Math.max(0, Math.round((Date.now() - ms) / 60000));
+    if (totalMinutes < 1) return "just now";
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+    const duration = days > 0 ? { days, hours } : hours > 0 ? { hours, minutes } : { minutes };
+    if (typeof Intl !== "undefined" && typeof Intl.DurationFormat === "function") {
+      try {
+        return new Intl.DurationFormat(undefined, { style: "narrow" }).format(duration) + " ago";
+      } catch {}
+    }
+    if (days > 0) return days + "d " + hours + "h ago";
+    if (hours > 0) return hours + "h " + minutes + "m ago";
+    return minutes + "m ago";
+  }
+
+  const lastSyncedEl = document.getElementById("fl-last-synced");
+  if (lastSyncedEl && lastSyncedEl.getAttribute("datetime")) {
+    lastSyncedEl.textContent = formatElapsedSince(lastSyncedEl.getAttribute("datetime"));
+  }
+
   const refreshBtn = document.getElementById("fl-refresh-live");
   if (refreshBtn) {
     refreshBtn.addEventListener("click", async () => {
@@ -227,13 +259,22 @@ export const wetLabClientScript = `(() => {
         if (meter) meter.setAttribute("value", String(t.spendAud || 0));
         setTxt("fl-va-imp", t.variants.variantA.impressions);
         setTxt("fl-va-clicks", t.variants.variantA.clicks + " (" + fmtPct(t.variants.variantA.ctrPct) + ")");
-        setTxt("fl-va-views", t.variants.variantA.landingViews);
-        setTxt("fl-va-scroll", t.variants.variantA.scroll50 + " (" + fmtPct(t.variants.variantA.scroll50RatePct) + ")");
+        setTxt("fl-va-views", t.variants.variantA.landingViews + " JS · " + (t.variants.variantA.serverLandingViews || 0) + " server");
+        setTxt("fl-va-scroll", t.variants.variantA.scroll50 + " (" + fmtPct(t.variants.variantA.scroll50RatePct) + ") · " + (t.variants.variantA.scroll25 || 0) + " at 25%");
         setTxt("fl-vb-imp", t.variants.variantB.impressions);
         setTxt("fl-vb-clicks", t.variants.variantB.clicks + " (" + fmtPct(t.variants.variantB.ctrPct) + ")");
-        setTxt("fl-vb-views", t.variants.variantB.landingViews);
-        setTxt("fl-vb-scroll", t.variants.variantB.scroll50 + " (" + fmtPct(t.variants.variantB.scroll50RatePct) + ")");
+        setTxt("fl-vb-views", t.variants.variantB.landingViews + " JS · " + (t.variants.variantB.serverLandingViews || 0) + " server");
+        setTxt("fl-vb-scroll", t.variants.variantB.scroll50 + " (" + fmtPct(t.variants.variantB.scroll50RatePct) + ") · " + (t.variants.variantB.scroll25 || 0) + " at 25%");
         setTxt("fl-bayes-verdict", t.bayesianScrollAudit.verdict);
+        const funnelEl = document.getElementById("fl-funnel-health");
+        if (funnelEl && t.funnelHealth) {
+          funnelEl.textContent = "Skeptic funnel check (" + t.funnelHealth.status + "): " + t.funnelHealth.message;
+        }
+        const syncEl = document.getElementById("fl-sync-status");
+        if (syncEl && t.lastSyncedAt) {
+          syncEl.className = "sync-badge sync-" + (t.syncStatus || "fresh");
+          syncEl.innerHTML = (t.syncStatus === "stale" ? "Sync delayed" : "Ads synced") + ' · <time id="fl-last-synced" datetime="' + t.lastSyncedAt + '">' + formatElapsedSince(t.lastSyncedAt) + "</time>";
+        }
       } catch {
         // Keep last rendered values on transient error
       } finally {

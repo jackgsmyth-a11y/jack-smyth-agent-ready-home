@@ -1,5 +1,5 @@
 import type { Express, Request, Response } from "express";
-import { timingSafeEqual } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
@@ -7,7 +7,18 @@ import { page } from "./site.js";
 import { wetLabClientScript } from "./wet-lab-client.js";
 import { isFirestoreEnabled, loadWetLabSnapshot, saveWetLabSnapshot } from "./wet-lab-store.js";
 import { runAutonomousPitchSwarm } from "./wet-lab-swarm.js";
-import { buildTelemetrySummary, recordServerCampaignLanding } from "./telemetry.js";
+import {
+  buildTelemetrySummary,
+  getAtomicCampaignCounter,
+  recordServerCampaignLanding,
+  refreshAtomicCampaignCounters,
+} from "./telemetry.js";
+
+const FIELD_LAB_JS_VER = createHash("sha256").update(wetLabClientScript).digest("hex").slice(0, 8);
+const FIRESTORE_READ_TTL_MS = 60_000;
+const STALE_SYNC_THRESHOLD_HOURS = 6;
+let lastFirestoreReadAt = 0;
+let inflightRefresh: Promise<void> | null = null;
 
 export interface CreativeVariant {
   id: string;
@@ -243,12 +254,45 @@ let campaignSnapshot: CampaignSnapshot = {
   budgetCapAud: 100,
   autoPauseAud: 95,
   stage: "live",
-  spendAud: 9.99,
-  variantA: { impressions: 1499, clicks: 31 },
-  variantB: { impressions: 2816, clicks: 53 },
-  lastSyncedAt: "2026-11-24T08:48:00.000Z",
-  syncSource: "google-ads-mcp (435-353-5484) + first-party UTM telemetry",
+  spendAud: 38.83,
+  variantA: { impressions: 5728, clicks: 123 },
+  variantB: { impressions: 14698, clicks: 289 },
+  lastSyncedAt: "2026-11-27T01:14:00.000Z",
+  syncSource: "google-ads-mcp (435-353-5484) + atomic Firestore UTM telemetry",
 };
+
+async function refreshWetLabStateIfStale(force = false): Promise<void> {
+  if (!isFirestoreEnabled()) return;
+  const now = Date.now();
+  if (!force && now - lastFirestoreReadAt < FIRESTORE_READ_TTL_MS) return;
+  if (inflightRefresh) {
+    await inflightRefresh;
+    return;
+  }
+  inflightRefresh = (async () => {
+    try {
+      const [savedCycle, savedSnap] = await Promise.all([
+        loadWetLabSnapshot<LabCycle>("active-cycle"),
+        loadWetLabSnapshot<CampaignSnapshot>("campaign-snapshot"),
+        refreshAtomicCampaignCounters(force),
+      ]);
+      if (savedCycle && Array.isArray(savedCycle.pitches) && savedCycle.pitches.length > 0) {
+        activeCycle = savedCycle;
+      }
+      if (savedSnap && typeof savedSnap.campaignName === "string") {
+        const savedTs = Date.parse(savedSnap.lastSyncedAt || "");
+        const localTs = Date.parse(campaignSnapshot.lastSyncedAt || "");
+        if (!Number.isFinite(localTs) || (Number.isFinite(savedTs) && savedTs >= localTs)) {
+          campaignSnapshot = { ...campaignSnapshot, ...savedSnap };
+        }
+      }
+      lastFirestoreReadAt = Date.now();
+    } finally {
+      inflightRefresh = null;
+    }
+  })();
+  await inflightRefresh;
+}
 
 // Exact Beta-Binomial numerical check (uniform Beta(1,1) prior) for P(p_A > p_B)
 // Returns null probability when sample is too small so the glass box never fakes certainty.
@@ -297,8 +341,19 @@ function computeBayesianScrollLift(aViews: number, aScroll50: number, bViews: nu
 export function getLiveCampaignTracker() {
   const telemetry = buildTelemetrySummary();
   const variants = telemetry.human.campaignVariants ?? {};
-  const utmA = variants["cycle_2026_11:variant_a"] ?? { pageViews: 0, serverLandingViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
-  const utmB = variants["cycle_2026_11:variant_b"] ?? { pageViews: 0, serverLandingViews: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
+  const mergeVariant = (utmKey: string) => {
+    const mem = variants[utmKey] ?? { pageViews: 0, serverLandingViews: 0, scroll25: 0, scroll50: 0, scroll75: 0, scroll100: 0 };
+    return {
+      pageViews: Math.max(mem.pageViews || 0, getAtomicCampaignCounter(utmKey, "pageViews")),
+      serverLandingViews: Math.max(mem.serverLandingViews || 0, getAtomicCampaignCounter(utmKey, "serverLandingViews")),
+      scroll25: Math.max(mem.scroll25 || 0, getAtomicCampaignCounter(utmKey, "scroll25")),
+      scroll50: Math.max(mem.scroll50 || 0, getAtomicCampaignCounter(utmKey, "scroll50")),
+      scroll75: Math.max(mem.scroll75 || 0, getAtomicCampaignCounter(utmKey, "scroll75")),
+      scroll100: Math.max(mem.scroll100 || 0, getAtomicCampaignCounter(utmKey, "scroll100")),
+    };
+  };
+  const utmA = mergeVariant("cycle_2026_11:variant_a");
+  const utmB = mergeVariant("cycle_2026_11:variant_b");
   const totalImpressions = campaignSnapshot.variantA.impressions + campaignSnapshot.variantB.impressions;
   const totalClicks = campaignSnapshot.variantA.clicks + campaignSnapshot.variantB.clicks;
   const totalJsLandingViews = (utmA.pageViews || 0) + (utmB.pageViews || 0);
@@ -308,6 +363,14 @@ export function getLiveCampaignTracker() {
   const jsClickToLandingPct = totalClicks > 0 ? Number(((totalJsLandingViews / totalClicks) * 100).toFixed(1)) : null;
   const serverClickToLandingPct = totalClicks > 0 ? Number(((totalServerLandingViews / totalClicks) * 100).toFixed(1)) : null;
   const funnelAlert = totalClicks >= 20 && (clickToLandingPct ?? 0) < 35;
+  const syncedMs = Date.parse(campaignSnapshot.lastSyncedAt || "");
+  const syncAgeHours = Number.isFinite(syncedMs)
+    ? Number(Math.max(0, (Date.now() - syncedMs) / 3_600_000).toFixed(1))
+    : null;
+  const syncStatus: "fresh" | "stale" =
+    campaignSnapshot.stage === "live" && syncAgeHours !== null && syncAgeHours > STALE_SYNC_THRESHOLD_HOURS
+      ? "stale"
+      : "fresh";
   const funnelHealth = {
     status: totalClicks < 20 ? "awaiting-sample" : funnelAlert ? "alert-funnel-drop" : "healthy",
     shouldHaltSpend: funnelAlert,
@@ -335,6 +398,8 @@ export function getLiveCampaignTracker() {
 
   return {
     ...campaignSnapshot,
+    syncAgeHours,
+    syncStatus,
     totalImpressions,
     totalClicks,
     spendRemainingAud: Number(Math.max(0, campaignSnapshot.budgetCapAud - campaignSnapshot.spendAud).toFixed(2)),
@@ -347,6 +412,7 @@ export function getLiveCampaignTracker() {
         ctrPct: ctrA,
         landingViews: utmA.pageViews,
         serverLandingViews: utmA.serverLandingViews ?? 0,
+        scroll25: utmA.scroll25 ?? 0,
         scroll50: utmA.scroll50,
         scroll50RatePct: bayesian.aRatePct,
       },
@@ -358,6 +424,7 @@ export function getLiveCampaignTracker() {
         ctrPct: ctrB,
         landingViews: utmB.pageViews,
         serverLandingViews: utmB.serverLandingViews ?? 0,
+        scroll25: utmB.scroll25 ?? 0,
         scroll50: utmB.scroll50,
         scroll50RatePct: bayesian.bRatePct,
       },
@@ -713,6 +780,7 @@ function liveCampaignTrackerSection() {
       </div>
       <div class="tracker-actions">
         <span class="stage-pill stage-${e(t.stage)}" id="fl-stage-pill"><span class="pulse-dot" aria-hidden="true"></span>${e(stageLabels[t.stage])}</span>
+        <span class="sync-badge sync-${e(t.syncStatus)}" id="fl-sync-status">${t.syncStatus === "stale" ? "Sync delayed" : "Ads synced"} · <time id="fl-last-synced" datetime="${e(t.lastSyncedAt)}">${e(t.lastSyncedAt.slice(0, 16).replace("T", " "))} UTC</time></span>
         <button type="button" class="secondary" id="fl-refresh-live">Refresh live data <span aria-hidden="true">↻</span></button>
       </div>
     </div>
@@ -747,15 +815,15 @@ function liveCampaignTrackerSection() {
               <th scope="row">Variant A · Independent Benchmark</th>
               <td id="fl-va-imp">${t.variants.variantA.impressions}</td>
               <td id="fl-va-clicks">${t.variants.variantA.clicks} (${fmtCtr(t.variants.variantA.ctrPct)})</td>
-              <td id="fl-va-views">${t.variants.variantA.landingViews}</td>
-              <td id="fl-va-scroll">${t.variants.variantA.scroll50} (${fmtRate(t.variants.variantA.scroll50RatePct)})</td>
+              <td id="fl-va-views">${t.variants.variantA.landingViews} JS · ${t.variants.variantA.serverLandingViews} server</td>
+              <td id="fl-va-scroll">${t.variants.variantA.scroll50} (${fmtRate(t.variants.variantA.scroll50RatePct)}) · ${t.variants.variantA.scroll25} at 25%</td>
             </tr>
             <tr>
               <th scope="row">Variant B · Brand Case Study (Control)</th>
               <td id="fl-vb-imp">${t.variants.variantB.impressions}</td>
               <td id="fl-vb-clicks">${t.variants.variantB.clicks} (${fmtCtr(t.variants.variantB.ctrPct)})</td>
-              <td id="fl-vb-views">${t.variants.variantB.landingViews}</td>
-              <td id="fl-vb-scroll">${t.variants.variantB.scroll50} (${fmtRate(t.variants.variantB.scroll50RatePct)})</td>
+              <td id="fl-vb-views">${t.variants.variantB.landingViews} JS · ${t.variants.variantB.serverLandingViews} server</td>
+              <td id="fl-vb-scroll">${t.variants.variantB.scroll50} (${fmtRate(t.variants.variantB.scroll50RatePct)}) · ${t.variants.variantB.scroll25} at 25%</td>
             </tr>
           </tbody>
         </table>
@@ -821,11 +889,11 @@ function wetLabBody() {
     </div>
     <div class="split">
       <figure class="surface creative-card">
-        <img src="/lab/cycle-2026-11/variant-a.jpg" alt="Variant A Demand Gen ad card: 89% of B2B AI citations skip vendor sites. Independent 2026 Channel Benchmark." width="1376" height="768" loading="lazy">
+        <img src="/lab/cycle-2026-11/variant-a.jpg" alt="Variant A Demand Gen ad card: 89% of B2B AI citations skip vendor sites. Independent 2026 Channel Benchmark." width="1376" height="768" loading="lazy" decoding="async">
         <figcaption><strong>Variant A · Verdict-First Independent Benchmark</strong><br><span class="quiet">Tests whether leading with a falsifiable third-party statistic lifts upper-funnel CTR.</span></figcaption>
       </figure>
       <figure class="surface creative-card">
-        <img src="/lab/cycle-2026-11/variant-b.jpg" alt="Variant B Demand Gen ad card: How B2B marketing leaders grow pipeline smarter. Brand Growth Case Study." width="1376" height="768" loading="lazy">
+        <img src="/lab/cycle-2026-11/variant-b.jpg" alt="Variant B Demand Gen ad card: How B2B marketing leaders grow pipeline smarter. Brand Growth Case Study." width="1376" height="768" loading="lazy" decoding="async">
         <figcaption><strong>Variant B · Generic Brand Case Study (Control)</strong><br><span class="quiet">Matched charcoal-and-lemon editorial design with conventional B2B case-study framing.</span></figcaption>
       </figure>
     </div>
@@ -929,6 +997,7 @@ function buildWetLabMcpServer() {
         return { isError: true, content: [{ type: "text" as const, text: `Unknown pitchId "${pitchId}". Call field_lab_get_cycle for valid ids.` }] };
       }
       pitch.votes += 1;
+      void saveWetLabSnapshot("active-cycle", activeCycle).catch(() => {});
       return {
         content: [{ type: "text" as const, text: JSON.stringify({ ok: true, pitchId: pitch.id, team: pitch.team, votes: pitch.votes }, null, 2) }],
       };
@@ -954,6 +1023,7 @@ function buildWetLabMcpServer() {
         submittedAt: new Date().toISOString(),
       };
       submittedQuestions.push(entry);
+      void saveWetLabSnapshot("questions", submittedQuestions.slice(-50)).catch(() => {});
       return {
         content: [{ type: "text" as const, text: JSON.stringify({ ok: true, submission: entry }, null, 2) }],
       };
@@ -969,31 +1039,173 @@ const questionSchema = z.object({
   submittedBy: z.string().trim().max(80).optional(),
 });
 
-export function registerWetLab(app: Express, origin: (r: Request) => string) {
-  // Hydrate latest cycle + campaign snapshot from Cloud Firestore on startup when enabled on Cloud Run
-  if (isFirestoreEnabled()) {
-    void loadWetLabSnapshot<LabCycle>("active-cycle").then((saved) => {
-      if (saved && Array.isArray(saved.pitches) && saved.pitches.length > 0) {
-        activeCycle = saved;
+async function fetchLiveGoogleAdsSnapshot(): Promise<Partial<CampaignSnapshot>> {
+  const clientId = process.env.GOOGLE_ADS_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_ADS_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_ADS_REFRESH_TOKEN;
+  const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
+  const missing = [
+    !clientId && "GOOGLE_ADS_CLIENT_ID",
+    !clientSecret && "GOOGLE_ADS_CLIENT_SECRET",
+    !refreshToken && "GOOGLE_ADS_REFRESH_TOKEN",
+    !devToken && "GOOGLE_ADS_DEVELOPER_TOKEN",
+  ].filter(Boolean);
+  if (missing.length > 0) {
+    throw new Error(`Google Ads API sync not configured (missing: ${missing.join(", ")}).`);
+  }
+  const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: clientId!,
+      client_secret: clientSecret!,
+      refresh_token: refreshToken!,
+      grant_type: "refresh_token",
+    }),
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!tokenRes.ok) {
+    throw new Error(`Google OAuth token exchange failed (HTTP ${tokenRes.status}).`);
+  }
+  const tokenJson = (await tokenRes.json()) as { access_token?: string };
+  if (!tokenJson.access_token) throw new Error("Google OAuth token response missing access_token.");
+
+  const cid = (process.env.GOOGLE_ADS_CUSTOMER_ID || campaignSnapshot.accountId).replace(/[^0-9]/g, "");
+  const loginCid = (process.env.GOOGLE_ADS_LOGIN_CUSTOMER_ID || "").replace(/[^0-9]/g, "");
+  const campaignFilter = process.env.GOOGLE_ADS_CAMPAIGN_ID
+    ? `WHERE campaign.id = ${process.env.GOOGLE_ADS_CAMPAIGN_ID.replace(/[^0-9]/g, "")}`
+    : `WHERE campaign.status != 'REMOVED'`;
+  const query = [
+    "SELECT campaign.status, ad_group_ad.ad.final_urls, metrics.impressions, metrics.clicks, metrics.cost_micros",
+    "FROM ad_group_ad",
+    campaignFilter,
+  ].join(" ");
+
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${tokenJson.access_token}`,
+    "developer-token": devToken!,
+    "Content-Type": "application/json",
+  };
+  if (loginCid) headers["login-customer-id"] = loginCid;
+
+  const adsRes = await fetch(`https://googleads.googleapis.com/v20/customers/${cid}/googleAds:searchStream`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ query }),
+    signal: AbortSignal.timeout(12000),
+  });
+  if (!adsRes.ok) {
+    throw new Error(`Google Ads GAQL query failed (HTTP ${adsRes.status}).`);
+  }
+  const chunks = (await adsRes.json()) as Array<{
+    results?: Array<{
+      campaign?: { status?: string };
+      adGroupAd?: { ad?: { finalUrls?: string[] } };
+      metrics?: { impressions?: string | number; clicks?: string | number; costMicros?: string | number };
+    }>;
+  }>;
+
+  let spendMicros = 0;
+  const va = { impressions: 0, clicks: 0 };
+  const vb = { impressions: 0, clicks: 0 };
+  let sawPaused = false;
+  let sawEnabled = false;
+
+  for (const chunk of chunks) {
+    for (const row of chunk.results || []) {
+      const imp = Number(row.metrics?.impressions || 0);
+      const clk = Number(row.metrics?.clicks || 0);
+      const cost = Number(row.metrics?.costMicros || 0);
+      spendMicros += cost;
+      const urls = (row.adGroupAd?.ad?.finalUrls || []).join(" ");
+      if (urls.includes("variant_a")) {
+        va.impressions += imp;
+        va.clicks += clk;
+      } else if (urls.includes("variant_b")) {
+        vb.impressions += imp;
+        vb.clicks += clk;
       }
-    });
-    void loadWetLabSnapshot<CampaignSnapshot>("campaign-snapshot").then((saved) => {
-      if (saved && typeof saved.campaignName === "string") {
-        campaignSnapshot = { ...campaignSnapshot, ...saved };
-      }
-    });
+      if (row.campaign?.status === "ENABLED") sawEnabled = true;
+      else if (row.campaign?.status === "PAUSED") sawPaused = true;
+    }
   }
 
-  app.get(["/field-lab.js", "/wet-lab.js"], (_req, res) => res.type("text/javascript").send(wetLabClientScript));
+  const spendAud = Number((spendMicros / 1_000_000).toFixed(2));
+  const stage: CampaignSnapshot["stage"] =
+    spendAud >= campaignSnapshot.autoPauseAud
+      ? "paused-at-cap"
+      : sawEnabled
+        ? "live"
+        : sawPaused
+          ? "completed"
+          : campaignSnapshot.stage;
 
-  app.get(["/api/experiments/field-lab/cycle", "/api/experiments/wet-lab/cycle"], (_req, res) => {
+  return {
+    stage,
+    spendAud,
+    variantA: va,
+    variantB: vb,
+    syncSource: `google-ads-api-v20 (${campaignSnapshot.accountId}) + atomic Firestore UTM telemetry`,
+  };
+}
+
+export function registerWetLab(app: Express, origin: (r: Request) => string) {
+  // Hydrate latest cycle, campaign snapshot, and atomic counters from Cloud Firestore on startup
+  if (isFirestoreEnabled()) {
+    void refreshWetLabStateIfStale(true);
+  }
+
+  app.get(["/field-lab.js", "/wet-lab.js"], (_req, res) => {
+    res.set("Cache-Control", "public, max-age=3600");
+    res.type("text/javascript; charset=utf-8").send(wetLabClientScript);
+  });
+
+  app.get(["/api/experiments/field-lab/cycle", "/api/experiments/wet-lab/cycle"], async (_req, res) => {
     res.set("Cache-Control", "no-store");
+    await refreshWetLabStateIfStale();
     res.json(getWetLabState());
   });
 
-  app.get(["/api/experiments/field-lab/live", "/api/experiments/wet-lab/live"], (_req, res) => {
+  app.get(["/api/experiments/field-lab/live", "/api/experiments/wet-lab/live"], async (_req, res) => {
     res.set("Cache-Control", "no-store");
+    await refreshWetLabStateIfStale();
     res.json(getLiveCampaignTracker());
+  });
+
+  // Automated Cloud Scheduler target: pulls live GAQL from Google Ads API v20 and writes to Firestore.
+  app.post(["/api/experiments/field-lab/sync-google-ads", "/api/experiments/wet-lab/sync-google-ads"], async (req, res) => {
+    res.set({ "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" });
+    const expected = process.env.FIELD_LAB_CRON_SECRET || process.env.WET_LAB_CRON_SECRET;
+    if (!expected || expected.length < 16) {
+      res.status(503).json({ error: "Google Ads sync secret is not configured on this instance." });
+      return;
+    }
+    const auth = req.get("authorization") || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+    const a = Buffer.from(token);
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) {
+      res.status(401).json({ error: "Unauthorized." });
+      return;
+    }
+    try {
+      const update = await fetchLiveGoogleAdsSnapshot();
+      campaignSnapshot = {
+        ...campaignSnapshot,
+        ...update,
+        lastSyncedAt: new Date().toISOString(),
+      };
+      lastFirestoreReadAt = Date.now();
+      const persistence = await saveWetLabSnapshot("campaign-snapshot", campaignSnapshot).catch(() => ({
+        persisted: false,
+        backend: "in-memory-fallback",
+      }));
+      res.json({ ok: true, liveTracker: getLiveCampaignTracker(), persistence });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Google Ads sync failed.";
+      const status = message.includes("not configured") ? 503 : 502;
+      res.status(status).json({ error: message });
+    }
   });
 
   const snapshotUpdateSchema = z.object({
@@ -1126,13 +1338,15 @@ export function registerWetLab(app: Express, origin: (r: Request) => string) {
   app.get("/experiments/wet-lab.md", (_req, res) => res.redirect(301, "/experiments/field-lab.md"));
   app.get("/experiments/wet-lab", (_req, res) => res.redirect(301, "/experiments/field-lab"));
 
-  app.get("/experiments/field-lab.md", (req, res) => {
+  app.get("/experiments/field-lab.md", async (req, res) => {
+    await refreshWetLabStateIfStale();
     res.type("text/markdown; charset=utf-8").send(wetLabMarkdown(origin(req)));
   });
 
-  app.get("/experiments/field-lab", (req, res) => {
+  app.get("/experiments/field-lab", async (req, res) => {
     res.vary("Accept");
     res.set("Link", `</experiments/field-lab.md>; rel="alternate"; type="text/markdown", </experiments/field-lab/mcp>; rel="mcp"`);
+    await refreshWetLabStateIfStale();
     if (req.accepts(["html", "text/markdown"]) === "text/markdown") {
       res.type("text/markdown; charset=utf-8").send(wetLabMarkdown(origin(req)));
       return;
@@ -1143,7 +1357,7 @@ export function registerWetLab(app: Express, origin: (r: Request) => string) {
       title: "Agentic Field Lab — autonomous media-grant research · Jack Smyth",
       description: "Frontier AI labs make researchers pitch for compute. Here, three competing agent teams pitch for a A$100 AUD monthly Google Ads grant, scored by a calibrated Judge Agent and audited with Bayesian honesty.",
       body: wetLabBody(),
-      script: "/field-lab.js",
+      script: `/field-lab.js?v=${FIELD_LAB_JS_VER}`,
     }, res.locals.nonce));
   });
 }

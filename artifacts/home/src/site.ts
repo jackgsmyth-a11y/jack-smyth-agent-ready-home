@@ -81,7 +81,7 @@ function renderHomeMultimodalitySpotlight() {
     <div class="mm-grid">
       <div class="mm-media">
         <a class="mm-poster" href="https://www.youtube.com/watch?v=MHm_zAgki1s" rel="noopener" aria-label="Watch Jack Smyth's BRXND LA 2025 talk on YouTube: The Most Important Audience You'll Never Meet (11 minutes)">
-          <img src="/lab/brxnd-la-2025.jpg" alt="Jack Smyth presenting The Most Important Audience You'll Never Meet at BRXND Marketing X AI Conf LA 2025" width="1280" height="720" loading="lazy">
+          <img src="/lab/brxnd-la-2025.jpg" alt="Jack Smyth presenting The Most Important Audience You'll Never Meet at BRXND Marketing X AI Conf LA 2025" width="1280" height="720" loading="lazy" decoding="async">
           <span class="mm-play" aria-hidden="true">▶ Watch on YouTube · 11 min</span>
         </a>
         <pre class="bet-ascii" data-bet-ascii="multimodality" aria-hidden="true">  .:*@#*:..   [▶ VIDEO]\n  --WAVEFORM-----> ★\n  :*#@*:.     AI CITED</pre>
@@ -270,7 +270,7 @@ export function page(base: string, view?: PageView, nonce = "") {
   const pageTitle = view?.title || "Jack Smyth — three bets on agents, video and anticipation";
   const pageDesc = view?.description || SITE.tagline;
   const ogImage = `${base}/og-image.png`;
-  const lastMod = "2026-11-24";
+  const lastMod = "2026-11-27";
   const isFieldLab = !view || view.path === "/experiments/field-lab";
   const isInteractiveApp = view?.path === "/experiments/facts-with-flair" || view?.path === "/experiments/leaderbored";
   const ld = {
@@ -657,6 +657,9 @@ body[data-lens=agent] .deb-delta.pos{color:#7ee0b8}body[data-lens=agent] .deb-de
   .pulse-dot{animation:fl-pulse 2.4s ease-in-out infinite}
 }
 .stage-pill{display:inline-flex;align-items:center;gap:8px;font:600 var(--text-sm) var(--sans);color:var(--fg)}
+.sync-badge{display:inline-flex;align-items:center;gap:4px;font:500 var(--text-sm) var(--mono);color:var(--mut);padding:4px 10px;border:1px solid var(--line);border-radius:99px;background:var(--bg)}
+.sync-badge.sync-stale{color:#78350f;border-color:#d97706;background:#fef3c7}
+body[data-lens=agent] .sync-badge.sync-stale{color:#fde68a;border-color:#d97706;background:rgba(217,119,6,.16)}
 .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--b2);display:inline-block}
 .stage-live .pulse-dot{background:#15803d}
 .tracker-card{border:1px solid var(--fg)!important;background:var(--surface)!important}

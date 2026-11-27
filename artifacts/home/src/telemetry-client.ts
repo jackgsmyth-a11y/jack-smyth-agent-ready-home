@@ -147,7 +147,17 @@ export const telemetryScript = `(() => {
       for (const m of [25, 50, 75, 100]) {
         if (pct >= m && !seenDepths.has(m)) {
           seenDepths.add(m);
-          enqueue('scroll_depth', variantKey ? { pct: m, variant: variantKey } : { pct: m });
+          if (variantKey) {
+            // Send UTM scroll milestones immediately so mobile in-app WebView dismissals never drop them.
+            sendImmediate({
+              type: 'scroll_depth',
+              path: location.pathname,
+              ts: Date.now(),
+              detail: { pct: m, variant: variantKey },
+            });
+          } else {
+            enqueue('scroll_depth', { pct: m });
+          }
         }
       }
     });

@@ -64,12 +64,77 @@ export async function loadWetLabSnapshot<T>(docId: string): Promise<T | null> {
   try {
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` },
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(3000),
     });
     if (!res.ok) return null;
     const doc = (await res.json()) as { fields?: { json?: { stringValue?: string } } };
     const raw = doc.fields?.json?.stringValue;
     return raw ? (JSON.parse(raw) as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+// Atomic server-side integer increment via Firestore REST :commit transform.
+// Safe under concurrent multi-region / multi-instance Cloud Run traffic (zero clobbering).
+export async function incrementWetLabCounter(docId: string, fieldName: string, delta = 1): Promise<boolean> {
+  if (!isFirestoreEnabled() || !Number.isInteger(delta) || delta === 0) return false;
+  const safeField = fieldName.replace(/[^a-zA-Z0-9_]/g, "_").slice(0, 100);
+  if (!safeField) return false;
+  const project = process.env.GOOGLE_CLOUD_PROJECT!;
+  const token = await getAccessToken();
+  if (!token) return false;
+  const url = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(project)}/databases/(default)/documents:commit`;
+  const document = `projects/${project}/databases/(default)/documents/wet_lab/${docId}`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        writes: [
+          {
+            transform: {
+              document,
+              fieldTransforms: [
+                {
+                  fieldPath: safeField,
+                  increment: { integerValue: String(delta) },
+                },
+              ],
+            },
+          },
+        ],
+      }),
+      signal: AbortSignal.timeout(3000),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function loadWetLabCounters(docId: string): Promise<Record<string, number> | null> {
+  if (!isFirestoreEnabled()) return null;
+  const project = process.env.GOOGLE_CLOUD_PROJECT!;
+  const token = await getAccessToken();
+  if (!token) return null;
+  const url = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(project)}/databases/(default)/documents/wet_lab/${encodeURIComponent(docId)}`;
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(3000),
+    });
+    if (!res.ok) return null;
+    const doc = (await res.json()) as { fields?: Record<string, { integerValue?: string }> };
+    const out: Record<string, number> = {};
+    for (const [k, v] of Object.entries(doc.fields || {})) {
+      const n = Number(v?.integerValue);
+      if (Number.isFinite(n) && n >= 0) out[k] = n;
+    }
+    return out;
   } catch {
     return null;
   }

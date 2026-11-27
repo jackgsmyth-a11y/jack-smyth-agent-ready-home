@@ -1,6 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { telemetryScript } from "./telemetry-client.js";
+import { incrementWetLabCounter, loadWetLabCounters } from "./wet-lab-store.js";
 
 // Zero-PII dual telemetry collector (Human UX + Agent/Crawler surfaces).
 // Aggregates monthly rollups in memory and periodically persists snapshots
@@ -12,6 +13,7 @@ const METADATA_TOKEN_URL =
 export interface CampaignVariantMetrics {
   pageViews: number;
   serverLandingViews?: number;
+  scroll25?: number;
   scroll50: number;
   scroll75: number;
   scroll100: number;
@@ -290,6 +292,32 @@ export function buildTelemetrySummary(month = currentMonthKey()) {
   };
 }
 
+const ATOMIC_COUNTERS_DOC = "campaign-counters";
+const ATOMIC_CACHE_TTL_MS = 60_000;
+let atomicCountersCache: Record<string, number> = {};
+let atomicCountersFetchedAt = 0;
+
+export function atomicCounterField(variantKey: string, field: keyof CampaignVariantMetrics): string {
+  return `${variantKey.toLowerCase().replace(/[^a-z0-9_]/g, "_")}__${field}`;
+}
+
+export async function refreshAtomicCampaignCounters(force = false): Promise<Record<string, number>> {
+  const now = Date.now();
+  if (!force && now - atomicCountersFetchedAt < ATOMIC_CACHE_TTL_MS) {
+    return atomicCountersCache;
+  }
+  const loaded = await loadWetLabCounters(ATOMIC_COUNTERS_DOC);
+  if (loaded) {
+    atomicCountersCache = loaded;
+    atomicCountersFetchedAt = now;
+  }
+  return atomicCountersCache;
+}
+
+export function getAtomicCampaignCounter(variantKey: string, field: keyof CampaignVariantMetrics): number {
+  return atomicCountersCache[atomicCounterField(variantKey, field)] ?? 0;
+}
+
 function recordCampaignVariant(
   m: MonthlyTelemetry,
   rawVariant: unknown,
@@ -303,11 +331,16 @@ function recordCampaignVariant(
   const bucket = (m.human.campaignVariants[variant] ??= {
     pageViews: 0,
     serverLandingViews: 0,
+    scroll25: 0,
     scroll50: 0,
     scroll75: 0,
     scroll100: 0,
   });
   bucket[field] = (bucket[field] ?? 0) + 1;
+  // Mirror atomically to Firestore so multi-region / multi-instance Cloud Run containers never clobber counts.
+  const fieldKey = atomicCounterField(variant, field);
+  atomicCountersCache[fieldKey] = Math.max(atomicCountersCache[fieldKey] ?? 0, bucket[field] ?? 0);
+  void incrementWetLabCounter(ATOMIC_COUNTERS_DOC, fieldKey, 1);
 }
 
 const BOT_UA_RE = /bot|crawler|spider|slurp|headless|preview|facebookexternalhit|linkedinbot|whatsapp|telegram|curl|wget|python-urllib|node-fetch|undici|axios/i;
@@ -362,7 +395,8 @@ export function registerTelemetry(app: Express) {
         inc(m.human.outboundClicks, ev.detail.host);
       } else if (ev.type === "scroll_depth" && typeof ev.detail?.pct === "number") {
         inc(m.human.scrollMilestones, `${ev.detail.pct}%`);
-        if (ev.detail.pct === 50) recordCampaignVariant(m, ev.detail?.variant, "scroll50");
+        if (ev.detail.pct === 25) recordCampaignVariant(m, ev.detail?.variant, "scroll25");
+        else if (ev.detail.pct === 50) recordCampaignVariant(m, ev.detail?.variant, "scroll50");
         else if (ev.detail.pct === 75) recordCampaignVariant(m, ev.detail?.variant, "scroll75");
         else if (ev.detail.pct === 100) recordCampaignVariant(m, ev.detail?.variant, "scroll100");
       } else if (ev.type === "cwv" && ev.detail) {
